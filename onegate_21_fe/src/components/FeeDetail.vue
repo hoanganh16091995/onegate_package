@@ -12,9 +12,10 @@ export default {
   props: {
     name: String
   },
-  data: () => ({}),
+  data: () => ({
+  }),
   methods: {
-    reloadThanhPhan: function (data) {
+    initData: function (data) {
     }
   }
 }
