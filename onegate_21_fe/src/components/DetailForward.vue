@@ -1,6 +1,7 @@
 <template>
   <div>
-    
+    <tiep-nhan-ho-so-detail ref="tiepnhanhosodetail"></tiep-nhan-ho-so-detail>
+    <!-- <xem-chi-tiet-ho-so-detail ref="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail> -->
   </div>
 </template>
 
@@ -17,7 +18,7 @@ import TraKetQuaDetail from './TraKetQuaDetail.vue'
 import XemChiTietHoSoDetail from './XemChiTietHoSoDetail.vue'
 
 export default {
-  props: ['formCode'],
+  props: ['id', 'formCode'],
   components: {
     'cham-qua-han-detail': ChamQuaHanDetail,
     'chuyen-phat-ket-qua-detail': ChuyenPhatKetQuaDetail,
@@ -39,6 +40,8 @@ export default {
       vm.$store.dispatch('loadInitResource').then(function (result) {
         vm.initData = result
         if (vm.initData !== null) {
+          console.log(vm.$refs.tiepnhanhosodetail)
+          vm.$refs.tiepnhanhosodetail.initData(vm.id)
         }
       })
     })
