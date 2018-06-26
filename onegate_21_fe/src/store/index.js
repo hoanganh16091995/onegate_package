@@ -54,129 +54,9 @@ export const store = new Vuex.Store({
     dossierFiles: [],
     listHistoryProcessingItems: [],
     thanhPhanHoSo: {
-      dossierTemplates: [{
-        'partNo': '2',
-        'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-        'partTip': '',
-        'partType': 0,
-        'multiple': false,
-        'required': false,
-        'esign': false,
-        'fileTemplateNo': '',
-        'hasForm': true,
-        'fileType': 0
-      },
-      {
-        'partNo': '2',
-        'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-        'partTip': '',
-        'partType': 0,
-        'multiple': false,
-        'required': false,
-        'esign': false,
-        'fileTemplateNo': '',
-        'hasForm': true,
-        'fileType': 0
-      },
-      {
-        'partNo': '2',
-        'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-        'partTip': '',
-        'partType': 0,
-        'multiple': false,
-        'required': false,
-        'esign': false,
-        'fileTemplateNo': '',
-        'hasForm': true,
-        'fileType': 0
-      },
-      {
-        'partNo': '2',
-        'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-        'partTip': '',
-        'partType': 0,
-        'multiple': false,
-        'required': false,
-        'esign': false,
-        'fileTemplateNo': '',
-        'hasForm': true,
-        'fileType': 0
-      },
-      {
-        'partNo': '2',
-        'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-        'partTip': '',
-        'partType': 0,
-        'multiple': false,
-        'required': false,
-        'esign': false,
-        'fileTemplateNo': '',
-        'hasForm': true,
-        'fileType': 0
-      }
-      ]
+      dossierTemplates: support.dossierTemplates
     },
-    dossierTemplates: [{
-      'partNo': '1',
-      'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản',
-      'partTip': '',
-      'partType': 0,
-      'multiple': false,
-      'required': false,
-      'esign': false,
-      'fileTemplateNo': '',
-      'hasForm': true,
-      'fileType': 0
-    },
-    {
-      'partNo': '2',
-      'partName': 'Giấy đăng ký hợp đồng xuất khẩu sản phẩm thủy sản (tải bản scan)',
-      'partTip': '',
-      'partType': 0,
-      'multiple': false,
-      'required': false,
-      'esign': false,
-      'fileTemplateNo': '',
-      'hasForm': true,
-      'fileType': 0
-    },
-    {
-      'partNo': '3',
-      'partName': 'Giấy đăng ký nuôi thủy sản thương phẩm',
-      'partTip': '',
-      'partType': 0,
-      'multiple': false,
-      'required': false,
-      'esign': false,
-      'fileTemplateNo': '',
-      'hasForm': false,
-      'fileType': 0
-    },
-    {
-      'partNo': '4',
-      'partName': 'Giấy đăng ký nuôi thủy sản thương phẩm',
-      'partTip': '',
-      'partType': 0,
-      'multiple': false,
-      'required': false,
-      'esign': false,
-      'fileTemplateNo': '',
-      'hasForm': false,
-      'fileType': 0
-    },
-    {
-      'partNo': '5',
-      'partName': 'Hợp đồng mua thủy sản nguyên liệu với tổ chức, cá nhân có cơ sở nuôi thủy sản thương phẩm',
-      'partTip': '',
-      'partType': 0,
-      'multiple': false,
-      'required': false,
-      'esign': false,
-      'fileTemplateNo': '',
-      'hasForm': false,
-      'fileType': 0
-    }
-    ],
+    dossierTemplates: support.dossierTemplates,
     thongTinChuHoSo: {
       userType: true,
       cityCode: '',
@@ -384,39 +264,28 @@ export const store = new Vuex.Store({
     },
     loadDictItems ({ commit, state }, data) {
       return new Promise((resolve, reject) => {
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {
-            parent: data.parent
-          }
-        }
-        axios.get(state.initData.regionApi + '/' + data.collectionCode + '/dictitems', param).then(function (response) {
-          let serializable = response.data
-          if (data.collectionCode === 'ADMINISTRATIVE_REGION') {
-            if (data.level === 0) {
-              commit('setCitys', serializable.data)
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {
+              parent: data.parent
             }
           }
-          resolve(response.data)
-        }, error => {
-          reject(error)
+          axios.get(state.initData.regionApi + '/' + data.collectionCode + '/dictitems', param).then(function (response) {
+            let serializable = response.data
+            if (data.collectionCode === 'ADMINISTRATIVE_REGION') {
+              if (data.level === 0) {
+                commit('setCitys', serializable.data)
+              }
+            }
+            resolve(response.data)
+          }, error => {
+            reject(error)
+          })
         })
       })
-    },
-    loadResultServices ({ commit, state }, data) {
-      let param = {
-        headers: {
-          groupId: state.initData.groupId
-        },
-        params: {
-          parent: data
-        }
-      }
-      axios.get(state.initData.regionApi, param).then(function (response) {
-        commit('setResultServices', response.data.data)
-      }).catch(function (xhr) {})
     },
     resetThongTinChungHoSo ({ commit }) {
       let data = {
@@ -471,83 +340,87 @@ export const store = new Vuex.Store({
     },
     loadDossierTemplates ({ commit, state }, data) {
       return new Promise((resolve, reject) => {
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
           }
-        }
-        let paramDossierMark = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {
-            type: 1
+          let paramDossierMark = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {
+              type: 1
+            }
           }
-        }
-        axios.all([axios.get(state.initData.dossierTemplatesApi + '/' + data.dossierTemplateNo, param), axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/marks', paramDossierMark)])
-        .then(axios.spread(function (resDossierTemplates, resDossierMarks) {
-          let dossierTemplateItems = resDossierTemplates.data.dossierParts
-          let dossierMarkItems = resDossierMarks.data.data
-          if (dossierMarkItems) {
-            dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
-              if (itemTemplate.hasForm) {
-                itemTemplate.count = 1
-              } else {
-                itemTemplate.count = 0
-              }
-              dossierMarkItems.forEach(function (val, index) {
-                if (val.dossierPartNo === itemTemplate.partNo) {
-                  itemTemplate.fileType = val.fileType
-                  itemTemplate.fileCheck = val.fileCheck
+          axios.all([axios.get(state.initData.dossierTemplatesApi + '/' + data.dossierTemplateNo, param), axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/marks', paramDossierMark)])
+          .then(axios.spread(function (resDossierTemplates, resDossierMarks) {
+            let dossierTemplateItems = resDossierTemplates.data.dossierParts
+            let dossierMarkItems = resDossierMarks.data.data
+            if (dossierMarkItems) {
+              dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
+                if (itemTemplate.hasForm) {
+                  itemTemplate.count = 1
+                } else {
+                  itemTemplate.count = 0
                 }
+                dossierMarkItems.forEach(function (val, index) {
+                  if (val.dossierPartNo === itemTemplate.partNo) {
+                    itemTemplate.fileType = val.fileType
+                    itemTemplate.fileCheck = val.fileCheck
+                  }
+                })
+                // let itemMarkFinded = dossierMarkItems.find(itemMark => {
+                //   return itemMark && itemMark.dossierPartNo === itemTemplate.partNo
+                // })
+                // if (itemMarkFinded) {
+                //   itemTemplate.fileType = itemMarkFinded.fileType
+                //   itemTemplate.fileCheck = itemMarkFinded.fileCheck
+                // } else {
+                //   itemTemplate.fileType = 0
+                //   itemTemplate.fileCheck = false
+                // }
+                return itemTemplate
               })
-              // let itemMarkFinded = dossierMarkItems.find(itemMark => {
-              //   return itemMark && itemMark.dossierPartNo === itemTemplate.partNo
-              // })
-              // if (itemMarkFinded) {
-              //   itemTemplate.fileType = itemMarkFinded.fileType
-              //   itemTemplate.fileCheck = itemMarkFinded.fileCheck
-              // } else {
-              //   itemTemplate.fileType = 0
-              //   itemTemplate.fileCheck = false
-              // }
-              return itemTemplate
-            })
-          } else {
-            dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
-              if (itemTemplate.hasForm) {
-                itemTemplate.count = 1
-              } else {
-                itemTemplate.count = 0
-              }
-              itemTemplate.fileType = 0
-              itemTemplate.fileCheck = false
-              return itemTemplate
-            })
-          }
-          console.log(dossierTemplateItems)
-          commit('setDossierTemplates', dossierTemplateItems)
-          state.thanhPhanHoSo.dossierTemplates = dossierTemplateItems
-          state.thanhPhanHoSo.dossierTemplateId = resDossierTemplates.dossierTemplateId
-          resolve(dossierTemplateItems)
-        })).catch(function (xhr) {
-          reject(xhr)
-          console.log(xhr)
+            } else {
+              dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
+                if (itemTemplate.hasForm) {
+                  itemTemplate.count = 1
+                } else {
+                  itemTemplate.count = 0
+                }
+                itemTemplate.fileType = 0
+                itemTemplate.fileCheck = false
+                return itemTemplate
+              })
+            }
+            console.log(dossierTemplateItems)
+            commit('setDossierTemplates', dossierTemplateItems)
+            state.thanhPhanHoSo.dossierTemplates = dossierTemplateItems
+            state.thanhPhanHoSo.dossierTemplateId = resDossierTemplates.dossierTemplateId
+            resolve(dossierTemplateItems)
+          })).catch(function (xhr) {
+            reject(xhr)
+            console.log(xhr)
+          })
         })
       })
     },
     loadAllDossierTemplates ({commit, state}, data) {
       return new Promise((resolve, reject) => {
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
           }
-        }
-        axios.get(state.initData.dossierTemplatesApi + '/' + data.dossierTemplateNo, param).then(function (response) {
-          let serializable = response.data
-          resolve(serializable.dossierParts)
-        }, error => {
-          reject(error)
+          axios.get(state.initData.dossierTemplatesApi + '/' + data.dossierTemplateNo, param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable.dossierParts)
+          }, error => {
+            reject(error)
+          })
         })
       })
     },
@@ -639,79 +512,85 @@ export const store = new Vuex.Store({
     },
     getDetailDossier ({ commit, state }, data) {
       return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          if (data > 0) {
+            axios.get(state.initData.postDossierApi + '/' + data, param).then(function (response) {
+              let thongTinNguoiNop = {
+                delegateName: response.data.delegateName,
+                delegateCityCode: response.data.delegateCityCode,
+                delegateAddress: response.data.delegateAddress,
+                delegateDistrictCode: response.data.delegateDistrictCode,
+                delegateWardCode: response.data.delegateWardCode,
+                delegateEmail: response.data.delegateEmail,
+                delegateTelNo: response.data.delegateTelNo,
+                delegateIdNo: response.data.delegateIdNo
+              }
+              commit('setDossier', response.data)
+              commit('setThongTinChuHoSo', response.data)
+              commit('setLePhi', response.data)
+              commit('setThongTinNguoiNopHoSo', thongTinNguoiNop)
+              commit('setThongTinChungHoSo', response.data)
+              commit('setDichVuChuyenPhatKetQua', response.data)
+              resolve(response.data)
+            }, error => {
+              reject(error)
+            }).catch(function (xhr) {
+              console.log(xhr)
+            })
+          } else {
+            resolve()
+          }
+        })
+      })
+    },
+    loadDossierFiles ({ commit, state }) {
+      store.dispatch('loadInitResource').then(function (result) {
         let param = {
           headers: {
             groupId: state.initData.groupId
           }
         }
-        if (data > 0) {
-          axios.get(state.initData.postDossierApi + '/' + data, param).then(function (response) {
-            let thongTinNguoiNop = {
-              delegateName: response.data.delegateName,
-              delegateCityCode: response.data.delegateCityCode,
-              delegateAddress: response.data.delegateAddress,
-              delegateDistrictCode: response.data.delegateDistrictCode,
-              delegateWardCode: response.data.delegateWardCode,
-              delegateEmail: response.data.delegateEmail,
-              delegateTelNo: response.data.delegateTelNo,
-              delegateIdNo: response.data.delegateIdNo
-            }
-            commit('setDossier', response.data)
-            commit('setThongTinChuHoSo', response.data)
-            commit('setLePhi', response.data)
-            commit('setThongTinNguoiNopHoSo', thongTinNguoiNop)
-            commit('setThongTinChungHoSo', response.data)
-            commit('setDichVuChuyenPhatKetQua', response.data)
-            resolve(response.data)
-          }, error => {
-            reject(error)
-          }).catch(function (xhr) {
-            console.log(xhr)
-          })
-        } else {
-          resolve()
-        }
-      })
-    },
-    loadDossierFiles ({ commit, state }) {
-      let param = {
-        headers: {
-          groupId: state.initData.groupId
-        }
-      }
-      axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/files', param).then(function (response) {
-        commit('setDossierFiles', response.data.data)
-        if (response.data.data) {
-          let dossierFiles = response.data.data
-          state.dossierTemplates.forEach(itemTemplate => {
-            itemTemplate.count = 0
-            dossierFiles.forEach(itemFile => {
-              if (itemTemplate.partNo === itemFile.dossierPartNo) {
-                itemTemplate.count ++
-              }
+        axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/files', param).then(function (response) {
+          commit('setDossierFiles', response.data.data)
+          if (response.data.data) {
+            let dossierFiles = response.data.data
+            state.dossierTemplates.forEach(itemTemplate => {
+              itemTemplate.count = 0
+              dossierFiles.forEach(itemFile => {
+                if (itemTemplate.partNo === itemFile.dossierPartNo) {
+                  itemTemplate.count ++
+                }
+              })
             })
-          })
-        }
-      }).catch(function (xhr) {
-        console.log(xhr)
+          }
+        }).catch(function (xhr) {
+          console.log(xhr)
+        })
       })
     },
     viewFile ({commit, state}, data) {
-      let param = {
-        headers: {
-          groupId: state.initData.groupId
-        },
-        responseType: 'blob'
-      }
-      state.dossierFiles.forEach(val => {
-        if (val.dossierPartNo === data.partNo) {
-          axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/files/' + val.referenceUid, param).then(function (response) {
-            var url = window.URL.createObjectURL(response.data)
-            window.open(url, '_blank')
-          }).catch(function (xhr) {
-            console.log(xhr)
-          })
+      store.dispatch('loadInitResource').then(function (result) {
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          responseType: 'blob'
         }
+        state.dossierFiles.forEach(val => {
+          if (val.dossierPartNo === data.partNo) {
+            axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/files/' + val.referenceUid, param).then(function (response) {
+              var url = window.URL.createObjectURL(response.data)
+              window.open(url, '_blank')
+            }).catch(function (xhr) {
+              console.log(xhr)
+            })
+          }
+        })
       })
     },
     postDossier ({ commit, state }, data) {
@@ -895,59 +774,63 @@ export const store = new Vuex.Store({
       })
     },
     getUserInfoFromApplicantIdNo ({ commit, state }, data) {
-      let param = {
-        headers: {
-          groupId: state.initData.groupId
+      store.dispatch('loadInitResource').then(function (result) {
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          }
         }
-      }
-      axios.get(state.initData.applicantApi + '/' + data, param).then(function (response) {
-        // state.thongTinChuHoSo.applicantIdNo = response.data.applicantIdNo
-        // state.thongTinChuHoSo.applicantName = response.data.applicantName
-        // state.thongTinChuHoSo.address = response.data.address
-        // state.thongTinChuHoSo.contactEmail = response.data.contactEmail
-        // state.thongTinChuHoSo.contactTelNo = response.data.contactTelNo
-        // state.thongTinChuHoSo.city = response.data.city
-        // state.thongTinChuHoSo.district = response.data.district
-        // state.thongTinChuHoSo.ward = response.data.ward
-      }).catch(function (xhr) {
-        console.log(xhr)
+        axios.get(state.initData.applicantApi + '/' + data, param).then(function (response) {
+          // state.thongTinChuHoSo.applicantIdNo = response.data.applicantIdNo
+          // state.thongTinChuHoSo.applicantName = response.data.applicantName
+          // state.thongTinChuHoSo.address = response.data.address
+          // state.thongTinChuHoSo.contactEmail = response.data.contactEmail
+          // state.thongTinChuHoSo.contactTelNo = response.data.contactTelNo
+          // state.thongTinChuHoSo.city = response.data.city
+          // state.thongTinChuHoSo.district = response.data.district
+          // state.thongTinChuHoSo.ward = response.data.ward
+        }).catch(function (xhr) {
+          console.log(xhr)
+        })
       })
     },
     loadAlpcaForm ({ commit, state }, data) {
-      // let param = {
-      //   headers: {
-      //     groupId: state.initData.groupId
-      //   },
-      //   responseType: 'text'
-      // }
-      console.log('alpaca')
-      state.dossierFiles.forEach(item => {
-        if (item.dossierPartNo === data.partNo) {
-          // let urlFormScript = '/o/rest/v2/dossiers/' + state.thongTinChungHoSo.dossierId + '/files/' + item.referenceUid + '/formscript'
-          // let urlFormDate = '/o/rest/v2/dossiers/' + state.thongTinChungHoSo.dossierId + '/files/' + item.referenceUid + '/formdata'
-          // axios.all([axios.get(urlFormScript, param), axios.get(urlFormDate, param)])
-          // .then(axios.spread(function (resFormScript, resFormData) {
-          // })).catch(function (xhr) {
-          //   console.log(xhr)
-          // })
-          /* eslint-disable */
-          var formScript, formData
-          if (item.formScript) {
-            formScript = eval('(' + item.formScript + ')')
-          } else {
-            formScript = {}
+      store.dispatch('loadInitResource').then(function (result) {
+        // let param = {
+        //   headers: {
+        //     groupId: state.initData.groupId
+        //   },
+        //   responseType: 'text'
+        // }
+        console.log('alpaca')
+        state.dossierFiles.forEach(item => {
+          if (item.dossierPartNo === data.partNo) {
+            // let urlFormScript = '/o/rest/v2/dossiers/' + state.thongTinChungHoSo.dossierId + '/files/' + item.referenceUid + '/formscript'
+            // let urlFormDate = '/o/rest/v2/dossiers/' + state.thongTinChungHoSo.dossierId + '/files/' + item.referenceUid + '/formdata'
+            // axios.all([axios.get(urlFormScript, param), axios.get(urlFormDate, param)])
+            // .then(axios.spread(function (resFormScript, resFormData) {
+            // })).catch(function (xhr) {
+            //   console.log(xhr)
+            // })
+            /* eslint-disable */
+            var formScript, formData
+            if (item.formScript) {
+              formScript = eval('(' + item.formScript + ')')
+            } else {
+              formScript = {}
+            }
+            if (item.formData) {
+              formData = eval('(' + item.formData + ')')
+            } else {
+              formData = {}
+            }
+            /* eslint-disable */
+            console.log(typeof (formScript))
+            console.log(typeof (formData))
+            formScript.data = formData
+            $('#formAlpaca' + data.partNo).alpaca(formScript)
           }
-          if (item.formData) {
-            formData = eval('(' + item.formData + ')')
-          } else {
-            formData = {}
-          }
-          /* eslint-disable */
-          console.log(typeof (formScript))
-          console.log(typeof (formData))
-          formScript.data = formData
-          $('#formAlpaca' + data.partNo).alpaca(formScript)
-        }
+        })
       })
     },
     putAlpacaForm ({ commit, state }, data) {
@@ -1014,31 +897,33 @@ export const store = new Vuex.Store({
     },
     getDossierTemplateEdit ({commit, state}) {
       return new Promise((resolve, reject) => {
-        var dossierTemplatesTemp = state.dossierTemplates
-        var resultTemp = []
-        try {
-          state.dossierFiles.forEach(itemFile => {
-            dossierTemplatesTemp.forEach(itemTemplate => {
-              if (itemFile.dossierPartNo === itemTemplate.partNo) {
-                resultTemp.push({
-                  partName: itemTemplate.partName,
-                  partNo: itemTemplate.partNo,
-                  displayName: itemFile.displayName,
-                  dossierFileId: itemFile.dossierFileId,
-                  partType: itemTemplate.partType,
-                  hasForm: itemTemplate.hasForm,
-                  fileType: itemFile.fileType,
-                  referenceUid: itemFile.referenceUid
-                })
-              }
+        store.dispatch('loadInitResource').then(function (result) {
+          var dossierTemplatesTemp = state.dossierTemplates
+          var resultTemp = []
+          try {
+            state.dossierFiles.forEach(itemFile => {
+              dossierTemplatesTemp.forEach(itemTemplate => {
+                if (itemFile.dossierPartNo === itemTemplate.partNo) {
+                  resultTemp.push({
+                    partName: itemTemplate.partName,
+                    partNo: itemTemplate.partNo,
+                    displayName: itemFile.displayName,
+                    dossierFileId: itemFile.dossierFileId,
+                    partType: itemTemplate.partType,
+                    hasForm: itemTemplate.hasForm,
+                    fileType: itemFile.fileType,
+                    referenceUid: itemFile.referenceUid
+                  })
+                }
+              })
             })
-          })
-          resolve(resultTemp)
-          console.log(resultTemp)
-        } catch (e) {
-          console.log(e)
-          reject([])
-        }
+            resolve(resultTemp)
+            console.log(resultTemp)
+          } catch (e) {
+            console.log(e)
+            reject([])
+          }
+        })
       })
     },
     setDefaultCityCode ({commit, state}, data) {
@@ -1047,24 +932,26 @@ export const store = new Vuex.Store({
     getListHistoryProcessingItems ({commit, state}, id){    
       var vm = this
       return new Promise((resolve, reject) => {
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {}
-        }
-        var listHistoryProcessing = []
-        axios.get(state.initData.dossierlogsApi + '/' + id + '/logs', param).then(function (response) {
-          var serializable = response.data
-          for (var key in serializable.data) {
-            if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
-              listHistoryProcessing.push(serializable.data[key])
-            }
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {}
           }
-          resolve(listHistoryProcessing)
-        })
-        .catch(function (error) {
-          reject(error)
+          var listHistoryProcessing = []
+          axios.get(state.initData.dossierlogsApi + '/' + id + '/logs', param).then(function (response) {
+            var serializable = response.data
+            for (var key in serializable.data) {
+              if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
+                listHistoryProcessing.push(serializable.data[key])
+              }
+            }
+            resolve(listHistoryProcessing)
+          })
+          .catch(function (error) {
+            reject(error)
+          })
         })
       })
     },
@@ -1102,38 +989,39 @@ export const store = new Vuex.Store({
       })
     },
     loadUsersComment ({commit, state}, id) {
-      var vm = this
       return new Promise((resolve, reject) => {
-        var users = []
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {
-            userMapping: true
+        store.dispatch('loadInitResource').then(function (result) {
+          var users = []
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {
+              userMapping: true
+            }
           }
-        }
-        axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
-          if(response != null && response.hasOwnProperty('data')){
-            let contacts = response.data
-            $.each(contacts, function(index, item){
-              let user = {}
-              user.id = item.userId
-              user.fullname = item.userName
-              user.email = item.email
-              user.profilePictureURL = item.profileUrl
-              users.push(user)
-            })
-          } else {
+          axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
+            if(response != null && response.hasOwnProperty('data')){
+              let contacts = response.data
+              $.each(contacts, function(index, item){
+                let user = {}
+                user.id = item.userId
+                user.fullname = item.userName
+                user.email = item.email
+                user.profilePictureURL = item.profileUrl
+                users.push(user)
+              })
+            } else {
+              users = []
+            }
+            commit(setUsersComment, users)
+            resolve(users)
+          })
+          .catch(function (error) {
             users = []
-          }
-          commit(setUsersComment, users)
-          resolve(users)
-        })
-        .catch(function (error) {
-          users = []
-          commit(setUsersComment, users)
-          reject(error)
+            commit(setUsersComment, users)
+            reject(error)
+          })
         })
       })
     }
@@ -1413,12 +1301,6 @@ export const store = new Vuex.Store({
     dossier (state) {
       return state.dossier
     },
-    danhSachHoSo (state) {
-      return (filter) => {
-        let dataPromise = store.dispatch('loadDanhSachHoSo', filter)
-        return dataPromise
-      }
-    },
     getCityVal (state) {
       return state.cityVal
     },
@@ -1436,13 +1318,6 @@ export const store = new Vuex.Store({
     },
     getVnpostCodeItems (state) {
       return state.vnpostCodeItems
-    },
-    api (state) {
-      if (state.initData.apiLocal) {
-        store.dispatch('loadInitResource')
-      } else {
-        return state.initData
-      }
     },
     listHistoryProcessingItems (state) {
       return state.listHistoryProcessingItems
