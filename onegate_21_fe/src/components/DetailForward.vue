@@ -31,7 +31,7 @@ export default {
     'xem-chi-tiet-ho-so-detail': XemChiTietHoSoDetail
   },
   data: () => ({
-    initData: null,
+    initData: null
   }),
   beforeCreate () {
     var vm = this
@@ -45,8 +45,8 @@ export default {
   },
   watch: {
     '$route': function (newRoute, oldRoute) {
-      let vm = this
-      let query = newRoute.query
+      // let vm = this
+      // let query = newRoute.query
     }
   }
 }

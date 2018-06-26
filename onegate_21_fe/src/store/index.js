@@ -17,7 +17,8 @@ export const store = new Vuex.Store({
     error: null,
     user: null,
     index: 0,
-    trangThaiHoSoList: null
+    trangThaiHoSoList: null,
+    listThuTucHanhChinh: null
   },
   actions: {
     clearError ({commit}) {
@@ -110,6 +111,36 @@ export const store = new Vuex.Store({
         })
       }
     },
+    loadListThuTucHanhChinh ({commit, state}) {
+      if (state.trangThaiHoSoList === null) {
+        return new Promise((resolve, reject) => {
+          store.dispatch('loadInitResource').then(function (result) {
+            let param = {
+              headers: {
+                groupId: state.initData.groupId
+              }
+            }
+            axios.get(state.initData.getListThuTucHanhChinh, param).then(function (response) {
+              let serializable = response.data
+              let thuTucArray = Array.from(serializable.data)
+              thuTucArray.unshift({
+                'serviceConfigId': '0',
+                'serviceName': 'Toàn bộ thủ tục'
+              })
+              commit('setListThuTucHanhChinh', thuTucArray)
+              resolve(thuTucArray)
+            }).catch(function (error) {
+              console.log(error)
+              reject(error)
+            })
+          })
+        })
+      } else {
+        return new Promise((resolve, reject) => {
+          resolve(state.listThuTucHanhChinh)
+        })
+      }
+    },
     loadingDataHoSo ({commit, state}, filter) {
       commit('setLoadingTable', true)
       return new Promise((resolve, reject) => {
@@ -117,6 +148,13 @@ export const store = new Vuex.Store({
           let param = {
             headers: {
               groupId: state.initData.groupId
+            },
+            params: {
+              start: filter.page * 15 - 15,
+              end: filter.page * 15,
+              agency: filter.agency,
+              service: filter.service,
+              template: filter.template
             }
           }
           axios.get(filter.queryParams, param).then(function (response) {
@@ -174,6 +212,9 @@ export const store = new Vuex.Store({
     },
     setLoadingDynamicBtn (state, payload) {
       state.loadingDynamicBtn = payload
+    },
+    setListThuTucHanhChinh (state, payload) {
+      state.listThuTucHanhChinh = payload
     }
   },
   getters: {
@@ -190,23 +231,24 @@ export const store = new Vuex.Store({
       return state.index
     },
     loadingMenuConfigToDo (state) {
-      if (state.trangThaiHoSoList === null) {
-        return new Promise((resolve, reject) => {
-          store.dispatch('loadMenuConfigToDo').then(function (result) {
-            resolve(result)
-          })
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadMenuConfigToDo').then(function (result) {
+          resolve(result)
         })
-      } else {
-        return new Promise((resolve, reject) => {
-          resolve(state.trangThaiHoSoList)
-        })
-      }
+      })
     },
     loadingInitData (state) {
       return state.initData
     },
     loadingDynamicBtn (state) {
       return state.loadingDynamicBtn
+    },
+    loadingListThuTucHanhChinh () {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadListThuTucHanhChinh').then(function (result) {
+          resolve(result)
+        })
+      })
     }
   }
 })
