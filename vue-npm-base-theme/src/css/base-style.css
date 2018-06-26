@@ -75,7 +75,6 @@ body ul {
 /*----- Footer -----*/
 .mBody footer {
 	color: white;
-	margin-top: 20px;
 	background: #071d30 ;
 	background: url("../images/bg-footer.png") center center repeat-y;
 	background-size: 100% auto;
@@ -158,7 +157,7 @@ footer > div:first-child {
 
 /*----- Other -----*/
 body section#main-content {
-	padding: 10px 0;
+	padding: 10px 0 0 0;
 	min-height: -webkit-calc(100vh - 304px);
 	min-height: calc(100vh - 304px);
 }

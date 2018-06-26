@@ -1,6 +1,5 @@
 <template>
   <v-app>
-    ---------- {{currentStep}}
     <v-navigation-drawer app clipped floating width="240">
       <content-placeholders class="mt-3" v-if="loading">
         <content-placeholders-text :lines="7" />
@@ -117,10 +116,13 @@
       filterSteps (item) {
         let currentQuery = this.$router.history.current.query
         let currentParams = this.$router.history.current.params
-        let queryString = currentQuery.q
-        let coma = queryString.lastIndexOf('=')
-        if (coma > 0) {
-          queryString = queryString.substr(0, coma + 1)
+        let queryString = this.trangThaiHoSoList[currentParams.index].queryParams
+        if (currentQuery.hasOwnProperty('q')) {
+          queryString = currentQuery.q
+          let coma = queryString.lastIndexOf('=')
+          if (coma > 0) {
+            queryString = queryString.substr(0, coma + 1)
+          }
         }
         this.currentStep = item.stepCode
         router.push({

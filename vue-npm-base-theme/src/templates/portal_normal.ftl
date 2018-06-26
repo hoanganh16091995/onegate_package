@@ -11,8 +11,8 @@
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<base href="/">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Material+Icons&amp;subset=vietnamese" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=34534922299533232" rel="stylesheet">
-	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=99922222911" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=3453492221199533232" rel="stylesheet">
+	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=9992112222911" rel="stylesheet">
 	
 </head>
 
