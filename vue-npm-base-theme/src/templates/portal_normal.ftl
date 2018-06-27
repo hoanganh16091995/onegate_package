@@ -14,6 +14,10 @@
 	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/base-style.css?t=3453492221199533232" rel="stylesheet">
 	<link type="text/css" href="${themeDisplay.getPathThemeRoot()}/css/app_custom.css?t=9992112222911" rel="stylesheet">
 	
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.5/handlebars.js"></script>
+	<script type="text/javascript" src="http://code.cloudcms.com/alpaca/1.5.24/bootstrap/alpaca.min.js"></script>
+	
 </head>
 
 <body class="${css_class} mBody">

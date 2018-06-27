@@ -127,8 +127,8 @@
     </v-expansion-panel>
     
     <v-btn flat class="absolute__btn">
-      <v-icon size="16">file_copy</v-icon>
-      Hướng dẫn
+      Hướng dẫn &nbsp;
+      <v-icon>file_copy</v-icon>
     </v-btn>
   </div>
 </template>

@@ -1,7 +1,9 @@
 <template>
   <div>
+    <div id="field1"></div>
+    
     <v-layout wrap class="menu_header_list" :class='{"no__border__bottom": btnDynamics === null || btnDynamics === undefined || btnDynamics === "undefined" || (btnDynamics !== null && btnDynamics !== undefined && btnDynamics !== "undefined" && btnDynamics.length === 0)}'>
-      <v-flex xs12 sm6 class="px-2">
+      <v-flex xs12 class="px-2">
         <v-select
           :items="listThuTucHanhChinh"
           v-model="thuTucHanhChinhSelected"
@@ -13,19 +15,6 @@
           return-object
           :hide-selected="true"
           @change = "changeServiceConfigs"
-        ></v-select>
-      </v-flex>
-      <v-flex xs12 sm6 class="px-2">
-        <v-select
-          :items="listDichVu"
-          v-model="dichVuSelected"
-          label="Dịch vụ:"
-          autocomplete
-          placeholder="chọn dịch vụ"
-          item-text="optionName"
-          item-value="processOptionId"
-          return-object
-          :hide-selected="true"
         ></v-select>
       </v-flex>
     </v-layout>
@@ -49,7 +38,15 @@
       </v-flex>
     </v-layout>
     <div v-if="!loadingDynamicBtn" class="btn_wrap_actions">
-      <v-btn color="primary" v-for="(item, index) in btnDynamics" v-bind:key="index">{{item.title}}</v-btn>
+      <v-btn color="primary" v-for="(item, index) in btnDynamics" v-bind:key="index" 
+        v-on:click.native="btnActionEvent(item, index)" 
+        v-if="String(item.form).indexOf('VIEW') < 0"
+        :loading="loadingAction && index === indexAction"
+        :disabled="loadingAction && index === indexAction"
+      >
+        {{item.title}}
+        <span slot="loader">Loading...</span>
+      </v-btn>
     </div>
     <content-placeholders v-if="loadingTable">
       <content-placeholders-text :lines="22" />
@@ -91,20 +88,20 @@
         >
           {{ props.item[itemHeader.value] }}
         </td>
-        <td class="text-xs-center">
-          <v-menu bottom left :nudge-left="30" :nudge-top="15">
+        <td class="text-xs-center px-0 py-0">
+          <v-menu bottom left :nudge-left="30" :nudge-top="15" v-if="btnDynamics !== null || btnDynamics !== undefined || btnDynamics !== 'undefined'">
             <v-btn slot="activator" icon>
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
-              <v-list-tile v-for="(item, i) in btnDynamics" :key="i">
+              <v-list-tile v-for="(item, i) in btnDynamics" :key="i" v-if="String(item.form) !== 'NEW'">
                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile v-if="btnDynamics === null || btnDynamics === undefined || btnDynamics === 'undefined'">
-                <v-list-tile-title>Xem chi tiết</v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-menu>
+          <v-btn flat class="mx-0 px-0 my-0 py-0" block v-else>
+            Chi tiết
+          </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -114,6 +111,67 @@
           @tiny:change-page="paggingData" ></tiny-pagination> 
       </div>
     </div>
+    <v-dialog v-model="dialogAction" max-width="400" transition="fade-transition" persistent>
+      <v-card>
+        <v-form ref="form" v-model="valid" lazy-validation>
+          <v-card-title class="headline">{{itemAction.title}}</v-card-title>
+          <v-btn icon dark class="mx-0 my-0 absolute__btn_panel" @click.native="dialogAction = false">
+            <v-icon>clear</v-icon>
+          </v-btn>
+          <v-progress-linear v-if="loadingAction" class="my-0" :indeterminate="true"></v-progress-linear>
+          <v-card-text class="pb-0 pt-4">
+            <v-layout wrap>
+              <v-flex xs12 class="px-2 pb-3">
+                <v-select
+                  :items="listThuTucHanhChinh"
+                  v-model="thuTucHanhChinhSelected"
+                  label="Thủ tục:"
+                  autocomplete
+                  placeholder="chọn thủ tục hành chính"
+                  item-text="serviceName"
+                  item-value="serviceConfigId"
+                  return-object
+                  :hide-selected="true"
+                  @change = "changeServiceConfigs"
+                ></v-select>
+              </v-flex>
+              <v-flex xs12 class="px-2">
+                <v-select
+                  :items="listDichVu"
+                  v-model="dichVuSelected"
+                  label="Dịch vụ:"
+                  autocomplete
+                  placeholder="chọn dịch vụ"
+                  item-text="optionName"
+                  item-value="processOptionId"
+                  return-object
+                  :hide-selected="true"
+                  :rules="[v => !!v || 'dịch vụ bắt buộc phải chọn.']"
+                  required
+                ></v-select>
+              </v-flex>
+            </v-layout>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-3" flat="flat" @click.native="dialogAction = false"
+              :loading="loadingAction"
+              :disabled="loadingAction"
+            >
+            Quay lại
+            <span slot="loader">Loading...</span>
+            </v-btn>
+            <v-btn color="primary" flat="flat" @click.native="doSubmitDialogAction(itemAction)"
+              :loading="loadingAction"
+              :disabled="loadingAction"
+            >
+            Đồng ý
+            <span slot="loader">Loading...</span>
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -126,6 +184,7 @@ export default {
     'tiny-pagination': TinyPagination
   },
   data: () => ({
+    valid: true,
     isCallBack: true,
     trangThaiHoSoList: null,
     listDichVu: [],
@@ -142,7 +201,13 @@ export default {
     thuTucHanhChinhSelected: null,
     govAgencyCode: '',
     serviceCode: '',
-    templateNo: ''
+    templateNo: '',
+    dialogAction: false,
+    loadingAction: false,
+    indexAction: -1,
+    itemAction: {
+      title: ''
+    }
   }),
   computed: {
     loadingDynamicBtn () {
@@ -170,39 +235,7 @@ export default {
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
         vm.isCallBack = false
-        vm.$store.getters.loadingListThuTucHanhChinh.then(function (result) {
-          vm.listThuTucHanhChinh = result
-          if (currentQuery.hasOwnProperty('service_config')) {
-            for (let key in vm.listThuTucHanhChinh) {
-              if (String(vm.listThuTucHanhChinh[key].serviceConfigId) === String(currentQuery.service_config)) {
-                vm.thuTucHanhChinhSelected = vm.listThuTucHanhChinh[key]
-                if (vm.thuTucHanhChinhSelected !== null && vm.thuTucHanhChinhSelected !== undefined && vm.thuTucHanhChinhSelected.hasOwnProperty('options')) {
-                  vm.govAgencyCode = vm.thuTucHanhChinhSelected.govAgencyCode
-                  vm.serviceCode = vm.thuTucHanhChinhSelected.serviceCode
-                  if (currentQuery.hasOwnProperty('template_no')) {
-                    vm.listDichVu = vm.thuTucHanhChinhSelected.options
-                    for (let keyDv in vm.listDichVu) {
-                      if (vm.listDichVu[keyDv].templateNo === currentQuery.template_no) {
-                        vm.dichVuSelected = vm.listDichVu[keyDv]
-                        vm.templateNo = vm.dichVuSelected.templateNo
-                      }
-                    }
-                  } else {
-                    vm.listDichVu = []
-                    vm.dichVuSelected = null
-                    vm.govAgencyCode = ''
-                    vm.serviceCode = ''
-                    vm.templateNo = ''
-                  }
-                }
-                break
-              }
-            }
-          } else {
-            vm.thuTucHanhChinhSelected = null
-          }
-          vm.doLoadingDataHoSo()
-        })
+        vm.processListTTHC(currentQuery)
         if (vm.trangThaiHoSoList === null) {
           vm.$store.commit('setLoadingDynamicBtn', true)
           setTimeout(() => {
@@ -260,11 +293,55 @@ export default {
         }
         vm.$store.commit('setLoadingDynamicBtn', false)
         console.log('watch: landing')
-        vm.doLoadingDataHoSo()
+        if (vm.listThuTucHanhChinh === null || vm.listThuTucHanhChinh === undefined || (vm.listThuTucHanhChinh !== null && vm.listThuTucHanhChinh !== undefined && vm.listThuTucHanhChinh.length === 0)) {
+          vm.processListTTHC(currentQuery)
+        }
       }
     }
   },
   methods: {
+    processListTTHC (currentQuery) {
+      let vm = this
+      console.log('processTTHC', (currentQuery.hasOwnProperty('service_config') && String(currentQuery.service_config) !== '0'))
+      vm.$store.dispatch('loadListThuTucHanhChinh').then(function (result) {
+        vm.listThuTucHanhChinh = result
+        console.log('listThuTucHanhChinh', vm.listThuTucHanhChinh)
+        if (currentQuery.hasOwnProperty('service_config') && String(currentQuery.service_config) !== '0') {
+          for (let key in vm.listThuTucHanhChinh) {
+            if (String(vm.listThuTucHanhChinh[key].serviceConfigId) === String(currentQuery.service_config)) {
+              vm.thuTucHanhChinhSelected = vm.listThuTucHanhChinh[key]
+              if (vm.thuTucHanhChinhSelected !== null && vm.thuTucHanhChinhSelected !== undefined && vm.thuTucHanhChinhSelected.hasOwnProperty('options')) {
+                vm.govAgencyCode = vm.thuTucHanhChinhSelected.govAgencyCode
+                vm.serviceCode = vm.thuTucHanhChinhSelected.serviceCode
+                if (currentQuery.hasOwnProperty('template_no')) {
+                  vm.listDichVu = vm.thuTucHanhChinhSelected.options
+                  for (let keyDv in vm.listDichVu) {
+                    if (vm.listDichVu[keyDv].templateNo === currentQuery.template_no) {
+                      vm.dichVuSelected = vm.listDichVu[keyDv]
+                      vm.templateNo = vm.dichVuSelected.templateNo
+                    }
+                  }
+                } else {
+                  vm.listDichVu = []
+                  vm.dichVuSelected = null
+                  vm.govAgencyCode = ''
+                  vm.serviceCode = ''
+                  vm.templateNo = ''
+                }
+              }
+              break
+            }
+          }
+        } else {
+          vm.thuTucHanhChinhSelected = null
+          vm.dichVuSelected = null
+          vm.govAgencyCode = ''
+          vm.serviceCode = ''
+          vm.templateNo = ''
+        }
+        vm.doLoadingDataHoSo()
+      })
+    },
     paggingData (config) {
       let vm = this
       let current = vm.$router.history.current
@@ -284,9 +361,6 @@ export default {
     doLoadingDataHoSo () {
       let vm = this
       let currentQuery = router.history.current.query
-      console.log('doLoadingDataHoSo govAgencyCode', vm.govAgencyCode)
-      console.log('doLoadingDataHoSo serviceCode', vm.serviceCode)
-      console.log('doLoadingDataHoSo templateNo', vm.templateNo)
       if (currentQuery.hasOwnProperty('q')) {
         let filter = {
           queryParams: currentQuery.q,
@@ -327,12 +401,54 @@ export default {
       queryString += 'service_config=' + item.serviceConfigId
       if (this.listDichVu !== null && this.listDichVu !== undefined && this.listDichVu !== 'undefined' && this.listDichVu.length > 0) {
         queryString += '&template_no=' + this.dichVuSelected.templateNo
+      } else {
+        vm.templateNo = ''
       }
       vm.govAgencyCode = item.govAgencyCode
       vm.serviceCode = item.serviceCode
       vm.$router.push({
         path: current.path + queryString
       })
+    },
+    btnActionEvent (item, index) {
+      let vm = this
+      vm.itemAction = item
+      vm.indexAction = index
+      console.log('vm.itemAction', vm.itemAction)
+      if (String(item.form) === 'NEW') {
+        let isOpenDialog = true
+        if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
+          isOpenDialog = false
+        }
+        if (isOpenDialog) {
+          vm.dialogAction = true
+        } else {
+          vm.doCreateDossier()
+        }
+      }
+    },
+    doCreateDossier () {
+      let vm = this
+      let data = {
+        serviceCode: vm.serviceCode,
+        govAgencyCode: vm.govAgencyCode,
+        templateNo: vm.templateNo
+      }
+      vm.loadingAction = true
+      vm.$store.dispatch('postDossier', data).then(function (result) {
+        vm.loadingAction = false
+        vm.indexAction = -1
+        router.push({
+          path: '/danh-sach-ho-so/' + vm.index + '/ho-so/' + result.dossierId + '/' + vm.itemAction.form,
+          query: vm.$router.history.current.query
+        })
+      })
+    },
+    doSubmitDialogAction (item) {
+      let vm = this
+      if (vm.$refs.form.validate()) {
+        vm.doCreateDossier()
+      }
     }
   }
 }
