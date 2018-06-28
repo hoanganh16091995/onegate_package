@@ -135,7 +135,7 @@
             </content-placeholders>
             <v-data-table v-else
               :headers="headers"
-              :items="ketquaItems"
+              :items="resultFiles"
               item-key="no"
               class="table-bordered"
               hide-actions
@@ -153,9 +153,9 @@
               </template>
               <template slot="items" slot-scope="props">
                 <td class="text-xs-center" style="width:5%"> {{ props.index + 1 }} </td>
-                <td class="text-xs-left" style="width:10%"> {{ props.item.no }} </td>
-                <td class="text-xs-left" style="width:10%"> {{ props.item.date|dateTimeView }} </td>
-                <td class="text-xs-left" style="width:75%"> {{props.item.name}} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.so_giay }} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.ngay_cap|dateTimeView }} </td>
+                <td class="text-xs-left" style="width:75%"> {{props.item.ten_giay}} </td>
               </template>
             </v-data-table>
           </v-card-text>
@@ -168,11 +168,23 @@
         <content-placeholders-text :lines="1" />
       </content-placeholders>
       <div v-else class="pl-3 py-2 fee-info">
-        <v-checkbox :label="`Phí phải nộp: ${currency(fee)} VNĐ`" v-model="checkPaid"></v-checkbox>
+        <v-checkbox :label="`Phí phải nộp: ${currency(thongTinChiTietHoSo.fee)} VNĐ`" v-model="checkPaid"></v-checkbox>
         <span class="red--text">* </span> Đánh dấu để xác định người làm thủ tục đã hoàn thành nộp phí.
       </div>
     </v-flex>
-    
+    <!--  -->
+    <v-flex xs12 sm12>
+      <div class="text-right mt-2">
+        <v-btn color="primary" v-on:click.native="daTra">
+          Đã trả &nbsp;
+          <v-icon>save</v-icon>
+        </v-btn>
+        <v-btn color="primary" @click="goBack">
+          Quay lại &nbsp;
+          <v-icon>undo</v-icon>
+        </v-btn>
+      </div>
+    </v-flex>
   </div>
 </template>
 
@@ -181,6 +193,35 @@ import router from '@/router'
 export default {
   props: ['index', 'id'],
   data: () => ({
+    resultFiles: [{
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
+    },
+    {
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
+    },
+    {
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
+    }
+    ],
+    thongTinChiTietHoSo: {
+      dossierIdCTN: '182CB683',
+      receiveDate: 1529409276000,
+      applicantName: 'Lê việt Đức',
+      dossierId: '67501',
+      address: 'Phường Tân Hồng, Thị xã Từ Sơn, Tỉnh Bắc Ninh',
+      releaseDate: 1529409276000,
+      dossierStatusText: 'Đang xử lý',
+      durationDate: 3,
+      delegateName: 'Lê việt Đức',
+      applicantIdNo: '123456778',
+      fee: 1000000
+    },
     headers: [{
       text: 'STT',
       align: 'center',
@@ -259,6 +300,12 @@ export default {
     })
   },
   methods: {
+    initData (data) {
+      var vm = this
+      vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
+        vm.thongTinChiTietHoSo = resultDossier
+      })
+    },
     redirectBack () {
       window.history.back()
     },
