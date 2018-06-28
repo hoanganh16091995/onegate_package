@@ -645,9 +645,17 @@ body .progress-circular {
     margin-top: 3px;
 }
 /* */
+body .text-header {
+    align-items: stretch!important
+}
 body .header-text-field {
     float: left !important;
     height: 100% !important;
+}
+body .text-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 body .expansion-p0 .expansion-panel__header, .expansion-pl-transparent .expansion-panel__header {
     padding-left: 0px;

@@ -7,7 +7,7 @@
       <div class="background-triangle-big"> <span>TRẢ KẾT QUẢ HỒ SƠ</span> </div>
       <div class="layout row wrap header_tools row-blue">
         <div class="flex xs8 sm10 pl-3 text-ellipsis text-bold" >
-          Thủ tục một cửa
+          Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất
         </div>
         <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
           <v-btn flat class="my-0 mx-0 btn-border-left" @click="redirectBack" active-class="temp_active">
@@ -29,13 +29,13 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0">Thủ tục: </v-subheader>
+                <v-subheader v-else class="pl-0 text-header">Thủ tục: </v-subheader>
               </v-flex>
               <v-flex xs12 sm10>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field">  Thủ tục một cửa </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field">  Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất </v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -244,7 +244,18 @@ export default {
   created () {
     var vm = this
     vm.$nextTick(function () {
-      vm.$store.dispatch('getDetailDossier', vm.id)
+      let promise = vm.$store.dispatch('getDetailDossier', vm.id)
+      promise.then(function (result) {
+        vm.$store.dispatch('loadAllDossierTemplates', vm.$store.getters.thongTinChungHoSo).then(function (result) {
+          vm.ketquaItems = result.filter((val, index) => {
+            return val.partType === 2
+          })
+        }).catch(function (reject) {
+          console.log(reject)
+        })
+      }).catch(function (reject) {
+        console.log(reject)
+      })
     })
   },
   methods: {
