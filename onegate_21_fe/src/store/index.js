@@ -11,7 +11,9 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    initData: null,
+    initData: {
+      commentApi: 'http://127.0.0.1:8081/api/comments'
+    },
     loading: false,
     loadingTable: false,
     loadingDynamicBtn: false,
@@ -1083,339 +1085,182 @@ export const store = new Vuex.Store({
         })
       })
     },
-    loadUsersComment ({commit, state, dispatch}, id) {
+    // action for comment component
+    loadUsersComment ({commit, state}, id) {
+      var vm = this
       return new Promise((resolve, reject) => {
-        store.dispatch('loadInitResource').then(function (result) {
-          var users = []
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            },
-            params: {
-              userMapping: true
-            }
+        var users = []
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            userMapping: true
           }
-          axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
-            if(response != null && response.hasOwnProperty('data')){
-              let contacts = response.data
-              $.each(contacts, function(index, item){
-                let user = {}
-                user.id = item.userId
-                user.fullname = item.userName
-                user.email = item.email
-                user.profilePictureURL = item.profileUrl
-                users.push(user)
-              })
-            } else {
-              users = []
-            }
-            // commit(setUsersComment, users)
-            dispatch('renderComment', {
-              users: users,
-              id: id
+        }
+        axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
+          if(response != null && response.hasOwnProperty('data')){
+            let contacts = response.data
+            $.each(contacts, function(index, item){
+              var user = {}
+              user.id = item.userId
+              user.fullname = item.userName
+              user.email = item.email
+              user.profilePictureURL = item.profileUrl
+              users.push(user)
             })
-            resolve(users)
+          } else {
+            users = []
+          }
+          resolve(users)
+        })
+        .catch(function (error) {
+          users = []
+          reject(users)
+        })
+      })
+    },
+    loadCommentItems ({commit, state}, id) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {}
+        }
+        axios.get(state.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier' + '/' + id, param).then(function (response) {
+          resolve(response.data.data)
+        })
+        .catch(function (error) {
+          reject(error)
+        })
+      })
+    },
+    postComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        console.log('dataPost', data)
+        var strPings = data.pings.join()
+        var params = new URLSearchParams()
+        params.append('className', 'org.opencps.dossiermgt.model.Dossier')
+        params.append('classPK', data.id)
+        params.append('parent', data.parent != null ? data.parent : 0)
+        params.append('pings', strPings)
+        params.append('content', data.content)
+        params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        axios.post(state.initData.commentApi, params, config)
+        .then(function (response) {
+          var resPostCmt = {}
+          if (response != null) {
+            resPostCmt = response.data
+            console.log('resPostCmt', resPostCmt)
+          }
+          resolve(resPostCmt)
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    putComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        console.log('dataPut', data)
+        var strPings = data.pings.join();
+        var params = new URLSearchParams()
+        params.append('className', 'org.opencps.dossiermgt.model.Dossier')
+        params.append('classPK', data.id)
+        params.append('parent', data.parent != null ? data.parent : 0)
+        params.append('pings', strPings)
+        params.append('content', data.content)
+        params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        axios.put(state.initData.commentApi + '/' + data.commentId, params, config)
+        .then(function (response) {
+          var resPutCmt = {}
+          if (response != null) {
+            resPutCmt = response.data
+          }
+          resolve(resPutCmt);
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    deleteComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        axios.delete(state.initData.commentApi + '/' + data.commentId, config)
+        .then(function (response) {
+          resolve(response)
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    upvoteComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        if (data.userHasUpvoted) {
+          var params = new URLSearchParams()
+          params.append('className', 'org.opencps.dossiermgt.model.Dossier')
+          params.append('classPK', data.id)
+          params.append('commentId', data.commentId)
+          params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+          axios.put(state.initData.commentApi + '/' + data.commentId + '/upvotes',
+            params,
+            config
+          )
+          .then(function (response) {
+            var res = {}
+            if (response != null) {
+              res = response.data
+            }
+            resolve(res)
           })
           .catch(function (error) {
-            users = []
-            // commit(setUsersComment, users)
-            console.log(id, '-----------')
-            dispatch('renderComment', {
-              users: users,
-              id: id
-            })
-            reject(error)
+            console.log(error)
+          })  
+        } else {
+          axios.delete(state.initData.commentApi + '/' + data.commentId + '/upvotes', config).then(function (response) {
+            var res = {}
+            if (response != null) {
+              res = response.data
+            }
+            resolve(res)
           })
-        })
-      })
-    },
-    renderComment ({commit, state, dispatch}, data){
-      var users = data.users
-      var id = data.id
-      var groupId = state.initData.groupId
-      console.log($('#comments-container'))
-      $('#comments-container').comments({
-        profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
-        textareaRows: 1,
-        enableAttachments: true,
-        enableHashtags: true,
-        enablePinging: true,
-        postCommentOnEnter: false,
-        forceResponsive: false,
-        readOnly: false,
-        newestText: "Mới nhất",
-        oldestText: "Cũ nhất",
-        popularText: "Phổ biến",
-        attachmentsText: "Đính kèm",
-        sendText: "Gửi",
-        replyText: "Trả lời",
-        editText: "Sửa",
-        editedText: "Đã sửa",
-        youText: "Bạn",
-        saveText: "Ghi lại",
-        deleteText: "Xóa",
-        viewAllRepliesText: "Xem tất cả câu trả lời",
-        hideRepliesText: "Ẩn câu trả lời",
-        noCommentsText: "Không có bình luận nào",
-        noAttachmentsText: "Không có tệp đính kèm",
-        attachmentDropText: "Kéo thả tệp đính kèm",
-        fieldMappings: {
-          id: 'commentId',
-          parent: 'parent',
-          userId: 'userId',
-          created: 'createdDate',
-          modified: 'modifiedDate',
-          content: 'content',
-          fileURL: 'fileUrl',
-          fileMimeType: 'fileType',
-          fileName: 'fileName',
-          pings: 'pings',
-          creator: 'userId',
-          fullname: 'fullname',
-          profileURL: 'profileUrl',
-          profilePictureURL: 'pictureUrl',
-          isNew: 'isNew',
-          createdByAdmin: 'isAdmin',
-          createdByCurrentUser: 'createdByCurrentUser',
-          upvoteCount: 'upvoteCount',
-          userHasUpvoted: 'userHasUpvoted',
-          email: 'email',
-          className: 'className',
-          classPK: 'classPK',
-        },
-        timeFormatter: function(time) {
-          if(time != null){
-            var dt  = time.split(/\ |\s/)
-            if(dt.length == 2){
-              var d = dt[0].split(/\-|\s/)
-              return (d.slice(0,3).reverse().join('/')) + ' ' + dt[1]
-            }else{
-              return time
-            }
-          }
-          return ''
-        },
-        getUsers: function (onSuccess, onError) {
-          onSuccess(users)
-          onError()
-        },
-        getComments: function (onSuccess, onError) {
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            }
-          }
-          axios.get('/o/rest/v2/comments/org.opencps.dossiermgt.model.Dossier/' + id, param).then(function (response) {
-            var data = []
-            var serializable = response.data
-            if (serializable.hasOwnProperty('data')) {
-              serializable.data.forEach((index, comment) => {
-                data.push(dispatch('formatComment', {
-                  comment: comment,
-                  users: users
-                }))
-              })
-              onSuccess(data)
-            }
-          }).catch(function (xhr) {
-            onSuccess([])
-            onError()
-          })
-        },
-        postComment: function (data, onSuccess, onError) {
-          var strPings = data.pings.join()
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            }
-          }
-          var dataPostComment = new URLSearchParams()
-          dataPostComment.append('className', 'org.opencps.dossiermgt.model.Dossier')
-          dataPostComment.append('classPK', id)
-          dataPostComment.append('parent', data.parent != null ? data.parent : 0)
-          dataPostComment.append('pings', strPings)
-          dataPostComment.append('content', data.content)
-          dataPostComment.append('upvoteCount', data.upvoteCount)
-          axios.post('/o/rest/v2/comments', dataPostComment, param).then(function (response) {
-            if(response.data != null){
-              onSuccess(dispatch('formatComment', {
-                comment: response.data,
-                users: users
-              }))
-            }else{
-              onSuccess([])
-            }
-          }).catch(function (xhr) {
-            onError()
-          })
-        },
-        putComment: function(data, onSuccess, onError) {
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            }
-          }
-          var dataPutComment = new URLSearchParams()
-          dataPutComment.append('className', 'org.opencps.dossiermgt.model.Dossier')
-          dataPutComment.append('classPK', id)
-          dataPutComment.append('parent', data.parent != null ? data.parent : 0)
-          dataPutComment.append('pings', strPings)
-          dataPutComment.append('content', data.content)
-          dataPutComment.append('upvoteCount', data.upvoteCount)
-          axios.put('/o/rest/v2/comments/' + data.commentId, dataPutComment, param).then(function (response) {
-            onSuccess(dispatch('formatComment', {
-                comment: response.data,
-                users: users
-              }))
-          }).catch(function (xhr) {
-            onError()
-          })
-        },
-        deleteComment: function(data, onSuccess, onError) {
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            }
-          }
-          axios.delete('/o/rest/v2/comments/' + data.commentId, param).then(function (response) {
-            onSuccess()
-          }).catch(function (xhr) {
-            onError()
-          })
-        },
-        upvoteComment: function(data, onSuccess, onError) {
-          if(data.userHasUpvoted){
-            var param = {
-              headers: {
-                groupId: state.initData.groupId
-              }
-            }
-            var dataPutComment = new URLSearchParams()
-            dataPutComment.append('commentId', data.commentId)
-            dataPutComment.append('className', data.className)
-            dataPutComment.append('classPK', data.classPK)
-            dataPutComment.append('upvoteCount', data.upvoteCount)
-            axios.put('/o/rest/v2/comments/' + data.commentId + '/upvotes', dataPutComment, param).then(function (response) {
-              onSuccess(dispatch('formatComment', {
-                comment: response.data,
-                users: users
-              }))
-            }).catch(function (xhr) {
-              onError()
-            })
-          }else{
-            var param = {
-              headers: {
-                groupId: state.initData.groupId
-              },
-              params: {
-                commentId: data.commentId,
-                className: data.className,
-                classPK: data.classPK,
-                upvoteCount: data.upvoteCount
-              }
-            }
-            axios.delete('/o/rest/v2/comments/' + data.commentId + '/upvotes', param).then(function (response) {
-              onSuccess(dispatch('formatComment', {
-                comment: response.data,
-                users: users
-              }))
-            }).catch(function (xhr) {
-              onError()
-            })
-          }
-        },
-        uploadAttachments: function(comments, onSuccess, onError) {
-          var responses = 0
-          var successfulUploads = []
-          var serverResponded = function() {
-            responses++
-            if(responses == comments.length) {
-              if(successfulUploads.length == 0) {
-                onError()
-              } else {
-                onSuccess(successfulUploads)
-              }
-            }
-          }
-          $(comments).each(function(index, comment) {
-            var formData = new FormData()
-            $(Object.keys(comment)).each(function(index, key) {
-              var value = comment[key]
-              if(value) formData.append(key, value)
-            })
-            formData.append('className', 'org.opencps.dossiermgt.model.Dossier')
-            formData.append('classPK', id)
-            formData.append('parent', comment.parent != null ? comment.parent : 0)
-            formData.append('fileName', comment.file.name)
-            formData.append('fileType', comment.file.type)
-            formData.append('fileSize', comment.file.size)
-            formData.append('pings', comment.pings.join())
-            formData.append('email', themeDisplay.getUserId())
-            formData.append('fullname', themeDisplay.getUserName())
-            axios.post('/o/rest/v2/comments/uploads', formData, {
-              headers: {
-                'groupId': state.initData.groupId,
-                'Content-Type': 'multipart/form-data'
-              }
-            }).then(function (response) {
-              var comment = response.data
-              comment = dispatch('formatComment', {
-                comment: comment,
-                users: users
-              })
-              successfulUploads.push(comment)
-              serverResponded()            
-            }).catch(function (xhr) {
-              serverResponded()
-            })
-          })
+          .catch(function (error) {
+            console.log(error)
+          })  
         }
       })
-    },
-    formatComment (data) {
-      var comment = data.comment
-      var users = data.users
-      if(comment.parent === 0){
-        comment.parent = null
-      }
-      if(comment.fileName === ""){
-        comment.fileName = null
-      }
-      if(comment.fileType === ""){
-        comment.fileType = null
-      }
-      if(comment.fileUrl === ""){
-        comment.fileUrl = null
-      }
-      if(comment.pictureUrl === ""){
-        comment.pictureUrl = null
-      }
-      if(comment.profileUrl === ""){
-        comment.profileUrl = null
-      }
-      if(comment.pings === ""){
-        comment.pings = null
-      }else{
-        var pings = comment.pings.toString()
-        var arrPings = pings.split(",")
-        $(arrPings).each(function(index, id) {
-          $(users).each(function(i, user) {
-            if(id == user.id){
-             comment.content = comment.content.replace('@' + id, '@' + users[i].fullname)
-             return false 
-           }
-         })
-        })
-      }
-      var createdDate = new Date(comment.createDate)
-      var createdDateText = "2017-12-12 12:12"
-      var modifiedDate = new Date(comment.modifiedDate)
-      var modifiedDateText = "2017-12-12 12:12"
-      comment.createdDate = createdDateText
-      comment.modifiedDate = modifiedDateText
-      return comment
     }
+    // ----End---------
   },
   mutations: {
     setLoading (state, payload) {
