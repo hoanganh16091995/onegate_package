@@ -636,7 +636,7 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId,
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': data.cps_auth
+            'cps_auth': state.initData.cps_auth
           }
         }
         var dataPostdossier = new URLSearchParams()
@@ -666,7 +666,7 @@ export const store = new Vuex.Store({
             groupId: state.initData.groupId,
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': data.cps_auth
+            'cps_auth': state.initData.cps_auth
           }
         }
         var applicantType = ''
@@ -768,7 +768,7 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId,
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': data.cps_auth
+            'cps_auth': state.initData.cps_auth
           }
         }
         var dataPostdossierMark = new URLSearchParams()
@@ -792,7 +792,7 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId,
             'Accept': 'application/json',
             'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': data.cps_auth
+            'cps_auth': state.initData.cps_auth
           }
         }
         var dataPostActionDossier = new URLSearchParams()
@@ -892,7 +892,7 @@ export const store = new Vuex.Store({
         let options = {
           headers: {
             groupId: state.initData.groupId,
-            cps_auth: data.cps_auth
+            cps_auth: state.initData.cps_auth
           }
         }
         try {
@@ -1331,12 +1331,8 @@ export const store = new Vuex.Store({
     loadingDynamicBtn (state) {
       return state.loadingDynamicBtn
     },
-    loadingListThuTucHanhChinh () {
-      return new Promise((resolve, reject) => {
-        store.dispatch('loadListThuTucHanhChinh').then(function (result) {
-          resolve(result)
-        })
-      })
+    loadingListThuTucHanhChinh (state) {
+      store.dispatch('loadListThuTucHanhChinh')
     },
     lePhi (state) {
       return state.lePhi

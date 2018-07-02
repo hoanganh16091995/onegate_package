@@ -3,7 +3,7 @@ import Router from 'vue-router'
 
 const routerOptions = [
   { path: '/danh-sach-ho-so/:index', component: 'Landing', props: true },
-  { path: '/danh-sach-ho-so/:index/tiep-nhan-ho-so/:id/:formCode', component: 'DetailForward', props: true },
+  { path: '/danh-sach-ho-so/:index/ho-so/:id/:formCode', component: 'DetailForward', props: true },
   { path: '*', component: 'NotFound' }
 ]
 

@@ -3,7 +3,7 @@
     <content-placeholders class="mt-3" v-if="loading">
       <content-placeholders-text :lines="1" />
     </content-placeholders>
-    <div v-else class="row-header" style="margin-top: 6px;">
+    <div v-else class="row-header">
       <div class="background-triangle-big"> TIẾP NHẬN HỒ SƠ </div> 
       <div class="layout row wrap header_tools row-blue">
         <div class="flex solo text-ellipsis">
@@ -22,28 +22,39 @@
     <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
     <le-phi ref="lephi"></le-phi>
     <dich-vu-chuyen-phat-ket-qua ref="dichvuchuyenphatketqua" v-if="subStatusNew === false"></dich-vu-chuyen-phat-ket-qua>
-    <div class="text-center mt-2">
-      <v-btn color="primary" v-on:click.native="luuHoSo" v-if="thongTinChungHoSo.dossierStatus === 'new'">
-        Lưu &nbsp;
-        <v-icon>save</v-icon>
-      </v-btn>
-      <v-btn color="primary" v-on:click.native="tiepNhanHoSo" v-if="thongTinChungHoSo.dossierStatus === 'new'">
-        Tiếp nhận &nbsp;
-        <v-icon>save</v-icon>
-      </v-btn>
-      <v-btn color="primary" v-on:click.native="boSungHoSo" v-if="thongTinChungHoSo.dossierStatus === 'waiting'">
-        Bổ sung &nbsp;
-        <v-icon>save</v-icon>
-      </v-btn>
-      <v-btn color="primary" v-if="thongTinChungHoSo.dossierStatus === 'releasing'" :to="'/danh-sach-ho-so/' + index + '/tra-ket-qua/' + id">
-        Trả kết quả &nbsp;
-        <v-icon>send</v-icon>
-      </v-btn>
-      <v-btn color="primary" @click="goBack">
-        Quay lại &nbsp;
-        <v-icon>undo</v-icon>
-      </v-btn>
-    </div>
+    <v-tabs icons-and-text centered class="mb-4">
+      <v-tabs-slider color="primary"></v-tabs-slider>
+      <v-tab href="#tab-1">
+        <v-btn flat class="px-0 py-0 mx-0 my-0">
+          Lưu &nbsp;
+          <v-icon>save</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab href="#tab-2">
+        <v-btn flat class="px-0 py-0 mx-0 my-0">
+          Tiếp nhận &nbsp;
+          <v-icon>save</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab href="#tab-3">
+        <v-btn flat class="px-0 py-0 mx-0 my-0">
+          Bổ sung &nbsp;
+          <v-icon>save</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab href="#tab-4">
+        <v-btn flat class="px-0 py-0 mx-0 my-0">
+          Trả kết quả &nbsp;
+          <v-icon>send</v-icon>
+        </v-btn>
+      </v-tab>
+      <v-tab href="#tab-5" @click="goBack">
+        <v-btn flat class="px-0 py-0 mx-0 my-0">
+          Quay lại &nbsp;
+          <v-icon>undo</v-icon>
+        </v-btn>
+      </v-tab>
+    </v-tabs>
   </v-form>
 </template>
 
@@ -57,7 +68,7 @@ import LePhi from './TiepNhanHoSo_LePhi.vue'
 import DichVuChuyenPhatKetQua from './TiepNhanHoSo_DichVuChuyenPhatKetQua.vue'
 
 export default {
-  props: ['index', 'id'],
+  props: ['index', 'id', 'formCode'],
   components: {
     'thong-tin-chung': ThongTinChung,
     'thong-tin-chu-ho-so': ThongTinChuHoSo,
@@ -108,7 +119,13 @@ export default {
     boSungHoSo () {
     },
     goBack () {
-      window.history.back()
+      let vm = this
+      let currentParams = vm.$router.history.current.params
+      let currentQuery = vm.$router.history.current.query
+      vm.$router.push({
+        path: '/danh-sach-ho-so/' + currentParams.index,
+        query: currentQuery
+      })
     }
   }
 }
