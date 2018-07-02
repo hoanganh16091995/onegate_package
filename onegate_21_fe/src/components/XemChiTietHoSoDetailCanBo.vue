@@ -290,9 +290,7 @@
           </div>
         </v-tab-item>
         <v-tab-item key="3" style="background: #ffff;">
-          <div>
-            <div id="comments-container" class="pt-3 px-4" style="background: white;"></div>
-          </div>
+          <comment :classPK="id" :className="className"></comment>
         </v-tab-item>
         <!-- <v-tab-item key="4" reverse-transition="slide-y-transition" transition="slide-y-transition">
           
@@ -304,14 +302,16 @@
 </template>
 
 <script>
-// import router from '@/router'
-// import * as utils from '../store/onegate_utils'
-// import printJS from 'print-js/dist/print.min.js'
-// import $ from 'jquery'
-// import axios from 'axios'
+import $ from 'jquery'
+import '../store/jquery_comment'
+import Comment from './Comment.vue'
 export default {
   props: ['index', 'id'],
+  components: {
+    'comment': Comment
+  },
   data: () => ({
+    className: 'org.opencps.dossiermgt.model.Dossier',
     dossierTemplateFiles: [],
     dossierTemplatesItems: [],
     showContactDetail: false,
