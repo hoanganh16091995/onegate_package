@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import toastr from 'toastr'
 import axios from 'axios'
 import support from './support.json'
+import $ from 'jquery'
 // import router from '@/router'
 
 Vue.use(toastr)
@@ -1050,7 +1051,7 @@ export const store = new Vuex.Store({
       })
     },
     downloadFile ({commit, state}, data){
-      var vm = this;
+      var vm = this
       let param = {
         headers: {
           groupId: state.initData.groupId
@@ -1058,7 +1059,7 @@ export const store = new Vuex.Store({
         responseType: 'blob'
       }
       axios.get(state.initData.dossierApi + '/' + data.dossierId + "/files/" + data.fileAttachId, param).then(function (response) {
-        var url = window.URL.createObjectURL(response.data);
+        var url = window.URL.createObjectURL(response.data)
         window.open(url)
       })
       .catch(function (error) {
@@ -1082,7 +1083,7 @@ export const store = new Vuex.Store({
         })
       })
     },
-    loadUsersComment ({commit, state}, id) {
+    loadUsersComment ({commit, state, dispatch}, id) {
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
           var users = []
@@ -1108,16 +1109,312 @@ export const store = new Vuex.Store({
             } else {
               users = []
             }
-            commit(setUsersComment, users)
+            // commit(setUsersComment, users)
+            dispatch('renderComment', {
+              users: users,
+              id: id
+            })
             resolve(users)
           })
           .catch(function (error) {
             users = []
-            commit(setUsersComment, users)
+            // commit(setUsersComment, users)
+            console.log(id, '-----------')
+            dispatch('renderComment', {
+              users: users,
+              id: id
+            })
             reject(error)
           })
         })
       })
+    },
+    renderComment ({commit, state, dispatch}, data){
+      var users = data.users
+      var id = data.id
+      var groupId = state.initData.groupId
+      console.log($('#comments-container'))
+      $('#comments-container').comments({
+        profilePictureURL: 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png',
+        textareaRows: 1,
+        enableAttachments: true,
+        enableHashtags: true,
+        enablePinging: true,
+        postCommentOnEnter: false,
+        forceResponsive: false,
+        readOnly: false,
+        newestText: "Mới nhất",
+        oldestText: "Cũ nhất",
+        popularText: "Phổ biến",
+        attachmentsText: "Đính kèm",
+        sendText: "Gửi",
+        replyText: "Trả lời",
+        editText: "Sửa",
+        editedText: "Đã sửa",
+        youText: "Bạn",
+        saveText: "Ghi lại",
+        deleteText: "Xóa",
+        viewAllRepliesText: "Xem tất cả câu trả lời",
+        hideRepliesText: "Ẩn câu trả lời",
+        noCommentsText: "Không có bình luận nào",
+        noAttachmentsText: "Không có tệp đính kèm",
+        attachmentDropText: "Kéo thả tệp đính kèm",
+        fieldMappings: {
+          id: 'commentId',
+          parent: 'parent',
+          userId: 'userId',
+          created: 'createdDate',
+          modified: 'modifiedDate',
+          content: 'content',
+          fileURL: 'fileUrl',
+          fileMimeType: 'fileType',
+          fileName: 'fileName',
+          pings: 'pings',
+          creator: 'userId',
+          fullname: 'fullname',
+          profileURL: 'profileUrl',
+          profilePictureURL: 'pictureUrl',
+          isNew: 'isNew',
+          createdByAdmin: 'isAdmin',
+          createdByCurrentUser: 'createdByCurrentUser',
+          upvoteCount: 'upvoteCount',
+          userHasUpvoted: 'userHasUpvoted',
+          email: 'email',
+          className: 'className',
+          classPK: 'classPK',
+        },
+        timeFormatter: function(time) {
+          if(time != null){
+            var dt  = time.split(/\ |\s/)
+            if(dt.length == 2){
+              var d = dt[0].split(/\-|\s/)
+              return (d.slice(0,3).reverse().join('/')) + ' ' + dt[1]
+            }else{
+              return time
+            }
+          }
+          return ''
+        },
+        getUsers: function (onSuccess, onError) {
+          onSuccess(users)
+          onError()
+        },
+        getComments: function (onSuccess, onError) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.get('/o/rest/v2/comments/org.opencps.dossiermgt.model.Dossier/' + id, param).then(function (response) {
+            var data = []
+            var serializable = response.data
+            if (serializable.hasOwnProperty('data')) {
+              serializable.data.forEach((index, comment) => {
+                data.push(dispatch('formatComment', {
+                  comment: comment,
+                  users: users
+                }))
+              })
+              onSuccess(data)
+            }
+          }).catch(function (xhr) {
+            onSuccess([])
+            onError()
+          })
+        },
+        postComment: function (data, onSuccess, onError) {
+          var strPings = data.pings.join()
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          var dataPostComment = new URLSearchParams()
+          dataPostComment.append('className', 'org.opencps.dossiermgt.model.Dossier')
+          dataPostComment.append('classPK', id)
+          dataPostComment.append('parent', data.parent != null ? data.parent : 0)
+          dataPostComment.append('pings', strPings)
+          dataPostComment.append('content', data.content)
+          dataPostComment.append('upvoteCount', data.upvoteCount)
+          axios.post('/o/rest/v2/comments', dataPostComment, param).then(function (response) {
+            if(response.data != null){
+              onSuccess(dispatch('formatComment', {
+                comment: response.data,
+                users: users
+              }))
+            }else{
+              onSuccess([])
+            }
+          }).catch(function (xhr) {
+            onError()
+          })
+        },
+        putComment: function(data, onSuccess, onError) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          var dataPutComment = new URLSearchParams()
+          dataPutComment.append('className', 'org.opencps.dossiermgt.model.Dossier')
+          dataPutComment.append('classPK', id)
+          dataPutComment.append('parent', data.parent != null ? data.parent : 0)
+          dataPutComment.append('pings', strPings)
+          dataPutComment.append('content', data.content)
+          dataPutComment.append('upvoteCount', data.upvoteCount)
+          axios.put('/o/rest/v2/comments/' + data.commentId, dataPutComment, param).then(function (response) {
+            onSuccess(dispatch('formatComment', {
+                comment: response.data,
+                users: users
+              }))
+          }).catch(function (xhr) {
+            onError()
+          })
+        },
+        deleteComment: function(data, onSuccess, onError) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.delete('/o/rest/v2/comments/' + data.commentId, param).then(function (response) {
+            onSuccess()
+          }).catch(function (xhr) {
+            onError()
+          })
+        },
+        upvoteComment: function(data, onSuccess, onError) {
+          if(data.userHasUpvoted){
+            var param = {
+              headers: {
+                groupId: state.initData.groupId
+              }
+            }
+            var dataPutComment = new URLSearchParams()
+            dataPutComment.append('commentId', data.commentId)
+            dataPutComment.append('className', data.className)
+            dataPutComment.append('classPK', data.classPK)
+            dataPutComment.append('upvoteCount', data.upvoteCount)
+            axios.put('/o/rest/v2/comments/' + data.commentId + '/upvotes', dataPutComment, param).then(function (response) {
+              onSuccess(dispatch('formatComment', {
+                comment: response.data,
+                users: users
+              }))
+            }).catch(function (xhr) {
+              onError()
+            })
+          }else{
+            var param = {
+              headers: {
+                groupId: state.initData.groupId
+              },
+              params: {
+                commentId: data.commentId,
+                className: data.className,
+                classPK: data.classPK,
+                upvoteCount: data.upvoteCount
+              }
+            }
+            axios.delete('/o/rest/v2/comments/' + data.commentId + '/upvotes', param).then(function (response) {
+              onSuccess(dispatch('formatComment', {
+                comment: response.data,
+                users: users
+              }))
+            }).catch(function (xhr) {
+              onError()
+            })
+          }
+        },
+        uploadAttachments: function(comments, onSuccess, onError) {
+          var responses = 0
+          var successfulUploads = []
+          var serverResponded = function() {
+            responses++
+            if(responses == comments.length) {
+              if(successfulUploads.length == 0) {
+                onError()
+              } else {
+                onSuccess(successfulUploads)
+              }
+            }
+          }
+          $(comments).each(function(index, comment) {
+            var formData = new FormData()
+            $(Object.keys(comment)).each(function(index, key) {
+              var value = comment[key]
+              if(value) formData.append(key, value)
+            })
+            formData.append('className', 'org.opencps.dossiermgt.model.Dossier')
+            formData.append('classPK', id)
+            formData.append('parent', comment.parent != null ? comment.parent : 0)
+            formData.append('fileName', comment.file.name)
+            formData.append('fileType', comment.file.type)
+            formData.append('fileSize', comment.file.size)
+            formData.append('pings', comment.pings.join())
+            formData.append('email', themeDisplay.getUserId())
+            formData.append('fullname', themeDisplay.getUserName())
+            axios.post('/o/rest/v2/comments/uploads', formData, {
+              headers: {
+                'groupId': state.initData.groupId,
+                'Content-Type': 'multipart/form-data'
+              }
+            }).then(function (response) {
+              var comment = response.data
+              comment = dispatch('formatComment', {
+                comment: comment,
+                users: users
+              })
+              successfulUploads.push(comment)
+              serverResponded()            
+            }).catch(function (xhr) {
+              serverResponded()
+            })
+          })
+        }
+      })
+    },
+    formatComment (data) {
+      var comment = data.comment
+      var users = data.users
+      if(comment.parent === 0){
+        comment.parent = null
+      }
+      if(comment.fileName === ""){
+        comment.fileName = null
+      }
+      if(comment.fileType === ""){
+        comment.fileType = null
+      }
+      if(comment.fileUrl === ""){
+        comment.fileUrl = null
+      }
+      if(comment.pictureUrl === ""){
+        comment.pictureUrl = null
+      }
+      if(comment.profileUrl === ""){
+        comment.profileUrl = null
+      }
+      if(comment.pings === ""){
+        comment.pings = null
+      }else{
+        var pings = comment.pings.toString()
+        var arrPings = pings.split(",")
+        $(arrPings).each(function(index, id) {
+          $(users).each(function(i, user) {
+            if(id == user.id){
+             comment.content = comment.content.replace('@' + id, '@' + users[i].fullname)
+             return false 
+           }
+         })
+        })
+      }
+      var createdDate = new Date(comment.createDate)
+      var createdDateText = "2017-12-12 12:12"
+      var modifiedDate = new Date(comment.modifiedDate)
+      var modifiedDateText = "2017-12-12 12:12"
+      comment.createdDate = createdDateText
+      comment.modifiedDate = modifiedDateText
+      return comment
     }
   },
   mutations: {
