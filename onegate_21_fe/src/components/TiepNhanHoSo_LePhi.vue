@@ -1,25 +1,8 @@
 <template>
   <div style="position: relative;">
-    <content-placeholders class="mt-3" v-if="loading">
-      <content-placeholders-text :lines="1" />
-    </content-placeholders>
-    <div v-else class="row-header" style="margin-top: 6px;">
-      <div class="background-triangle-big"> CHI TIẾT PHÍ </div> 
-      <div class="layout row wrap header_tools row-blue">
-        <div class="flex solo text-ellipsis">
-
-        </div> 
-        <div class="flex text-right" style="margin-left: auto;">
-          <v-btn flat class="my-0 mx-0 btn-border-left" @click="goBack" active-class="temp_active">
-            Quay lại &nbsp;
-            <v-icon size="16">undo</v-icon>
-          </v-btn>
-        </div>
-      </div>
-    </div>
     <v-expansion-panel class="expansion-pl">
       <v-expansion-panel-content hide-actions value="1">
-        <!-- <div slot="header"><div class="background-triangle-small"> V. </div>LỆ PHÍ</div> -->
+        <div slot="header"><div class="background-triangle-small"> V. </div>LỆ PHÍ</div>
         <v-card>
           <v-card-text>
             <v-layout wrap>
@@ -42,6 +25,7 @@
               <v-flex xs12 sm6>
 
               </v-flex>
+              <!-- <v-flex xs12 sm6 class="pl-4 pt-2 hidden-xs-and-down">Hạn mức: {{lePhi.request|currency}} đ</v-flex> -->
               <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
@@ -54,6 +38,7 @@
                 </content-placeholders>
                 <v-text-field
                   v-else
+                  :value="dossier.feeNote"
                   v-model="lePhi.feeNote"
                   multi-line
                   rows="2"
@@ -68,28 +53,43 @@
 </template>
 
 <script>
-const COMPONENT_NAME = 'fee-detail'
-
+// import * as utils from '../store/onegate_utils'
+import {VMoney} from 'v-money'
 export default {
-  name: COMPONENT_NAME,
-  props: {
-    name: String
-  },
   data: () => ({
-    lePhi: {
-      fee: 1222222,
-      feeNote: 'Le phi'
+    money: {
+      decimal: '',
+      thousands: '.',
+      prefix: '',
+      suffix: '',
+      precision: 0,
+      masked: false
     }
   }),
-  methods: {
-    initData: function (data) {
-      var vm = this
-      vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
-        vm.lePhi = resultDossier
-      })
+  directives: {money: VMoney},
+  computed: {
+    loading () {
+      return this.$store.getters.loading
     },
-    goBack () {
-      window.history.back()
+    lePhi () {
+      return this.$store.getters.lePhi
+    },
+    dossier () {
+      return this.$store.getters.dossier
+    },
+    subStatusNew () {
+      return this.$store.getters.subStatusNew
+    }
+  },
+  methods: {
+    clearTotalMoney () {
+      var vm = this
+      console.log(vm.lePhi.fee)
+    }
+  },
+  filters: {
+    currency (val) {
+      // return utils.currency(val)
     }
   }
 }

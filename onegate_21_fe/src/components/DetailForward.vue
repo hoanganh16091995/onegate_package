@@ -1,6 +1,12 @@
 <template>
   <div>
-    
+    <!-- <tiep-nhan-ho-so-detail ref="tiepnhanhosodetail"></tiep-nhan-ho-so-detail> -->
+    <!-- <hoan-thien-bo-sung-ho-so-detail ref="hoanthienbosunghosodetail"></hoan-thien-bo-sung-ho-so-detail> -->
+    <!-- <xem-chi-tiet-ho-so-detail rè="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail> -->
+    <!-- <tiep-nhan-ho-so-truc-tuyen-detail ref="tiepnhanhosotructuyendetail"></tiep-nhan-ho-so-truc-tuyen-detail> -->
+    <!-- <tra-ket-qua-detail rè="traketquadetail"></tra-ket-qua-detail> -->
+    <!-- <fee-detail ref="feedetail"></fee-detail> -->
+    <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail>
   </div>
 </template>
 
@@ -17,7 +23,7 @@ import TraKetQuaDetail from './TraKetQuaDetail.vue'
 import XemChiTietHoSoDetail from './XemChiTietHoSoDetail.vue'
 
 export default {
-  props: ['formCode'],
+  props: ['id', 'formCode'],
   components: {
     'cham-qua-han-detail': ChamQuaHanDetail,
     'chuyen-phat-ket-qua-detail': ChuyenPhatKetQuaDetail,
@@ -31,7 +37,7 @@ export default {
     'xem-chi-tiet-ho-so-detail': XemChiTietHoSoDetail
   },
   data: () => ({
-    initData: null,
+    initData: null
   }),
   beforeCreate () {
     var vm = this
@@ -39,14 +45,20 @@ export default {
       vm.$store.dispatch('loadInitResource').then(function (result) {
         vm.initData = result
         if (vm.initData !== null) {
+          console.log(vm.$refs.tiepnhanhosodetail)
+          // vm.$refs.tiepnhanhosodetail.initData(vm.id)
+          // vm.$refs.hoanthienbosunghosodetail.initData(vm.id)
+          vm.$refs.traketquadetail.initData(vm.id)
+          vm.$refs.feedetail.initData(vm.id)
+          vm.$refs.chuyenphatketquadetail.initData(vm.id)
         }
       })
     })
   },
   watch: {
     '$route': function (newRoute, oldRoute) {
-      let vm = this
-      let query = newRoute.query
+      // let vm = this
+      // let query = newRoute.query
     }
   }
 }

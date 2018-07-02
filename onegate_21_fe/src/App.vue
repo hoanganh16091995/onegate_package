@@ -1,7 +1,8 @@
 <template>
   <v-app>
-    ---------- {{currentStep}}
-    <v-navigation-drawer app clipped floating width="240">
+    <v-navigation-drawer app clipped floating width="240"
+      :class='{"detail_state": detailState !== 0}'
+    >
       <content-placeholders class="mt-3" v-if="loading">
         <content-placeholders-text :lines="7" />
       </content-placeholders>
@@ -63,7 +64,8 @@
       trangThaiHoSoList: [],
       loading: true,
       currentStep: 0,
-      counterData: []
+      counterData: [],
+      detailState: 0
     }),
     computed: {
       currentIndex () {
@@ -90,18 +92,28 @@
           vm.isCallBack = false
           vm.$store.commit('setIndex', currentParams.index)
         }
+        if (currentParams.hasOwnProperty('id')) {
+          vm.detailState = 1
+        } else {
+          vm.detailState = 0
+        }
       })
     },
     watch: {
       '$route': function (newRoute, oldRoute) {
         let vm = this
+        let currentParams = newRoute.params
         let currentQuery = newRoute.query
         if (currentQuery.hasOwnProperty('step')) {
           vm.currentStep = parseInt(currentQuery.step)
         } else {
           vm.currentStep = 0
         }
-        console.log('watch', vm.currentStep)
+        if (currentParams.hasOwnProperty('id')) {
+          vm.detailState = 1
+        } else {
+          vm.detailState = 0
+        }
       }
     },
     methods: {
@@ -117,10 +129,13 @@
       filterSteps (item) {
         let currentQuery = this.$router.history.current.query
         let currentParams = this.$router.history.current.params
-        let queryString = currentQuery.q
-        let coma = queryString.lastIndexOf('=')
-        if (coma > 0) {
-          queryString = queryString.substr(0, coma + 1)
+        let queryString = this.trangThaiHoSoList[currentParams.index].queryParams
+        if (currentQuery.hasOwnProperty('q')) {
+          queryString = currentQuery.q
+          let coma = queryString.lastIndexOf('=')
+          if (coma > 0) {
+            queryString = queryString.substr(0, coma + 1)
+          }
         }
         this.currentStep = item.stepCode
         router.push({
