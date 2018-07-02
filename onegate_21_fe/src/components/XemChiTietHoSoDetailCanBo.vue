@@ -290,7 +290,7 @@
           </div>
         </v-tab-item>
         <v-tab-item key="3" style="background: #ffff;">
-          <comment :dossierId="id"></comment>
+          <comment :classPK="id" :className="className"></comment>
         </v-tab-item>
         <!-- <v-tab-item key="4" reverse-transition="slide-y-transition" transition="slide-y-transition">
           
@@ -311,6 +311,7 @@ export default {
     'comment': Comment
   },
   data: () => ({
+    className: 'org.opencps.dossiermgt.model.Dossier',
     dossierTemplateFiles: [],
     dossierTemplatesItems: [],
     showContactDetail: false,

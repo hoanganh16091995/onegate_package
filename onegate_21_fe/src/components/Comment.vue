@@ -18,7 +18,7 @@ import axios from 'axios'
 import 'jquery-textcomplete'
 import '../store/jquery_comment'
 export default {
-  props: ['dossierId'],
+  props: ['classPK', 'className'],
   data: () => ({
     usersComment: [{
       id: 1,
@@ -50,7 +50,7 @@ export default {
   created () {
     var vm = this
     vm.$nextTick(function () {
-      vm.$store.dispatch('loadUsersComment', vm.dossierId).then(result => {
+      vm.$store.dispatch('loadUsersComment', vm.classPK).then(result => {
         vm.usersComment = result
       })
     })
@@ -123,7 +123,11 @@ export default {
         onSuccess(vm.usersComment)
       },
       getComments: function (onSuccess, onError) {
-        let promise = vm.$store.dispatch('loadCommentItems', vm.dossierId)
+        let data = {
+          'classPK': vm.classPK,
+          'className': vm.className
+        }
+        let promise = vm.$store.dispatch('loadCommentItems', data)
         promise.then(result => {
           var data = []
           $.each(result, function (index, item) {
@@ -138,7 +142,8 @@ export default {
         })
       },
       postComment: function (data, onSuccess, onError) {
-        data.id = vm.dossierId
+        data.classPK = vm.classPK
+        data.className = vm.className
         vm.$store.dispatch('postComment', data).then(result => {
           vm.comment = result
           vm.formatComment(vm.comment)
@@ -146,7 +151,8 @@ export default {
         })
       },
       putComment: function (data, onSuccess, onError) {
-        data.id = vm.dossierId
+        data.classPK = vm.classPK
+        data.className = vm.className
         vm.$store.dispatch('putComment', data).then(result => {
           vm.comment = result
           vm.formatComment(vm.comment)
@@ -154,13 +160,15 @@ export default {
         })
       },
       deleteComment: function (data, onSuccess, onError) {
-        data.id = vm.dossierId
+        data.classPK = vm.classPK
+        data.className = vm.className
         vm.$store.dispatch('deleteComment', data).then(result => {
           onSuccess()
         })
       },
       upvoteComment: function (data, onSuccess, onError) {
-        data.id = vm.dossierId
+        data.classPK = vm.classPK
+        data.className = vm.className
         vm.$store.dispatch('upvoteComment', data).then(result => {
           vm.comment = result
           vm.formatComment(vm.comment)
@@ -190,8 +198,8 @@ export default {
             }
           })
           formData.append('file', comment.file)
-          formData.append('className', 'org.opencps.dossiermgt.model.Dossier')
-          formData.append('classPK', vm.dossierId)
+          formData.append('className', vm.className)
+          formData.append('classPK', vm.classPK)
           formData.append('parent', comment.parent != null ? comment.parent : 0)
           formData.append('fileName', comment.file.name)
           formData.append('fileType', comment.file.type)
@@ -235,7 +243,7 @@ export default {
           commentById[c.id] = c.id + '' + c.userHasUpvoted + '' + c.upvoteCount + '' + c.content
           return c.id
         })
-        let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.dossierId + '?start=0&end=10&sort=modified_Number&order=true'
+        let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.classPK + '?start=0&end=10&sort=modified_Number&order=true'
         axios.get(url, config).then(function (response) {
           let data = []
           let dataEdited = []

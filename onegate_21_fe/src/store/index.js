@@ -11,9 +11,10 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    initData: {
-      commentApi: 'http://127.0.0.1:8081/api/comments'
-    },
+    // initData: {
+    //   commentApi: 'http://127.0.0.1:8081/api/comments'
+    // },
+    initData: null,
     loading: false,
     loadingTable: false,
     loadingDynamicBtn: false,
@@ -1120,7 +1121,7 @@ export const store = new Vuex.Store({
         })
       })
     },
-    loadCommentItems ({commit, state}, id) {
+    loadCommentItems ({commit, state}, data) {
       var vm = this
       return new Promise((resolve, reject) => {
         let param = {
@@ -1129,7 +1130,7 @@ export const store = new Vuex.Store({
           },
           params: {}
         }
-        axios.get(state.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier' + '/' + id, param).then(function (response) {
+        axios.get(state.initData.commentApi + '/' + data.className + '/' + data.classPK, param).then(function (response) {
           resolve(response.data.data)
         })
         .catch(function (error) {
@@ -1148,8 +1149,8 @@ export const store = new Vuex.Store({
         console.log('dataPost', data)
         var strPings = data.pings.join()
         var params = new URLSearchParams()
-        params.append('className', 'org.opencps.dossiermgt.model.Dossier')
-        params.append('classPK', data.id)
+        params.append('className', data.className)
+        params.append('classPK', data.classPK)
         params.append('parent', data.parent != null ? data.parent : 0)
         params.append('pings', strPings)
         params.append('content', data.content)
@@ -1180,8 +1181,8 @@ export const store = new Vuex.Store({
         console.log('dataPut', data)
         var strPings = data.pings.join();
         var params = new URLSearchParams()
-        params.append('className', 'org.opencps.dossiermgt.model.Dossier')
-        params.append('classPK', data.id)
+        params.append('className', data.className)
+        params.append('classPK', data.classPK)
         params.append('parent', data.parent != null ? data.parent : 0)
         params.append('pings', strPings)
         params.append('content', data.content)
@@ -1228,8 +1229,8 @@ export const store = new Vuex.Store({
         }
         if (data.userHasUpvoted) {
           var params = new URLSearchParams()
-          params.append('className', 'org.opencps.dossiermgt.model.Dossier')
-          params.append('classPK', data.id)
+          params.append('className', data.className)
+          params.append('classPK', data.classPK)
           params.append('commentId', data.commentId)
           params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
           axios.put(state.initData.commentApi + '/' + data.commentId + '/upvotes',
