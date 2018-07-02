@@ -2029,10 +2029,10 @@ body .expansion-p0 .expansion-panel__header, .expansion-pl-transparent .expansio
 .ex-table {
     border-bottom: 0px!important
 }
-.ketqua-detail .fee-info {
-    border-left: 1px solid #e1e2e1;
-    border-right: 1px solid #e1e2e1;
+.ketqua-detail {
+    background-color: #ffffff
 }
+
 /*  */
 .menu__content.menu__content--select .list__tile{
     padding: 0 0 0 15px;
