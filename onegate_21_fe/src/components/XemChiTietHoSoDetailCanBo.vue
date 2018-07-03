@@ -347,42 +347,7 @@ export default {
   watch: {},
   created () {
     var vm = this
-    vm.$nextTick(function () {
-      var vm = this
-      vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
-        vm.thongTinChiTietHoSo = resultDossier
-        let promise2 = vm.$store.dispatch('loadDossierTemplates', resultDossier)
-        promise2.then(function (result) {
-          vm.dossierTemplatesItems = []
-          vm.dossierTemplatesItems = result
-          console.log('dossierTemplatesItems', vm.dossierTemplatesItems)
-          vm.dossierTemplatesTN = []
-          vm.dossierTemplatesKQ = []
-          for (var key in vm.dossierTemplatesItems) {
-            if (vm.dossierTemplatesItems[key].partType === 1) {
-              vm.dossierTemplatesTN.push(vm.dossierTemplatesItems[key])
-            } else if (vm.dossierTemplatesItems[key].partType === 2) {
-              vm.dossierTemplatesKQ.push(vm.dossierTemplatesItems[key])
-            }
-          }
-          console.log('dossierTemplatesTN', vm.dossierTemplatesTN)
-          console.log('dossierTemplatesKQ', vm.dossierTemplatesKQ)
-          vm.$store.dispatch('loadDossierFiles').then(function (result) {
-            setTimeout(function () {
-              vm.$store.dispatch('getDossierTemplateEdit').then(function (resultTemp) {
-                vm.dossierTemplateFiles = resultTemp
-                console.log('dossierTemplateFiles', vm.dossierTemplateFiles)
-              })
-            }, 200)
-          })
-        })
-      })
-      let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', vm.id)
-      promiseHisProcessing.then(function (result) {
-        vm.listHistoryProcessing = []
-        vm.listHistoryProcessing = result
-      })
-    })
+    vm.$nextTick(function () {})
   },
   methods: {
     initData (data) {
