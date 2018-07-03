@@ -82,12 +82,54 @@
         <v-icon>undo</v-icon>
       </v-btn>
     </div>
+    <!-- dialog bổ sung hồ sơ -->
+    <v-dialog v-model="dialog_addTHPHS" scrollable persistent max-width="700px">
+      <v-card>
+        <v-card-title class="headline">
+          Bổ sung hồ sơ
+        </v-card-title>
+        <v-card-text style="max-height: 350px">
+          <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat="flat" @click.native="resend" 
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Hoàn thành bổ sung &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+          <v-btn color="primary" flat="flat" @click.native="resend" 
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Lưu &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+          <v-btn color="red darken-3" flat="flat" @click.native="dialog_statusAction = false"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Quay lại &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <!-- <v-btn color="primary" @click.native="dialog_addTHPHS = true">
+      TEST BSHS &nbsp;
+      <v-icon>save</v-icon>
+    </v-btn> -->
+    <!-- End -->
   </div>
 </template>
 <script>
   import ThanhPhanHoSo from './TiepNhanHoSo_ThanhPhanHoSo.vue'
   export default {
     data: () => ({
+      dialog_addTHPHS: false,
+      loadingAction: false,
       thongTinChiTietHoSo: {
         dossierIdCTN: '182CB683',
         receiveDate: 1529409276000,
