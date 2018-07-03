@@ -25,12 +25,12 @@
       <v-card-title primary-title>
         <v-layout row wrap>
           <v-flex xs12 sm6 class="mb-2">
-            <span>Loại hồ sơ: </span> 
-          </v-flex>
-          <v-flex xs12 sm6>
-            <v-chip small class="pl-0">
+            <content-placeholders class="mt-1" v-if="loading">
+              <content-placeholders-text :lines="1" />
+            </content-placeholders>
+            <span v-else>Loại hồ sơ: <v-chip small class="pl-0">
               Hồ sơ trực tuyến
-            </v-chip>
+            </v-chip></span> 
           </v-flex>
           <v-flex xs12 sm6 class="mb-2">
             <content-placeholders class="mt-1" v-if="loading">
@@ -88,7 +88,7 @@
         <v-card-title class="headline">
           Bổ sung hồ sơ
         </v-card-title>
-        <v-card-text style="max-height: 350px">
+        <v-card-text style="max-height: 350px" class="thanhphanhoso_bs">
           <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
         </v-card-text>
         <v-card-actions>
@@ -107,7 +107,7 @@
             Lưu &nbsp;
             <span slot="loader">Loading...</span>
           </v-btn>
-          <v-btn color="red darken-3" flat="flat" @click.native="dialog_statusAction = false"
+          <v-btn color="red darken-3" flat="flat" @click.native="dialog_addTHPHS = false"
             :loading="loadingAction"
             :disabled="loadingAction"
           >
@@ -117,6 +117,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <!--  -->
     <!-- <v-btn color="primary" @click.native="dialog_addTHPHS = true">
       TEST BSHS &nbsp;
       <v-icon>save</v-icon>
@@ -127,6 +128,7 @@
 <script>
   import ThanhPhanHoSo from './TiepNhanHoSo_ThanhPhanHoSo.vue'
   export default {
+    props: ['index', 'id'],
     data: () => ({
       dialog_addTHPHS: false,
       loadingAction: false,
@@ -151,8 +153,7 @@
     components: {
       'thanh-phan-ho-so': ThanhPhanHoSo
     },
-    created () {
-    },
+    created () {},
     watch: {
     },
     methods: {

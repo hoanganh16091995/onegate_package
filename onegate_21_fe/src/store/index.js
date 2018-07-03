@@ -11,10 +11,14 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    // initData: {
-    //   commentApi: 'http://127.0.0.1:8081/api/comments'
-    // },
-    initData: null,
+    initData: {
+      groupId: 55301,
+      commentApi: 'http://127.0.0.1:8081/api/comments',
+      dossierApi: 'http://127.0.0.1:8081/api/dossiers',
+      postDossierApi: 'http://127.0.0.1:8081/api/dossiers',
+      dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates'
+    },
+    // initData: null,
     loading: false,
     loadingTable: false,
     loadingDynamicBtn: false,
