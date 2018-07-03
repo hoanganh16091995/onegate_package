@@ -2229,3 +2229,28 @@ body button .btn__content .icon {
 .thanhphanhoso_bs .note_trichyeu {
     display: none;
 }
+/*  */
+.expansion-pl .expansion-panel__header, .expansion-pl-transparent .expansion-panel__header {
+    padding-left: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.expansion-pl .expansion-panel__body .expansion-panel__container .expansion-panel__header,
+.expansion-pl-transparent .expansion-panel__container .expansion-panel__header {
+    border-bottom: 1px solid #ddd
+}
+.form-chitiet .tabs .tabs__bar, .form-chitiet .expansion-pl .expansion-panel__header {
+    background-color: #dae8e8
+}
+.form-chitiet .tabs .tabs__bar, .form-chitiet .expansion-pl-transparent .expansion-panel__header {
+    background-color: transparent
+}
+.list_history_style {
+    border-bottom: 1px solid #e1e2e1;
+}
+.col-tien-trinh-1 {
+    background-color: #D9E7E8
+}
+.col-tien-trinh-2 {
+    background-color: #E9F7F8
+}
