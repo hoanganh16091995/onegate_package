@@ -205,17 +205,17 @@ export default {
           formData.append('fileType', comment.file.type)
           formData.append('fileSize', comment.file.size)
           formData.append('pings', comment.pings.join())
-          formData.append('email', 'congtrinh0209@gmail.com')
-          formData.append('fullName', 'Công Trình')
-          // formData.append('email', themeDisplay.getUserId())
-          // formData.append('fullName', themeDisplay.getUserName())
+          // formData.append('email', 'congtrinh0209@gmail.com')
+          // formData.append('fullName', 'Công Trình')
+          formData.append('email', themeDisplay.getUserId())
+          formData.append('fullName', themeDisplay.getUserName())
           $.ajax({
             url: vm.initData.commentApi + '/uploads',
             dataType: 'json',
             type: 'POST',
             headers: {
-              // 'groupId': themeDisplay.getScopeGroupId()
-              'groupId': 55301
+              'groupId': themeDisplay.getScopeGroupId()
+              // 'groupId': 55301
             },
             data: formData,
             cache: false,
