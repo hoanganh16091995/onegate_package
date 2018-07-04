@@ -2,12 +2,12 @@
   <div class="phancong" style="background-color: white">
     <div xs12 v-if="loading">
       <content-placeholders class="mt-1">
-        <content-placeholders-text :lines="1" />
+        <content-placeholders-text :lines="2" />
       </content-placeholders>
     </div>
     <div xs12 v-else>
-      <div v-if="type === 1" v-for="(item, index) in dataPhanCong" v-bind:key="item.userId" style="display: inline-block">
-        <v-layout wrap >
+      <div v-for="(item, index) in dataPhanCong" v-bind:key="item.userId" style="display: inline-block">
+        <v-layout wrap v-if="type === 1">
           <v-flex class="pt-1">
             <span>{{item.userName}}</span>&nbsp;
           </v-flex>
@@ -17,9 +17,8 @@
             ></v-checkbox> &nbsp;&nbsp;&nbsp;&nbsp;
           </v-flex>
         </v-layout>
-      </div>
-      <div v-if="type === 2" v-for="(item, index) in dataPhanCong" v-bind:key="item.userId" style="display: inline-block">
-        <v-layout wrap class="my-1">
+
+        <v-layout wrap v-else class="my-1">
           <v-flex class="pt-1">{{item.userName}}</v-flex> &nbsp; &nbsp;
           <v-flex>
             <v-select
@@ -69,9 +68,6 @@ export default {
   },
   methods: {
     initData (data) {},
-    redirectBack () {
-      window.history.back()
-    },
     changeAssigned (event, index) {
       var vm = this
       if (vm.type === 1) {
