@@ -3,6 +3,7 @@ import Vuex from 'vuex'
 import toastr from 'toastr'
 import axios from 'axios'
 import support from './support.json'
+import $ from 'jquery'
 // import router from '@/router'
 
 Vue.use(toastr)
@@ -10,6 +11,21 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
+    // initData: {
+    //   groupId: 55301,
+    //   serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
+    //   serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
+    //   regionApi: 'http://127.0.0.1:8081/api/dictcollections',
+    //   serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
+    //   postDossierApi: 'http://127.0.0.1:8081/api/onegate',
+    //   dossierApi: 'http://127.0.0.1:8081/api/dossiers',
+    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
+    //   applicantApi: '/o/rest/v2/applicant',
+    //   dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
+    //   commentApi: 'http://127.0.0.1:8081/api/comments',
+    //   govAgency: 'abc',
+    //   user: {}
+    // },
     initData: null,
     loading: false,
     loadingTable: false,
@@ -93,7 +109,8 @@ export const store = new Vuex.Store({
       postalWardName: '',
       postalTelNo: '',
       vnPostCode: ''
-    }
+    },
+    data_phancong: []
   },
   actions: {
     clearError ({commit}) {
@@ -1050,7 +1067,7 @@ export const store = new Vuex.Store({
       })
     },
     downloadFile ({commit, state}, data){
-      var vm = this;
+      var vm = this
       let param = {
         headers: {
           groupId: state.initData.groupId
@@ -1058,7 +1075,7 @@ export const store = new Vuex.Store({
         responseType: 'blob'
       }
       axios.get(state.initData.dossierApi + '/' + data.dossierId + "/files/" + data.fileAttachId, param).then(function (response) {
-        var url = window.URL.createObjectURL(response.data);
+        var url = window.URL.createObjectURL(response.data)
         window.open(url)
       })
       .catch(function (error) {
@@ -1082,43 +1099,182 @@ export const store = new Vuex.Store({
         })
       })
     },
+    // action for comment component
     loadUsersComment ({commit, state}, id) {
+      var vm = this
       return new Promise((resolve, reject) => {
-        store.dispatch('loadInitResource').then(function (result) {
-          var users = []
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            },
-            params: {
-              userMapping: true
-            }
+        var users = []
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            userMapping: true
           }
-          axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
-            if(response != null && response.hasOwnProperty('data')){
-              let contacts = response.data
-              $.each(contacts, function(index, item){
-                let user = {}
-                user.id = item.userId
-                user.fullname = item.userName
-                user.email = item.email
-                user.profilePictureURL = item.profileUrl
-                users.push(user)
-              })
-            } else {
-              users = []
-            }
-            commit(setUsersComment, users)
-            resolve(users)
-          })
-          .catch(function (error) {
+        }
+        axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
+          if(response != null && response.hasOwnProperty('data')){
+            let contacts = response.data
+            $.each(contacts, function(index, item){
+              var user = {}
+              user.id = item.userId
+              user.fullname = item.userName
+              user.email = item.email
+              user.profilePictureURL = item.profileUrl
+              users.push(user)
+            })
+          } else {
             users = []
-            commit(setUsersComment, users)
-            reject(error)
-          })
+          }
+          resolve(users)
+        })
+        .catch(function (error) {
+          users = []
+          reject(users)
         })
       })
+    },
+    loadCommentItems ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {}
+        }
+        axios.get(state.initData.commentApi + '/' + data.className + '/' + data.classPK, param).then(function (response) {
+          resolve(response.data.data)
+        })
+        .catch(function (error) {
+          reject(error)
+        })
+      })
+    },
+    postComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        console.log('dataPost', data)
+        var strPings = data.pings.join()
+        var params = new URLSearchParams()
+        params.append('className', data.className)
+        params.append('classPK', data.classPK)
+        params.append('parent', data.parent != null ? data.parent : 0)
+        params.append('pings', strPings)
+        params.append('content', data.content)
+        params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        axios.post(state.initData.commentApi, params, config)
+        .then(function (response) {
+          var resPostCmt = {}
+          if (response != null) {
+            resPostCmt = response.data
+            console.log('resPostCmt', resPostCmt)
+          }
+          resolve(resPostCmt)
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    putComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        console.log('dataPut', data)
+        var strPings = data.pings.join();
+        var params = new URLSearchParams()
+        params.append('className', data.className)
+        params.append('classPK', data.classPK)
+        params.append('parent', data.parent != null ? data.parent : 0)
+        params.append('pings', strPings)
+        params.append('content', data.content)
+        params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        axios.put(state.initData.commentApi + '/' + data.commentId, params, config)
+        .then(function (response) {
+          var resPutCmt = {}
+          if (response != null) {
+            resPutCmt = response.data
+          }
+          resolve(resPutCmt);
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    deleteComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        axios.delete(state.initData.commentApi + '/' + data.commentId, config)
+        .then(function (response) {
+          resolve(response)
+        })
+        .catch(function (error) {
+          // onError();
+          console.log(error)
+        })
+      })
+    },
+    upvoteComment ({commit, state}, data) {
+      var vm = this
+      return new Promise((resolve, reject) => {
+        const config = {
+          headers: {
+            'groupId': state.initData.groupId
+          }
+        }
+        if (data.userHasUpvoted) {
+          var params = new URLSearchParams()
+          params.append('className', data.className)
+          params.append('classPK', data.classPK)
+          params.append('commentId', data.commentId)
+          params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+          axios.put(state.initData.commentApi + '/' + data.commentId + '/upvotes',
+            params,
+            config
+          )
+          .then(function (response) {
+            var res = {}
+            if (response != null) {
+              res = response.data
+            }
+            resolve(res)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })  
+        } else {
+          axios.delete(state.initData.commentApi + '/' + data.commentId + '/upvotes', config).then(function (response) {
+            var res = {}
+            if (response != null) {
+              res = response.data
+            }
+            resolve(res)
+          })
+          .catch(function (error) {
+            console.log(error)
+          })  
+        }
+      })
     }
+    // ----End---------
   },
   mutations: {
     setLoading (state, payload) {
@@ -1141,6 +1297,9 @@ export const store = new Vuex.Store({
     },
     setMenuConfigToDo (state, payload) {
       state.trangThaiHoSoList = payload
+    },
+    setDataPhanCong (state, payload) {
+      state.data_phancong = payload
     },
     setLoadingDynamicBtn (state, payload) {
       state.loadingDynamicBtn = payload
@@ -1420,6 +1579,9 @@ export const store = new Vuex.Store({
     },
     commentItems (state) {
       return state.commentItems
+    },
+    dataPhanCong (state) {
+      return state.data_phancong
     }
   }
 })
