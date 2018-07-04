@@ -13,10 +13,18 @@ export const store = new Vuex.Store({
   state: {
     // initData: {
     //   groupId: 55301,
-    //   commentApi: 'http://127.0.0.1:8081/api/comments',
+    //   serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
+    //   serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
+    //   regionApi: 'http://127.0.0.1:8081/api/dictcollections',
+    //   serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
+    //   postDossierApi: 'http://127.0.0.1:8081/api/onegate',
     //   dossierApi: 'http://127.0.0.1:8081/api/dossiers',
-    //   postDossierApi: 'http://127.0.0.1:8081/api/dossiers',
-    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates'
+    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
+    //   applicantApi: '/o/rest/v2/applicant',
+    //   dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
+    //   commentApi: 'http://127.0.0.1:8081/api/comments',
+    //   govAgency: 'abc',
+    //   user: {}
     // },
     initData: null,
     loading: false,
@@ -101,7 +109,8 @@ export const store = new Vuex.Store({
       postalWardName: '',
       postalTelNo: '',
       vnPostCode: ''
-    }
+    },
+    data_phancong: []
   },
   actions: {
     clearError ({commit}) {
@@ -1289,6 +1298,9 @@ export const store = new Vuex.Store({
     setMenuConfigToDo (state, payload) {
       state.trangThaiHoSoList = payload
     },
+    setDataPhanCong (state, payload) {
+      state.data_phancong = payload
+    },
     setLoadingDynamicBtn (state, payload) {
       state.loadingDynamicBtn = payload
     },
@@ -1567,6 +1579,9 @@ export const store = new Vuex.Store({
     },
     commentItems (state) {
       return state.commentItems
+    },
+    dataPhanCong (state) {
+      return state.data_phancong
     }
   }
 })
