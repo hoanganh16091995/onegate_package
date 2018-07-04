@@ -7,7 +7,7 @@
       <div class="background-triangle-big"> <span>TRẢ KẾT QUẢ HỒ SƠ</span> </div>
       <div class="layout row wrap header_tools row-blue">
         <div class="flex xs8 sm10 pl-3 text-ellipsis text-bold" >
-          Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất
+          {{thongTinChiTietHoSo.serviceName}}
         </div>
         <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
           <v-btn flat class="my-0 mx-0 btn-border-left" @click="redirectBack" active-class="temp_active">
@@ -35,7 +35,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field">  Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.serviceName}} </v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -48,7 +48,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field"> 123123</v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.dossierIdCTN}}</v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -61,7 +61,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field"> 20/08/2017 - 09:15</v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.receiveDate|dateTimeView}}</v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -74,7 +74,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field">  Trịnh Công Trình </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.applicantName}} </v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -87,7 +87,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field">  Số 255 - Ngõ 55 - Mỗ Lao - Hà Đông - Hà Nội </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.address}} </v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -100,7 +100,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field"> Trịnh Công Trình </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.delegateName}} </v-subheader>
               </v-flex>
               <!--  -->
               <v-flex xs12 sm2>
@@ -113,7 +113,7 @@
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field"> Trịnh Công Trình </v-subheader>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.applicantIdNo}} </v-subheader>
               </v-flex>
             </v-layout>
           </v-card-text>
@@ -163,7 +163,7 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
     <!--  -->
-    <v-flex xs12 style="background: white">
+    <v-flex xs12>
       <content-placeholders class="mt-1" v-if="loading">
         <content-placeholders-text :lines="1" />
       </content-placeholders>
@@ -175,16 +175,47 @@
     <!--  -->
     <v-flex xs12 sm12>
       <div class="text-right mt-2">
-        <v-btn color="primary" v-on:click.native="daTra">
+        <v-btn color="primary" @click="daTra">
           Đã trả &nbsp;
           <v-icon>save</v-icon>
         </v-btn>
-        <v-btn color="primary" @click="goBack">
+        <v-btn color="primary" @click="redirectBack">
           Quay lại &nbsp;
           <v-icon>undo</v-icon>
         </v-btn>
       </div>
     </v-flex>
+    <!--  -->
+    <v-dialog v-model="dialog_add_dined" persistent max-width="500px">
+      <v-card>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="note_reason" placeholder="Nhập lý do từ chối" multi-line></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat="flat" @click.native="submitAddReason(note_reason)"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Chấp nhận &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+          <v-btn color="red darken-3" flat="flat" @click.native="dialog_add_dined = false"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Bỏ qua &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -193,6 +224,9 @@ import router from '@/router'
 export default {
   props: ['index', 'id'],
   data: () => ({
+    dialog_add_dined: false,
+    loadingAction: false,
+    note_reason: '',
     resultFiles: [{
       so_giay: 'ABC#1234',
       ngay_cap: 1529633042000,
@@ -210,6 +244,7 @@ export default {
     }
     ],
     thongTinChiTietHoSo: {
+      serviceName: 'Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất',
       dossierIdCTN: '182CB683',
       receiveDate: 1529409276000,
       applicantName: 'Lê việt Đức',
@@ -243,24 +278,7 @@ export default {
       sortable: false
     }
     ],
-    ketquaItems: [{
-      no: '1234',
-      date: 1529413502000,
-      name: 'Giấy tờ trả kết quả 1'
-    },
-    {
-      no: '1234-A',
-      date: 1529413502000,
-      name: 'Giấy tờ trả kết quả 2'
-    },
-    {
-      no: '1234-B',
-      date: 1529413502000,
-      name: 'Giấy tờ trả kết quả 3'
-    }
-    ],
-    checkPaid: false,
-    fee: 1000000
+    checkPaid: false
   }),
   computed: {
     loading () {
@@ -268,43 +286,34 @@ export default {
     },
     loadingTable () {
       return this.$store.getters.loadingTable
-    },
-    thongTinChungHoSo () {
-      return this.$store.getters.thongTinChungHoSo
-    },
-    thongTinChuHoSo () {
-      return this.$store.getters.thongTinChuHoSo
-    },
-    thongTinNguoiNopHoSo () {
-      return this.$store.getters.thongTinNguoiNopHoSo
-    },
-    lePhi () {
-      return this.$store.getters.lePhi
     }
   },
   created () {
     var vm = this
-    vm.$nextTick(function () {
-      let promise = vm.$store.dispatch('getDetailDossier', vm.id)
-      promise.then(function (result) {
-        vm.$store.dispatch('loadAllDossierTemplates', vm.$store.getters.thongTinChungHoSo).then(function (result) {
-          vm.ketquaItems = result.filter((val, index) => {
-            return val.partType === 2
-          })
-        }).catch(function (reject) {
-          console.log(reject)
-        })
-      }).catch(function (reject) {
-        console.log(reject)
-      })
-    })
+    vm.$nextTick(function () {})
   },
   methods: {
     initData (data) {
       var vm = this
       vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
         vm.thongTinChiTietHoSo = resultDossier
+        vm.$store.dispatch('loadAllDossierTemplates', vm.$store.getters.thongTinChungHoSo).then(function (result) {
+          vm.resultFiles = result.filter((val, index) => {
+            return val.partType === 2
+          })
+        }).catch(function (reject) {
+          console.log(reject)
+        })
+      }).catch(reject => {
+        console.log(reject)
       })
+    },
+    submitAddReason (reason) {
+      var vm = this
+      console.log('note_reason', reason)
+    },
+    daTra () {
+      console.log('SUCCESS')
     },
     redirectBack () {
       window.history.back()

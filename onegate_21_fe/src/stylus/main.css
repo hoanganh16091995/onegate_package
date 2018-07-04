@@ -243,7 +243,7 @@ body .expaned__list__data .expansion-panel__header {
     height: 38px;
 }
 .group__thanh_phan .flex__checkbox .input-group {
-    width: 100px;
+    width: 70px;
     max-width: 100px;
     height: 38px;
     max-height: 38px;
@@ -2187,4 +2187,70 @@ body .tabs__container--icons-and-text .tabs__item {
 }
 body button .btn__content .icon {
     font-size: 15px;
+}
+/* Bổ sung style thành phần hồ sơ */
+.group__thanh_phan .input-group.input-group--selection-controls .input-group__input .icon--selection-control {
+    width: auto;
+}
+.group__thanh_phan .icon--selection-control {
+    left: 24px !important
+}
+.group__thanh_phan .input-group {
+    flex: none
+}
+.absolute-lable {
+    position: absolute;
+    right: 115px;
+    top: 10px
+}
+.absolute-lable span {
+    display: inline-block;
+    width: 70px;
+    text-align: center
+}
+/* */
+/* fix form alpacal */
+.form_alpaca .alpaca-message {
+    display: none!important;
+}
+.form_alpaca .card_text {
+    padding: 10px 0px !important;
+}
+.form_alpaca .text-xs-right {
+    text-align: left!important;
+}
+/*  */
+.thanhphanhoso_bs .background-triangle-small {
+    display: none;
+}
+.thanhphanhoso_bs .background-triangle-small {
+    display: none;
+}
+.thanhphanhoso_bs .note_trichyeu {
+    display: none;
+}
+/*  */
+.expansion-pl .expansion-panel__header, .expansion-pl-transparent .expansion-panel__header {
+    padding-left: 0px;
+    padding-bottom: 5px;
+    padding-top: 5px;
+}
+.expansion-pl .expansion-panel__body .expansion-panel__container .expansion-panel__header,
+.expansion-pl-transparent .expansion-panel__container .expansion-panel__header {
+    border-bottom: 1px solid #ddd
+}
+.form-chitiet .tabs .tabs__bar, .form-chitiet .expansion-pl .expansion-panel__header {
+    background-color: #dae8e8
+}
+.form-chitiet .tabs .tabs__bar, .form-chitiet .expansion-pl-transparent .expansion-panel__header {
+    background-color: transparent
+}
+.list_history_style {
+    border-bottom: 1px solid #e1e2e1;
+}
+.col-tien-trinh-1 {
+    background-color: #D9E7E8
+}
+.col-tien-trinh-2 {
+    background-color: #E9F7F8
 }
