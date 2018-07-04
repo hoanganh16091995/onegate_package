@@ -347,8 +347,7 @@ export default {
   watch: {},
   created () {
     var vm = this
-    vm.$nextTick(function () {
-    })
+    vm.$nextTick(function () {})
   },
   methods: {
     initData (data) {
