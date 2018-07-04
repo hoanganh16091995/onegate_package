@@ -65,7 +65,6 @@ export default {
     var vm = this
     vm.$nextTick(function () {
       this.$store.commit('setDataPhanCong', vm.assign_items)
-      console.log('dataPhanCong', vm.dataPhanCong)
     })
   },
   methods: {
@@ -75,7 +74,6 @@ export default {
     },
     changeAssigned (event, index) {
       var vm = this
-      console.log('value-index', event, index)
       if (vm.type === 1) {
         if (event === true) {
           vm.dataPhanCong[index].assigned = 1
@@ -90,4 +88,33 @@ export default {
     }
   }
 }
+// props truyền vào demo=====>
+// type: 2,
+// assign_items: [{
+//   userId: 101,
+//   userName: 'Trịnh Công Trình',
+//   assigned: 1
+// },
+// {
+//   userId: 102,
+//   userName: 'Nguyễn Văn Nam',
+//   assigned: 0
+// },
+// {
+//   userId: 103,
+//   userName: 'Trần Minh Quang',
+//   assigned: 0
+// },
+// {
+//   userId: 104,
+//   userName: 'Vũ Tiến Dũng',
+//   assigned: 1
+// },
+// {
+//   userId: 105,
+//   userName: 'Phạm Huy Hoàng',
+//   assigned: 0
+// }
+// ]
 </script>
+

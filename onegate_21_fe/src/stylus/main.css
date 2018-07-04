@@ -2254,3 +2254,15 @@ body button .btn__content .icon {
 .col-tien-trinh-2 {
     background-color: #E9F7F8
 }
+/*  */
+.phancong .input-group--select {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding-left: 3px;
+}
+.phancong .input-group--select .input-group__details {
+    display: none
+}
+.phancong .input-group--selection-controls__ripple {
+    left: 5px;
+}
