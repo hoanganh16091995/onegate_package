@@ -7,19 +7,19 @@
           THÀNH PHẦN HỒ SƠ &nbsp;&nbsp;&nbsp;&nbsp; 
          <!--  <i><span style="color: red">(*)</span> Những thành phần bắt buộc</i> -->
           <div class="absolute-lable">
-            <span class="text-bold">Bản chính</span>
-            <span class="text-bold">Bản chụp</span>
+            <span class="text-bold">Bản chính | </span>
+            <span class="text-bold">&nbsp;Bản chụp&nbsp; | </span>
             <span class="text-bold">Công chứng</span>
           </div>
         </div>
         <v-card>
           <div class="form_alpaca" style="position: relative;" v-for="(item, index) in dossierTemplates" v-if="item.partType === 1" v-bind:key="item.partNo">
-            <v-expansion-panel class="expaned__list__data">
+            <v-expansion-panel class="expaned__list__data" :class='{"no_acction__event": !item.hasForm}'>
               <v-expansion-panel-content hide-actions :value="false">
-                <div slot="header" class="pl-2">
-                  <div style="width: calc(100% - 420px );display: flex;align-items: center;min-height: 38px">
+                <div slot="header">
+                  <div style="width: calc(100% - 350px);display: flex;align-items: center;min-height: 38px;background: #fff;padding-left: 15px;">
                     <span class="text-bold mr-2">{{index + 1}}.</span>
-                    <span @click="loadAlpcaForm(item)">{{item.partName}} <span v-if="item.required" style="color: red"> (*)</span> <i v-if="item.hasForm">Form trực tuyến</i></span>
+                    <span @click="loadAlpcaForm(item)">{{item.partName}} <span v-if="item.required" style="color: red"> (*)</span> <i v-if="item.hasForm" style="font-size: 10px;color: #0d71bb;">(Form trực tuyến)</i></span>
                   </div>
                 </div>
                 <v-card>
@@ -34,7 +34,7 @@
                 </v-card>
               </v-expansion-panel-content>
             </v-expansion-panel>
-            <div class="absolute__btn group__thanh_phan px-2">
+            <div class="absolute__btn group__thanh_phan">
               <content-placeholders class="mt-1" v-if="loading">
                 <content-placeholders-text :lines="1" />
               </content-placeholders>
@@ -47,7 +47,7 @@
                     <v-radio :value="1" :disabled="!thanhPhanHoSo.dossierTemplates[index].fileCheck" ></v-radio>
                   </v-radio-group>
                 </v-flex>
-                <v-flex class="text-right" style="width: 120px;align-self: center;">
+                <v-flex style="width: 110px;background: #fff;">
                   <v-tooltip top>
                     <v-btn slot="activator" icon class="mx-0 my-0">
                       <v-badge>
@@ -57,20 +57,20 @@
                         :id="'file' + item.partNo"
                         @change="onUploadSingleFile($event,item)"
                         >
-                        <v-icon size="20" color="primary" @click="pickFile(item)">attach_file</v-icon>
+                        <v-icon size="16" color="primary" @click="pickFile(item)">attach_file</v-icon>
                       </v-badge>
                     </v-btn>
                     <span>Tải file lên</span>
                   </v-tooltip>
                   <v-tooltip top>
-                    <v-btn slot="activator" class="mx-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                    <v-btn slot="activator" class="mx-0" fab dark small color="primary" @click="viewFile(item)" style="height:20px;width:20px">
                       {{item.count}}
                     </v-btn>
                     <span>Xem</span>
                   </v-tooltip>
                   <v-tooltip top>
                     <v-btn slot="activator" @click="onDeleteAttackFiles(item)" icon class="mx-0 my-0">
-                      <v-icon size="18" class="mx-0" color="red darken-3">delete</v-icon>
+                      <v-icon size="16" class="mx-0" color="red darken-3">delete</v-icon>
                     </v-btn>
                     <span>Xóa</span>
                   </v-tooltip>

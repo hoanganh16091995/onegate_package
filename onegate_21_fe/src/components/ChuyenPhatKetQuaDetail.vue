@@ -55,7 +55,7 @@
     methods: {
       initData (data) {
         var vm = this
-        vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
+        vm.$store.dispatch('getDetailDossier', data).then(resultDossier => {
           vm.thongTinChiTietHoSo = resultDossier
         })
       },

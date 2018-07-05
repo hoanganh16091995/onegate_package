@@ -132,7 +132,6 @@ export const store = new Vuex.Store({
           }).catch(function (error) {
             console.log(error)
             reject(error)
-            commit('setInitData', {abc: 123})
           })
         })
       } else {
@@ -204,7 +203,7 @@ export const store = new Vuex.Store({
       }
     },
     loadListThuTucHanhChinh ({commit, state}) {
-      if (state.trangThaiHoSoList === null) {
+      if (state.listThuTucHanhChinh === null) {
         return new Promise((resolve, reject) => {
           store.dispatch('loadInitResource').then(function (result) {
             let param = {
@@ -229,7 +228,12 @@ export const store = new Vuex.Store({
         })
       } else {
         return new Promise((resolve, reject) => {
-          resolve(state.listThuTucHanhChinh)
+          let thuTucArray = Array.from(state.listThuTucHanhChinh)
+          thuTucArray.unshift({
+            'serviceConfigId': '0',
+            'serviceName': 'Toàn bộ thủ tục'
+          })
+          resolve(thuTucArray)
         })
       }
     },
@@ -1272,6 +1276,44 @@ export const store = new Vuex.Store({
             console.log(error)
           })  
         }
+      })
+    },
+    pullNextactions ({commit, state}, filter) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          console.log('result', result)
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions', param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable.data)
+          }).catch(function (error) {
+            console.log(error)
+            reject(error)
+          })
+        })
+      })
+    },
+    processPullBtnDetail ({commit, state}, filter) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable.data)
+          }).catch(function (error) {
+            console.log(error)
+            resolve([])
+            reject(error)
+          })
+        })
       })
     }
     // ----End---------

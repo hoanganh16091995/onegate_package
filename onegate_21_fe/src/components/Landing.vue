@@ -1,7 +1,5 @@
 <template>
   <div>
-    <div id="field1"></div>
-    
     <v-layout wrap class="menu_header_list" :class='{"no__border__bottom": btnDynamics === null || btnDynamics === undefined || btnDynamics === "undefined" || (btnDynamics !== null && btnDynamics !== undefined && btnDynamics !== "undefined" && btnDynamics.length === 0)}'>
       <v-flex xs12 class="px-2">
         <v-select
@@ -89,13 +87,18 @@
           {{ props.item[itemHeader.value] }}
         </td>
         <td class="text-xs-center px-0 py-0">
-          <v-menu bottom left :nudge-left="30" :nudge-top="15" v-if="btnDynamics !== null || btnDynamics !== undefined || btnDynamics !== 'undefined'">
-            <v-btn slot="activator" icon>
+          <v-menu bottom left :nudge-left="50" :nudge-top="15" 
+            v-if="(btnDynamics !== null || btnDynamics !== undefined || btnDynamics !== 'undefined') || 
+              (btnDossierDynamics !== null || btnDossierDynamics !== undefined || btnDossierDynamics !== 'undefined')">
+            <v-btn slot="activator" icon @click="processPullBtnDynamics(props.item)">
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
               <v-list-tile v-for="(item, i) in btnDynamics" :key="i" v-if="String(item.form) !== 'NEW'">
                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile v-for="(item, i) in btnDossierDynamics" :key="i" @click="processPullBtnDetail(props.item, item)">
+                <v-list-tile-title>{{ item.actionName }}</v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-menu>
@@ -115,7 +118,7 @@
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation>
           <v-card-title class="headline">{{itemAction.title}}</v-card-title>
-          <v-btn icon dark class="mx-0 my-0 absolute__btn_panel" @click.native="dialogAction = false">
+          <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogAction = false">
             <v-icon>clear</v-icon>
           </v-btn>
           <v-progress-linear v-if="loadingAction" class="my-0" :indeterminate="true"></v-progress-linear>
@@ -172,7 +175,40 @@
         </v-form>
       </v-card>
     </v-dialog>
-    <!--  -->
+    <v-dialog v-model="dialogActionProcess" max-width="900" transition="fade-transition" persistent>
+      <v-card>
+        <v-form ref="form" v-model="validProcess" lazy-validation>
+          <v-card-title class="headline">{{itemAction.actionName}}</v-card-title>
+          <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogActionProcess = false">
+            <v-icon>clear</v-icon>
+          </v-btn>
+          <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
+          <v-card-text class="pb-0 pt-4">
+            <v-layout wrap>
+              showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/>
+              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
+              showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
+              showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
+              showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
+              showKyPheDuyetTaiLieu: {{showKyPheDuyetTaiLieu}} <br/>
+              showTraKetQua: {{showTraKetQua}} <br/>
+              showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
+              showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
+            </v-layout>
+          </v-card-text>
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-3" flat="flat" @click.native="dialogActionProcess = false"
+              :loading="loadingActionProcess"
+              :disabled="loadingActionProcess"
+            >
+            Quay lại
+            <span slot="loader">Loading...</span>
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="dialog_statusAction" scrollable persistent max-width="700px">
       <v-card>
         <v-card-title class="headline">
@@ -221,6 +257,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
     <v-btn color="primary" @click.native="dialog_statusAction = true">
       TEST StatusAction &nbsp;
       <v-icon>save</v-icon>
@@ -317,6 +354,7 @@ export default {
     listDichVu: [],
     dichVuSelected: null,
     btnDynamics: [],
+    btnDossierDynamics: [],
     btnStepsDynamics: [],
     loading: true,
     headers: [],
@@ -331,10 +369,22 @@ export default {
     templateNo: '',
     dialogAction: false,
     loadingAction: false,
+    dialogActionProcess: false,
+    loadingActionProcess: false,
+    validProcess: false,
     indexAction: -1,
     itemAction: {
       title: ''
-    }
+    },
+    showThongTinCoBanHoSo: true,
+    showYkienCanBoThucHien: false,
+    showFormBoSungThongTinNgan: false,
+    showPhanCongNguoiThucHien: false,
+    showTaoTaiLieuKetQua: false,
+    showKyPheDuyetTaiLieu: false,
+    showTraKetQua: false,
+    showXacNhanThuPhi: false,
+    showThucHienThanhToanDienTu: false
   }),
   computed: {
     loadingDynamicBtn () {
@@ -422,6 +472,8 @@ export default {
         console.log('watch: landing')
         if (vm.listThuTucHanhChinh === null || vm.listThuTucHanhChinh === undefined || (vm.listThuTucHanhChinh !== null && vm.listThuTucHanhChinh !== undefined && vm.listThuTucHanhChinh.length === 0)) {
           vm.processListTTHC(currentQuery)
+        } else {
+          vm.doLoadingDataHoSo()
         }
       }
     }
@@ -433,10 +485,8 @@ export default {
     },
     processListTTHC (currentQuery) {
       let vm = this
-      console.log('processTTHC', (currentQuery.hasOwnProperty('service_config') && String(currentQuery.service_config) !== '0'))
       vm.$store.dispatch('loadListThuTucHanhChinh').then(function (result) {
         vm.listThuTucHanhChinh = result
-        console.log('listThuTucHanhChinh', vm.listThuTucHanhChinh)
         if (currentQuery.hasOwnProperty('service_config') && String(currentQuery.service_config) !== '0') {
           for (let key in vm.listThuTucHanhChinh) {
             if (String(vm.listThuTucHanhChinh[key].serviceConfigId) === String(currentQuery.service_config)) {
@@ -545,7 +595,6 @@ export default {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
-      console.log('vm.itemAction', vm.itemAction)
       if (String(item.form) === 'NEW') {
         let isOpenDialog = true
         if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
@@ -580,6 +629,126 @@ export default {
       if (vm.$refs.form.validate()) {
         vm.doCreateDossier()
       }
+    },
+    processPullBtnDynamics (item) {
+      let vm = this
+      let filter = {
+        dossierId: item.dossierId
+      }
+      vm.$store.dispatch('pullNextactions', filter).then(function (result) {
+        vm.btnDossierDynamics = result
+      })
+    },
+    processAction (dossierItem, item, result) {
+      console.log('processAction no confirm')
+    },
+    processPullBtnDetailRouter (dossierItem, item, result) {
+      let vm = this
+      console.log('processPullBtnDetail', result)
+      let isPopup = false
+      if (result.ActionCode === 6200 || result.ActionCode === '6200') {
+        isPopup = false
+        vm.showThucHienThanhToanDienTu = true
+      } else {
+        if (result.userNote === 1 || result.userNote === '1' || result.userNote === 2 || result.userNote === '2') {
+          isPopup = true
+          vm.showYkienCanBoThucHien = true
+        }
+        if (result.extraForm) {
+          isPopup = true
+          vm.showFormBoSungThongTinNgan = true
+        }
+        if (result.allowAssignUser !== 0) {
+          isPopup = true
+          vm.showPhanCongNguoiThucHien = true
+        }
+        if (result.createFiles !== null && result.createFiles !== undefined && result.createFiles !== 'undefined' && result.createFiles.length > 0) {
+          isPopup = true
+          vm.showTaoTaiLieuKetQua = true
+        }
+        if (result.eSignature) {
+          isPopup = true
+          vm.showKyPheDuyetTaiLieu = true
+        }
+        if (result.returnFiles !== null && result.returnFiles !== undefined && result.returnFiles !== 'undefined' && result.returnFiles.length > 0) {
+          isPopup = true
+          vm.showTraKetQua = true
+        }
+        if (result.payok === 1) {
+          isPopup = true
+          vm.showXacNhanThuPhi = true
+        }
+      }
+      if (isPopup) {
+        vm.dialogActionProcess = true
+        vm.loadingActionProcess = true
+      } else {
+        vm.processAction(dossierItem, item, result)
+      }
+    },
+    processPullBtnDetail (dossierItem, item) {
+      let vm = this
+      vm.itemAction = item
+      let filter = {
+        dossierId: dossierItem.dossierId,
+        actionId: item.processActionId
+      }
+      vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
+        result = {
+          'processActionId': 0,
+          'actionCode': '',
+          'actionName': '',
+          'preStepCode': '',
+          'postStepCode': '',
+          'autoEvent': '',
+          'preCondition': '',
+          'allowAssignUser': false,
+          'assignUserId': 0,
+          'eSignature': false,
+          'signatureType': '',
+          'extraForm': false,
+          'payok': false,
+          'userNote': 1,
+          'toUsers': [
+            {
+              'userId': 0,
+              'userName': '',
+              'moderator': false,
+              'assigned': 0
+            }
+          ],
+          'createFiles': [
+            {
+              'dossierPartId': 0,
+              'partNo': '',
+              'partName': '',
+              'partTip': '',
+              'multiple': false,
+              'eform': false,
+              'templateFileNo': ''
+            }
+          ],
+          'returnFiles': [
+            {
+              'createDate': '2018-07-03T04:10:27.304Z',
+              'modifiedDate': '2018-07-03T04:10:27.305Z',
+              'referenceUid': 0,
+              'dossierTemplateNo': '',
+              'dossierPartNo': '',
+              'dossierPartType': 0,
+              'fileTemplateNo': '',
+              'displayName': '',
+              'fileType': '',
+              'fileSize': 0,
+              'version': 0,
+              'signCheck': 0,
+              'signInfo': '',
+              'deliverableCode': ''
+            }
+          ]
+        }
+        vm.processPullBtnDetailRouter(dossierItem, item, result)
+      })
     },
     resend () {
       alert('Thử lại')
