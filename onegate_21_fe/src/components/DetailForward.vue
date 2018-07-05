@@ -1,13 +1,23 @@
 <template>
   <div>
-    <!-- <tiep-nhan-ho-so-detail ref="tiepnhanhosodetail"></tiep-nhan-ho-so-detail> -->
-    <!-- <hoan-thien-bo-sung-ho-so-detail ref="hoanthienbosunghosodetail"></hoan-thien-bo-sung-ho-so-detail> -->
-    <!-- <xem-chi-tiet-ho-so-detail rè="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail> -->
+    <tiep-nhan-ho-so-detail 
+      v-if="formCode === 'NEW' || formCode === 'UPDATE'" 
+      ref="tiepnhanhosodetail"
+    ></tiep-nhan-ho-so-detail>
+    <xem-chi-tiet-ho-so-detail 
+      v-if="formCode === 'VIEW_01'" 
+      ref="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail>
+    <hoan-thien-bo-sung-ho-so-detail
+      v-if="formCode === 'ACTION_03' && (step === '500' || step === '510')"
+      ref="hoanthienbosunghosodetail"></hoan-thien-bo-sung-ho-so-detail>
     <!-- <tiep-nhan-ho-so-truc-tuyen-detail ref="tiepnhanhosotructuyendetail"></tiep-nhan-ho-so-truc-tuyen-detail> -->
-    <!-- <tra-ket-qua-detail rè="traketquadetail"></tra-ket-qua-detail> -->
-    <!-- <fee-detail ref="feedetail"></fee-detail> -->
+    <tra-ket-qua-detail 
+      v-if="formCode === 'ACTION_03' && (step === '300' || step === '301')"
+      ref="traketquadetail"></tra-ket-qua-detail>
+    <fee-detail 
+      v-if="formCode === 'ACTION_03' && step === '600'"
+      ref="feedetail"></fee-detail>
     <!-- <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail> -->
-    <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo>
   </div>
 </template>
 
@@ -40,29 +50,46 @@ export default {
     'xem-chi-tiet-ho-so-detail-can-bo': XemChiTietHoSoDetailCanBo
   },
   data: () => ({
-    initData: null
+    initData: null,
+    step: ''
   }),
   beforeCreate () {
     var vm = this
     vm.$nextTick(function () {
+      let currentQuery = vm.$router.history.current.query
+      if (currentQuery.hasOwnProperty('step')) {
+        vm.step = currentQuery.step
+      }
       vm.$store.dispatch('loadInitResource').then(function (result) {
         vm.initData = result
         if (vm.initData !== null) {
-          // console.log(vm.$refs.tiepnhanhosodetail)
-          // vm.$refs.tiepnhanhosodetail.initData(vm.id)
-          // vm.$refs.hoanthienbosunghosodetail.initData(vm.id)
-          // vm.$refs.traketquadetail.initData(vm.id)
-          // vm.$refs.feedetail.initData(vm.id)
-          // vm.$refs.chuyenphatketquadetail.initData(vm.id)
-          vm.$refs.xemchitiethosodetailcanbo.initData(vm.id)
+          let tiepnhanhosodetail = vm.$refs.tiepnhanhosodetail
+          let hoanthienbosunghosodetail = vm.$refs.hoanthienbosunghosodetail
+          let traketquadetail = vm.$refs.traketquadetail
+          let feedetail = vm.$refs.feedetail
+          let chuyenphatketquadetail = vm.$refs.chuyenphatketquadetail
+          if (tiepnhanhosodetail !== null && tiepnhanhosodetail !== undefined && tiepnhanhosodetail !== 'undefined') {
+            vm.$refs.tiepnhanhosodetail.initData(vm.id)
+          } else if (hoanthienbosunghosodetail !== null && hoanthienbosunghosodetail !== undefined && hoanthienbosunghosodetail !== 'undefined') {
+            vm.$refs.hoanthienbosunghosodetail.initData(vm.id)
+          } else if (traketquadetail !== null && traketquadetail !== undefined && traketquadetail !== 'undefined') {
+            vm.$refs.traketquadetail.initData(vm.id)
+          } else if (feedetail !== null && feedetail !== undefined && feedetail !== 'undefined') {
+            vm.$refs.feedetail.initData(vm.id)
+          } else if (chuyenphatketquadetail !== null && chuyenphatketquadetail !== undefined && chuyenphatketquadetail !== 'undefined') {
+            vm.$refs.chuyenphatketquadetail.initData(vm.id)
+          }
         }
       })
     })
   },
   watch: {
     '$route': function (newRoute, oldRoute) {
-      // let vm = this
-      // let query = newRoute.query
+      let vm = this
+      let query = newRoute.query
+      if (query.hasOwnProperty('step')) {
+        vm.step = query.step
+      }
     }
   }
 }

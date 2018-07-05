@@ -181,12 +181,16 @@ body .expansion-panel__header .card__text {
     padding: 5px 15px;
 }
 .absolute__btn {
-    position: absolute !important;
-    top: 4px;
+    position: absolute!important;
+    top: 0;
     right: 0;
     margin: 0;
-    height: 29px;
+    height: 38px;
     border-radius: 0;
+}
+.absolute-lable {
+    text-align: right;
+    margin-right: 109px;
 }
 body .btn > .btn__content {
     text-transform: initial;
@@ -239,8 +243,12 @@ body .expaned__list__data .expansion-panel__header {
 .flex__checkbox .input-group{
     width: auto;
 }
+.flex__checkbox {
+    height: 100%;
+}
 .group__thanh_phan .input-group.input-group--selection-controls .input-group__input {
-    height: 38px;
+    min-height: 38px;
+    height: 100%;
 }
 .group__thanh_phan .flex__checkbox .input-group {
     width: 70px;
@@ -251,10 +259,13 @@ body .expaned__list__data .expansion-panel__header {
     background: #f6f7f6;
 }
 .group__thanh_phan .flex__checkbox .input-group:first-child {
-    border-left: 1px solid #e2d7d7;
+    border-left: 1px solid #dddddd;
 }
 .group__thanh_phan .input-group.input-group--selection-controls .input-group__input .icon--selection-control {
-    width: 100px;
+    width: 40px;
+}
+.group__thanh_phan .input-group.input-group--selection-controls.radio .input-group__input .icon--selection-control {
+    width: 65px;
 }
 .group__thanh_phan .input-group--selection-controls__ripple:before {
     left: 83%;
@@ -262,8 +273,8 @@ body .expaned__list__data .expansion-panel__header {
 .group__thanh_phan .input-group--selection-controls__ripple {
     left: 11px;
     height: 38px;
-    width: 38px;
-    margin-left: 32px;
+    width: 40px;
+    margin-left: 0px;
 }
 body .input-group--selection-controls__ripple {
     height: 32px;
@@ -2188,6 +2199,48 @@ body .tabs__container--icons-and-text .tabs__item {
 body button .btn__content .icon {
     font-size: 15px;
 }
+.alpaca-field p {
+    margin-bottom: 5px;
+}
+.alpaca-field textarea {
+    border: 1px solid #cccccc;
+    text-indent: 5px;
+}
+.form_alpaca .expansion-panel__header {
+    padding: 0;
+}
+body .form_alpaca .expansion-panel__header {
+    font-size: 13px;
+}
+body .theme--light .form_alpaca .expansion-panel__container {
+    background-color: #f6f7f6;
+}
+.group__thanh_phan .flex__checkbox .input-group.radio-group {
+    width: 200px;
+    max-width: 200px;
+}
+.group__thanh_phan .flex__checkbox .input-group.radio-group .input-group__input > div.radio{
+    width: 100px;
+    max-width: 100px;
+    border-right: 1px solid #dddddd;
+}
+.group__thanh_phan .radio .input-group--selection-controls__ripple {
+    margin-left: 14px;
+}
+.form_alpaca .group__thanh_phan .radio-group .input-group__input {
+    min-height: 30px;
+    height: 100%;
+}
+body .no_acction__event {
+    pointer-events: none !important;
+}
+
+body .has-error.alpaca-field-text:before {
+    background-color: #c62929;
+}
+.help-block {
+    display: none;
+}
 /* Bổ sung style thành phần hồ sơ */
 .group__thanh_phan .input-group.input-group--selection-controls .input-group__input .icon--selection-control {
     width: auto;
@@ -2253,4 +2306,16 @@ body button .btn__content .icon {
 }
 .col-tien-trinh-2 {
     background-color: #E9F7F8
+}
+/*  */
+.phancong .input-group--select {
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    padding-left: 3px;
+}
+.phancong .input-group--select .input-group__details {
+    display: none
+}
+.phancong .input-group--selection-controls__ripple {
+    left: 5px;
 }

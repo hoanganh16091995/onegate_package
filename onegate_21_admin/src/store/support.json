@@ -27,6 +27,42 @@
           "active": true,
           "link": "/",
           "desc": "Định nghĩa các bước xử lý chuẩn dùng để hiển thị trên menu xử lý của chương trình"
+        },
+        {
+          "title": "opencps_serviceinfo",
+          "id": "4",
+          "action": "subtitles",
+          "action_active": "play_arrow",
+          "active": true,
+          "link": "/",
+          "desc": "opencps_serviceinfo"
+        },
+        {
+          "title": "opencps_dossiertemplate",
+          "id": "5",
+          "action": "subtitles",
+          "action_active": "play_arrow",
+          "active": true,
+          "link": "/",
+          "desc": "opencps_dossiertemplate"
+        },
+        {
+          "title": "opencps_serviceprocess",
+          "id": "6",
+          "action": "subtitles",
+          "action_active": "play_arrow",
+          "active": true,
+          "link": "/",
+          "desc": "opencps_serviceprocess"
+        },
+        {
+          "title": "opencps_serviceconfig",
+          "id": "7",
+          "action": "subtitles",
+          "action_active": "play_arrow",
+          "active": true,
+          "link": "/",
+          "desc": "opencps_serviceconfig"
         }
     ],
     "colHeaders": {
@@ -65,6 +101,33 @@
           "menuGroup",
           "menuStepName",
           "buttonConfig"
+        ],
+        "4": [
+          "serviceInfoId",
+          "serviceCode",
+          "serviceName",
+          "administrationCode",
+          "administrationName",
+          "domainCode",
+          "domainName"
+        ],
+        "5": [
+          "dossierTemplateId",
+          "templateNo",
+          "templateName",
+          "description"
+        ],
+        "6": [
+          "serviceProcessId",
+          "processNo",
+          "processName",
+          "description"
+        ],
+        "7": [
+          "serviceConfigId",
+          "serviceInfoId",
+          "govAgencyCode",
+          "govAgencyName"
         ]
     },
     "columns": {
@@ -194,6 +257,94 @@
           },
           {
             "data": "buttonConfig",
+            "type": "text"
+          }
+        ],
+        "4": [
+          {
+            "data": "serviceInfoId",
+            "type": "numeric",
+            "readOnly": true
+          },
+          {
+            "data": "serviceCode",
+            "type": "text"
+          },
+          {
+            "data": "serviceName",
+            "type": "text"
+          },
+          {
+            "data": "administrationCode",
+            "type": "text"
+          },
+          {
+            "data": "administrationName",
+            "type": "text"
+          },
+          {
+            "data": "domainCode",
+            "type": "text"
+          },
+          {
+            "data": "domainName",
+            "type": "text"
+          }
+        ],
+        "5": [
+          {
+            "data": "dossierTemplateId",
+            "type": "numeric",
+            "readOnly": true
+          },
+          {
+            "data": "templateNo",
+            "type": "text"
+          },
+          {
+            "data": "templateName",
+            "type": "text"
+          },
+          {
+            "data": "description",
+            "type": "text"
+          }
+        ],
+        "6": [
+          {
+            "data": "serviceProcessId",
+            "type": "numeric",
+            "readOnly": true
+          },
+          {
+            "data": "processNo",
+            "type": "text"
+          },
+          {
+            "data": "processName",
+            "type": "text"
+          },
+          {
+            "data": "description",
+            "type": "text"
+          }
+        ],
+        "7": [
+          {
+            "data": "serviceConfigId",
+            "type": "numeric",
+            "readOnly": true
+          },
+          {
+            "data": "serviceInfoId",
+            "type": "numeric"
+          },
+          {
+            "data": "govAgencyCode",
+            "type": "text"
+          },
+          {
+            "data": "govAgencyName",
             "type": "text"
           }
         ]

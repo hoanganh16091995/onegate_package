@@ -194,8 +194,6 @@ export default {
           vm.selectedOBJ['menuConfigId'] = vm.selectedOBJAfter['menuConfigId']
           vm.selectedOBJ['stepConfigId'] = vm.selectedOBJAfter['stepConfigId']
         }
-        console.log('vm.selectedOBJ1', vm.selectedOBJ)
-        console.log('vm.selectedOBJBefore1', vm.selectedOBJBefore)
         if (vm.selectedOBJ !== null && vm.selectedOBJ !== undefined && vm.selectedOBJ !== 'undefined') {
           let type = vm.trangThaiHoSoList[vm.index].id
           vm.selectedOBJ['type'] = type

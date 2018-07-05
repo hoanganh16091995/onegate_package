@@ -21,7 +21,7 @@
     <thong-tin-chu-ho-so ref="thongtinchuhoso"></thong-tin-chu-ho-so>
     <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
     <le-phi ref="lephi"></le-phi>
-    <dich-vu-chuyen-phat-ket-qua ref="dichvuchuyenphatketqua" v-if="subStatusNew === false"></dich-vu-chuyen-phat-ket-qua>
+    <dich-vu-chuyen-phat-ket-qua ref="dichvuchuyenphatketqua"></dich-vu-chuyen-phat-ket-qua>
     <v-tabs icons-and-text centered class="mb-4">
       <v-tabs-slider color="primary"></v-tabs-slider>
       <v-tab href="#tab-1">
@@ -85,9 +85,6 @@ export default {
     },
     thongTinChungHoSo () {
       return this.$store.getters.thongTinChungHoSo
-    },
-    subStatusNew () {
-      return this.$store.getters.subStatusNew
     }
   },
   created () {
@@ -102,7 +99,6 @@ export default {
     initData: function (data) {
       var vm = this
       vm.$store.dispatch('getDetailDossier', data).then(result => {
-        console.log(vm.$refs)
         // call initData thong tin chu ho so
         vm.$refs.thongtinchuhoso.initData(result)
         // call initData thanh phan ho so
