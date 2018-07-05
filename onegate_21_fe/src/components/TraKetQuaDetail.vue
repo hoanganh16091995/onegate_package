@@ -220,7 +220,7 @@
 </template>
 
 <script>
-import router from '@/router'
+// import router from '@/router'
 export default {
   props: ['index', 'id'],
   data: () => ({
@@ -309,8 +309,8 @@ export default {
       })
     },
     submitAddReason (reason) {
-      var vm = this
-      console.log('note_reason', reason)
+      // var vm = this
+      // console.log('note_reason', reason)
     },
     daTra () {
       console.log('SUCCESS')

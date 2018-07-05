@@ -126,7 +126,7 @@
   </div>
 </template>
 <script>
-  import ThanhPhanHoSo from './TiepNhanHoSo_ThanhPhanHoSo.vue'
+  import ThanhPhanHoSo from './TiepNhan/TiepNhanHoSo_ThanhPhanHoSo.vue'
   export default {
     props: ['index', 'id'],
     data: () => ({

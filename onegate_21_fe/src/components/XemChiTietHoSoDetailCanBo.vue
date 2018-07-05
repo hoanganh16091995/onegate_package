@@ -100,21 +100,6 @@
                 </content-placeholders>
                 <v-subheader v-else class="pl-0 header-text-field"> <i>{{thongTinChiTietHoSo.durationDate}} làm việc</i> </v-subheader>
               </v-flex>
-              <!--  -->
-              <!-- <v-flex xs12 sm2>
-                <content-placeholders class="mt-1" v-if="loading">
-                  <content-placeholders-text :lines="1" />
-                </content-placeholders>
-                <v-subheader v-else class="pl-0">Chuyển bởi: </v-subheader>
-              </v-flex>
-              <v-flex xs12 sm4>
-                <content-placeholders class="mt-1" v-if="loading">
-                  <content-placeholders-text :lines="1" />
-                </content-placeholders>
-                <v-subheader v-else class="pl-0 header-text-field"></v-subheader>
-              </v-flex> -->
-              
-              <!--  -->
               <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
@@ -191,18 +176,21 @@
         <v-tab key="1" class="mr-2">
         THÀNH PHẦN HỒ SƠ
         </v-tab>
-        <!-- <v-tab key="2" class="mr-2">
+        <!-- <v-tab key="2" class="mr-2" >
         THỤ LÝ HỒ SƠ
         </v-tab> -->
-        <v-tab key="2" class="mr-2">
-        TIẾN TRÌNH XỬ LÝ
+        <v-tab key="2" class="mr-2" @click="loadDossierActions()">
+        TIẾN TRÌNH THỤ LÝ
         </v-tab>
-        <v-tab key="3" @click="getContacts()">
-          TRAO ĐỔI THÔNG TIN
+        <v-tab key="3" class="mr-2">
+        NHẬT KÝ HỒ SƠ
         </v-tab>
-        <!-- <v-tab key="4" class="mr-2">
-        TRAO ĐỔI THÔNG TIN
-        </v-tab> -->
+        <v-tab key="4" @click="getContacts()">
+          TRAO ĐỔI NỘI BỘ
+        </v-tab>
+        <v-tab key="5" @click="loadDossierSyncs()">
+          TRAO ĐỔI THẢO LUẬN
+        </v-tab>
         <!--  -->
         <v-tab-item key="1">
           <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
@@ -228,7 +216,6 @@
                     </v-flex>
                   </v-layout>
                 </v-card>
-                
               </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -259,13 +246,93 @@
             </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
+          <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
+            <v-expansion-panel-content v-bind:value="true">
+            <div slot="header" class="text-bold">
+              <div class="background-triangle-small"> III.</div>
+              Văn bản hành chính
+            </div>
+            <div v-for="(item, index) in documents" v-bind:key="item.documentCode">
+              <v-card>
+                <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
+                  <v-flex xs11>
+                    <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                    <div style="margin-left: 30px;">{{item.documentName}}</div>
+                  </v-flex>
+                  <v-flex xs1 class="text-right">
+                    <v-tooltip top>
+                      <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                        <v-icon>far fa-eye</v-icon>
+                      </v-btn>
+                      <span>Xem</span>
+                    </v-tooltip>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
+           <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
+            <v-expansion-panel-content v-bind:value="true">
+            <div slot="header" class="text-bold">
+              <div class="background-triangle-small"> IV.</div>
+              Chứng từ thanh toán
+            </div>
+            <div v-for="(item, index) in payments" :key="item.referenceUid">
+              <v-card>
+                <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
+                  <v-flex xs11>
+                    <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                    <div style="margin-left: 30px;">{{item.paymentFee}}</div>
+                  </v-flex>
+                  <v-flex xs1 class="text-right">
+                    <v-tooltip top>
+                      <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                        <v-icon>far fa-eye</v-icon>
+                      </v-btn>
+                      <span>Xem</span>
+                    </v-tooltip>
+                  </v-flex>
+                </v-layout>
+              </v-card>
+            </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel>
         </v-tab-item>
-        <!--  -->
-        <!-- <v-tab-item key="2" reverse-transition="slide-y-transition" transition="slide-y-transition">
-          
-        </v-tab-item> -->
-        <!--  -->
+        
         <v-tab-item key="2" style="background: #ffff;">
+          <div>
+            <v-data-table :headers="headers" :items="dossierActions" class="table-landing table-bordered"
+            hide-actions
+            >
+            <template slot="headerCell" slot-scope="props">
+              <v-tooltip bottom>
+                <span slot="activator">
+                  {{ props.header.text }}
+                </span>
+                <span>
+                  {{ props.header.text }}
+                </span>
+              </v-tooltip>
+            </template>
+            <template slot="items" slot-scope="props">
+              <td class="text-xs-center">{{props.item.groupName}}</td>
+              <td class="text-xs-center">{{props.item.fromStepName}}</td>
+              <td class="text-xs-center">
+                <div v-for="(item, index) in props.item.actions">
+                  {{item.createDate}} - {{item.actionUser}} <br>
+                  <span>{{item.stepName}}</span>
+                </div>
+              </td>
+              <td>
+                <span v-if="getMaxDueDate(props.item.actions) > 0" style="color: red">Quá hạn {{getMaxDueDate(props.item.actions)}} ngày</span>
+                <span v-else style="color: blue">Đang thực hiện</span>
+              </td>
+            </template>
+          </v-data-table>
+        </div>
+        </v-tab-item>
+        <v-tab-item key="3" style="background: #ffff;">
           <div v-for="(item, index) in listHistoryProcessing" v-bind:key="item.dossierLogId" class="list_history_style">
             <td class="px-2 pt-2" :class="index%2!==0?'col-tien-trinh-1':'col-tien-trinh-2'">{{ index + 1 }}</td>
             <td class="text-xs-left px-2 py-2">
@@ -285,12 +352,39 @@
                 <v-icon>file_download</v-icon> 
                 <span>{{file.fileName}}</span>
               </p>
-
             </td>
           </div>
         </v-tab-item>
-        <v-tab-item key="3" style="background: #ffff;">
+        <v-tab-item key="4" style="background: #ffff;">
           <comment :classPK="id" :className="className"></comment>
+        </v-tab-item>
+        <v-tab-item key="5" style="background: #ffff;">
+          <v-data-table :headers="headerSyncs" :items="dossierSyncs" class="table-landing table-bordered"
+            hide-actions
+            >
+            <template slot="headerCell" slot-scope="props">
+              <v-tooltip bottom>
+                <span slot="activator">
+                  {{ props.header.text }}
+                </span>
+                <span>
+                  {{ props.header.text }}
+                </span>
+              </v-tooltip>
+            </template>
+            <template slot="items" slot-scope="props">
+              <td class="text-xs-center">
+                <div v-if="props.item.actionCode !== 8001 && props.item.actionCode !== 8002">
+                  {{props.item.createDate}} : {{props.item.actionName}}
+                </div>
+              </td>
+              <td class="text-xs-center">
+                <div v-if="props.item.actionCode === 8001 || props.item.actionCode === 8002">
+                  
+                </div>
+              </td>
+            </template>
+          </v-data-table>
         </v-tab-item>
         <!-- <v-tab-item key="4" reverse-transition="slide-y-transition" transition="slide-y-transition">
           
@@ -302,7 +396,7 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import '../store/jquery_comment'
 import Comment from './Comment.vue'
 export default {
@@ -319,7 +413,33 @@ export default {
     dossierTemplatesTN: [],
     dossierTemplatesKQ: [],
     thongTinChiTietHoSo: {
-    }
+    },
+    processSteps: [],
+    documents: [],
+    payments: [],
+    dossierActions: [],
+    dossierSyncs: [],
+    headers: [{
+      text: 'Bộ phận',
+      align: 'center',
+      sortable: false,
+      class: 'bophan_column'
+    }, {
+      text: 'Công việc',
+      align: 'center',
+      sortable: false,
+      class: 'congviec_column'
+    }, {
+      text: 'Người thực hiện',
+      align: 'center',
+      sortable: false,
+      class: 'nguoithuchien_column'
+    }, {
+      text: 'Kết quả',
+      align: 'center',
+      sortable: false,
+      class: 'ketqua_column'
+    }]
   }),
   computed: {
     loading () {
@@ -378,6 +498,15 @@ export default {
               })
             }, 200)
           })
+          vm.$store.dispatch('loadProcessStep', resultDossier).then(resultProcess => {
+            vm.processSteps = resultProcess
+          })
+          vm.$store.dispatch('loadDossierDocuments', resultDossier.dossierId).then(resultDocuments => {
+            vm.documents = resultDocuments
+          })
+          vm.$store.dispatch('loadDossierPayments', resultDossier.dossierId).then(resultPayments => {
+            vm.payments = resultPayments
+          })
         })
       })
       let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', data)
@@ -403,6 +532,28 @@ export default {
     getContacts () {
       var vm = this
       vm.$store.dispatch('loadUsersComment', 1005)
+    },
+    loadDossierActions () {
+      var vm = this
+      if (vm.thongTinChiTietHoSo.dossierId) {
+        vm.$store.dispatch('loadDossierActions', vm.thongTinChiTietHoSo.dossierId).then(resultActions => {
+          vm.dossierActions = resultActions.data
+        })
+      }
+    },
+    getMaxDueDate (arr) {
+      let maxDue = Math.max.apply(Math, arr.map(function (item) {
+        return item.actionOverdue
+      }))
+      return maxDue
+    },
+    loadDossierSyncs () {
+      var vm = this
+      if (vm.thongTinChiTietHoSo.dossierId) {
+        vm.$store.dispatch('loadDossierSyncs', vm.thongTinChiTietHoSo.dossierId).then(resultSyncs => {
+          vm.dossierSyncs = resultSyncs
+        })
+      }
     }
   },
   filters: {

@@ -61,11 +61,11 @@
 <script>
 // import router from '@/router'
 // import * as utils from '../store/onegate_utils'
-import ThongTinChung from './TiepNhanHoSo_ThongTinChung.vue'
-import ThongTinChuHoSo from './TiepNhanHoSo_ThongTinChuHoSo.vue'
-import ThanhPhanHoSo from './TiepNhanHoSo_ThanhPhanHoSo.vue'
-import LePhi from './TiepNhanHoSo_LePhi.vue'
-import DichVuChuyenPhatKetQua from './TiepNhanHoSo_DichVuChuyenPhatKetQua.vue'
+import ThongTinChung from './TiepNhan/TiepNhanHoSo_ThongTinChung.vue'
+import ThongTinChuHoSo from './TiepNhan/TiepNhanHoSo_ThongTinChuHoSo.vue'
+import ThanhPhanHoSo from './TiepNhan/TiepNhanHoSo_ThanhPhanHoSo.vue'
+import LePhi from './TiepNhan/TiepNhanHoSo_LePhi.vue'
+import DichVuChuyenPhatKetQua from './TiepNhan/TiepNhanHoSo_DichVuChuyenPhatKetQua.vue'
 
 export default {
   props: ['index', 'id', 'formCode'],

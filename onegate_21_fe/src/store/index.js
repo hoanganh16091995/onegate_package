@@ -1183,7 +1183,7 @@ export const store = new Vuex.Store({
           }
         }
         console.log('dataPut', data)
-        var strPings = data.pings.join();
+        var strPings = data.pings.join()
         var params = new URLSearchParams()
         params.append('className', data.className)
         params.append('classPK', data.classPK)
@@ -1197,7 +1197,7 @@ export const store = new Vuex.Store({
           if (response != null) {
             resPutCmt = response.data
           }
-          resolve(resPutCmt);
+          resolve(resPutCmt)
         })
         .catch(function (error) {
           // onError();
@@ -1218,7 +1218,7 @@ export const store = new Vuex.Store({
           resolve(response)
         })
         .catch(function (error) {
-          // onError();
+          // onError()
           console.log(error)
         })
       })
@@ -1264,7 +1264,132 @@ export const store = new Vuex.Store({
           })  
         }
       })
-    }
+    },
+    loadProcessStep ({commit, state}, data) {
+      let config = {
+        headers: {
+          'groupId': state.initData.groupId
+        }
+      }
+      var vm = this
+      var url = '/o/rest/v2/dossiers/' + data.dossierId + '/nextactions'
+      var urlPlugin = '/o/rest/v2/dossiers/' + data.dossierId + '/plugins'
+      return new Promise((resolve, reject) => {
+        axios.all([
+          axios.get(url, config),
+          axios.get(urlPlugin, config)
+          ]).then( axios.spread(function (urlRespones, urlPluginsRespones) {
+            var serializable = urlRespones.data.data
+            var serializablePlugins = urlPluginsRespones.data.data
+            var serializablePluginsConvert = []
+            var serializableNextActionConvert = []
+            if(serializable){
+              for (var i = 0; i < serializable.length; i++) {
+                serializable[i].type = 1
+                if(!serializable[i].autoEvent){
+                  if(serializable[i].configNote){
+                    var configNote = JSON.parse(serializable[i].configNote)
+                    serializable[i].configNote = configNote
+                  }
+                  serializableNextActionConvert.push(serializable[i])
+                }
+              }
+            }else {
+              serializable = []
+              serializableNextActionConvert = []
+            }
+            if (serializablePlugins) {
+              for (var i = 0; i < serializablePlugins.length; i++) {
+                var plugin = {
+                  type: 2,
+                  processActionId: serializablePlugins[i].processPluginId,
+                  actionName: serializablePlugins[i].pluginName
+                }
+                serializablePluginsConvert.push(plugin)
+              }
+            }
+            var nextactions = serializableNextActionConvert
+            var plugins = serializablePluginsConvert
+            resolve($.merge(nextactions, plugins ))
+          }))
+          .catch(function (error) {
+            console.log(error)
+            reject(error)
+          })
+        })
+      },
+      loadDossierDocuments ({commit, state}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            abc: data.abc
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data + '/documents'
+        return new Promise((resolve, reject) => {
+          axios.get(url, config).then(function (response) {
+            resolve(response.data.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
+      },
+      loadDossierPayments ({commit, state}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            abc: data.abc
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/payment'
+        return new Promise((resolve, reject) => {
+          axios.get(url, config).then(function (response) {
+            resolve(response.data.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
+      },
+      loadDossierActions ({commit, state}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            abc: data.abc
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
+        return new Promise((resolve, reject) => {
+          axios.get(url, config).then(function (response) {
+            resolve(response.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
+      },
+      loadDossierSyncs ({commit, state}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            abc: data.abc
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/syncs'
+        return new Promise((resolve, reject) => {
+          axios.get(url, config).then(function (response) {
+            resolve(response.data.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
+      }
     // ----End---------
   },
   mutations: {

@@ -6,7 +6,8 @@
     <!-- <tiep-nhan-ho-so-truc-tuyen-detail ref="tiepnhanhosotructuyendetail"></tiep-nhan-ho-so-truc-tuyen-detail> -->
     <!-- <tra-ket-qua-detail rè="traketquadetail"></tra-ket-qua-detail> -->
     <!-- <fee-detail ref="feedetail"></fee-detail> -->
-    <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail>
+    <!-- <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail> -->
+    <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo>
   </div>
 </template>
 
@@ -21,6 +22,7 @@ import TiepNhanHoSoDetail from './TiepNhanHoSoDetail.vue'
 import TiepNhanHoSoTrucTuyenDetail from './TiepNhanHoSoTrucTuyenDetail.vue'
 import TraKetQuaDetail from './TraKetQuaDetail.vue'
 import XemChiTietHoSoDetail from './XemChiTietHoSoDetail.vue'
+import XemChiTietHoSoDetailCanBo from './XemChiTietHoSoDetailCanBo.vue'
 
 export default {
   props: ['id', 'formCode'],
@@ -34,7 +36,8 @@ export default {
     'tiep-nhan-ho-so-detail': TiepNhanHoSoDetail,
     'tiep-nhan-ho-so-truc-tuyen-detail': TiepNhanHoSoTrucTuyenDetail,
     'tra-ket-qua-detail': TraKetQuaDetail,
-    'xem-chi-tiet-ho-so-detail': XemChiTietHoSoDetail
+    'xem-chi-tiet-ho-so-detail': XemChiTietHoSoDetail,
+    'xem-chi-tiet-ho-so-detail-can-bo': XemChiTietHoSoDetailCanBo
   },
   data: () => ({
     initData: null
@@ -45,12 +48,13 @@ export default {
       vm.$store.dispatch('loadInitResource').then(function (result) {
         vm.initData = result
         if (vm.initData !== null) {
-          console.log(vm.$refs.tiepnhanhosodetail)
+          // console.log(vm.$refs.tiepnhanhosodetail)
           // vm.$refs.tiepnhanhosodetail.initData(vm.id)
           // vm.$refs.hoanthienbosunghosodetail.initData(vm.id)
-          vm.$refs.traketquadetail.initData(vm.id)
-          vm.$refs.feedetail.initData(vm.id)
-          vm.$refs.chuyenphatketquadetail.initData(vm.id)
+          // vm.$refs.traketquadetail.initData(vm.id)
+          // vm.$refs.feedetail.initData(vm.id)
+          // vm.$refs.chuyenphatketquadetail.initData(vm.id)
+          vm.$refs.xemchitiethosodetailcanbo.initData(vm.id)
         }
       })
     })
