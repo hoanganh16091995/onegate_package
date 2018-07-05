@@ -182,7 +182,7 @@
         <v-tab key="2" class="mr-2" @click="loadDossierActions()">
         TIẾN TRÌNH THỤ LÝ
         </v-tab>
-        <v-tab key="3" class="mr-2">
+        <v-tab key="3" class="mr-2" @click="loadDossierLogs()">
         NHẬT KÝ HỒ SƠ
         </v-tab>
         <v-tab key="4" @click="getContacts()">
@@ -242,7 +242,6 @@
                   </v-flex>
                 </v-layout>
               </v-card>
-              
             </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
@@ -299,11 +298,22 @@
             </v-expansion-panel-content>
           </v-expansion-panel>
         </v-tab-item>
-        
         <v-tab-item key="2" style="background: #ffff;">
+          <!-- <v-layout row wrap>
+            <v-flex xs12 sm12>
+              <v-select
+              :items="filterDossierActionItems"
+              v-model="filterDossierAction"
+              label="Phân loại"
+              item-text="text"
+              item-value="value"
+              @change="loadDossierActions"
+              ></v-select>
+            </v-flex>
+          </v-layout> -->
           <div>
             <v-data-table :headers="headers" :items="dossierActions" class="table-landing table-bordered"
-            hide-actions
+            hide-actions no-data-text="Không có dữ liệu"
             >
             <template slot="headerCell" slot-scope="props">
               <v-tooltip bottom>
@@ -325,7 +335,7 @@
                 </div>
               </td>
               <td>
-                <span v-if="getMaxDueDate(props.item.actions) > 0" style="color: red">Quá hạn {{getMaxDueDate(props.item.actions)}} ngày</span>
+                <span v-if="getMaxDueDate(props.item.actions) > 0" style="color: red">Quá hạn {{props.item.actions|getMaxDueDate)}} ngày</span>
                 <span v-else style="color: blue">Đang thực hiện</span>
               </td>
             </template>
@@ -334,7 +344,7 @@
         </v-tab-item>
         <v-tab-item key="3" style="background: #ffff;">
           <div v-for="(item, index) in listHistoryProcessing" v-bind:key="item.dossierLogId" class="list_history_style">
-            <td class="px-2 pt-2" :class="index%2!==0?'col-tien-trinh-1':'col-tien-trinh-2'">{{ index + 1 }}</td>
+            <td class="px-2 pt-2" :class="index % 2 !== 0 ? 'col-tien-trinh-1' : 'col-tien-trinh-2'">{{ index + 1 }}</td>
             <td class="text-xs-left px-2 py-2">
               <p class="mb-2"> Ông/bà <b>{{ item.author }}</b> 
                 <span style="color: #0b72ba">( {{ item.payload.stepName }} )</span>
@@ -359,8 +369,18 @@
           <comment :classPK="id" :className="className"></comment>
         </v-tab-item>
         <v-tab-item key="5" style="background: #ffff;">
+          <!-- <div class="text-xs-right">
+            <v-select
+              :items="filterDossierSyncItems"
+              v-model="filterDossierSync"
+              label="Phân loại"
+              item-text="text"
+              item-value="value"
+              @change="loadDossierSyncs"
+            ></v-select>
+          </div> -->
           <v-data-table :headers="headerSyncs" :items="dossierSyncs" class="table-landing table-bordered"
-            hide-actions
+            hide-actions no-data-text="Không có dữ liệu"
             >
             <template slot="headerCell" slot-scope="props">
               <v-tooltip bottom>
@@ -380,14 +400,14 @@
               </td>
               <td class="text-xs-center">
                 <div v-if="props.item.actionCode === 8001 || props.item.actionCode === 8002">
-                  
+                  {{props.item.actionUser}} ({{props.item.createDate}}) <br>
+                  {{props.item.actionNote}}
                 </div>
               </td>
             </template>
           </v-data-table>
         </v-tab-item>
         <!-- <v-tab-item key="4" reverse-transition="slide-y-transition" transition="slide-y-transition">
-          
         </v-tab-item> -->
       </v-tabs>
     </div>
@@ -439,29 +459,41 @@ export default {
       align: 'center',
       sortable: false,
       class: 'ketqua_column'
-    }]
+    }],
+    headerSyncs: [{
+      text: 'Nhật kí hồ sơ',
+      align: 'center',
+      sortable: false,
+      class: 'nhatki_column'
+    }, {
+      text: 'Trao đổi trực tuyến',
+      align: 'center',
+      sortable: false,
+      class: 'traodoitructuyen_column'
+    }],
+    filterDossierActionItems: [{
+      text: 'Tất cả',
+      value: ''
+    }, {
+      text: 'Có thao tác thực hiện',
+      value: '1'
+    }, {
+      text: 'Không thao tác thực hiện',
+      value: '2'
+    }],
+    filterDossierAction: null,
+    filterDossierSyncItems: [{
+      text: 'Tất cả',
+      value: '1,2'
+    }, {
+      text: 'Thông tin trao đổi',
+      value: '2'
+    }],
+    filterDossierSync: null
   }),
   computed: {
     loading () {
       return this.$store.getters.loading
-    },
-    thongTinChungHoSo () {
-      return this.$store.getters.thongTinChungHoSo
-    },
-    thongTinChuHoSo () {
-      return this.$store.getters.thongTinChuHoSo
-    },
-    thongTinNguoiNopHoSo () {
-      return this.$store.getters.thongTinNguoiNopHoSo
-    },
-    lePhi () {
-      return this.$store.getters.lePhi
-    },
-    dichVuChuyenPhatKetQua () {
-      return this.$store.getters.dichVuChuyenPhatKetQua
-    },
-    dossierTemplates () {
-      return this.$store.getters.dossierTemplates
     }
   },
   watch: {},
@@ -498,21 +530,16 @@ export default {
               })
             }, 200)
           })
-          vm.$store.dispatch('loadProcessStep', resultDossier).then(resultProcess => {
-            vm.processSteps = resultProcess
-          })
-          vm.$store.dispatch('loadDossierDocuments', resultDossier.dossierId).then(resultDocuments => {
+          // vm.$store.dispatch('loadProcessStep', resultDossier).then(resultProcess => {
+          //   vm.processSteps = resultProcess
+          // })
+          vm.$store.dispatch('loadDossierDocuments', resultDossier).then(resultDocuments => {
             vm.documents = resultDocuments
           })
-          vm.$store.dispatch('loadDossierPayments', resultDossier.dossierId).then(resultPayments => {
+          vm.$store.dispatch('loadDossierPayments', resultDossier).then(resultPayments => {
             vm.payments = resultPayments
           })
         })
-      })
-      let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', data)
-      promiseHisProcessing.then(function (result) {
-        vm.listHistoryProcessing = []
-        vm.listHistoryProcessing = result
       })
     },
     goBack () {
@@ -533,27 +560,38 @@ export default {
       var vm = this
       vm.$store.dispatch('loadUsersComment', 1005)
     },
-    loadDossierActions () {
+    loadDossierActions (data) {
       var vm = this
       if (vm.thongTinChiTietHoSo.dossierId) {
-        vm.$store.dispatch('loadDossierActions', vm.thongTinChiTietHoSo.dossierId).then(resultActions => {
+        let dataParams = {
+          dossierId: vm.thongTinChiTietHoSo.dossierId,
+          stepType: data
+        }
+        vm.$store.dispatch('loadDossierActions', dataParams).then(resultActions => {
           vm.dossierActions = resultActions.data
         })
       }
     },
-    getMaxDueDate (arr) {
-      let maxDue = Math.max.apply(Math, arr.map(function (item) {
-        return item.actionOverdue
-      }))
-      return maxDue
-    },
-    loadDossierSyncs () {
+    loadDossierSyncs (data) {
       var vm = this
       if (vm.thongTinChiTietHoSo.dossierId) {
-        vm.$store.dispatch('loadDossierSyncs', vm.thongTinChiTietHoSo.dossierId).then(resultSyncs => {
+        let dataParams = {
+          dossierId: vm.thongTinChiTietHoSo.dossierId,
+          info: data
+        }
+        vm.$store.dispatch('loadDossierSyncs', dataParams).then(resultSyncs => {
           vm.dossierSyncs = resultSyncs
         })
       }
+    },
+    loadDossierLogs (data) {
+      var vm = this
+      data.dossierId = vm.thongTinChiTietHoSo.dossierId
+      let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', data)
+      promiseHisProcessing.then(function (result) {
+        vm.listHistoryProcessing = []
+        vm.listHistoryProcessing = result
+      })
     }
   },
   filters: {
@@ -564,6 +602,12 @@ export default {
       } else {
         return ''
       }
+    },
+    getMaxDueDate (arr) {
+      let maxDue = Math.max.apply(Math, arr.map(function (item) {
+        return item.actionOverdue
+      }))
+      return maxDue
     }
   }
 }

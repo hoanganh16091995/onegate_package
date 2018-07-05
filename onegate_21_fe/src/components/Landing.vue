@@ -185,7 +185,10 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/>
+              <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
+              <div v-if="showThongTinCoBanHoSo">
+                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="111"></thong-tin-co-ban-ho-so>
+              </div>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
@@ -262,11 +265,13 @@
 
 <script>
 import TinyPagination from './pagging/hanghai_pagination.vue'
+import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
 import router from '@/router'
 export default {
   props: ['index'],
   components: {
-    'tiny-pagination': TinyPagination
+    'tiny-pagination': TinyPagination,
+    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo
   },
   data: () => ({
     dialog_statusAction: false,

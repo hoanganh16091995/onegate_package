@@ -1044,7 +1044,7 @@ export const store = new Vuex.Store({
     setDefaultCityCode ({commit, state}, data) {
       state.thongTinChuHoSo.cityCode = data
     },
-    getListHistoryProcessingItems ({commit, state}, id){    
+    getListHistoryProcessingItems ({commit, state}, data){    
       var vm = this
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
@@ -1055,7 +1055,7 @@ export const store = new Vuex.Store({
             params: {}
           }
           var listHistoryProcessing = []
-          axios.get(state.initData.dossierlogsApi + '/' + id + '/logs', param).then(function (response) {
+          axios.get(state.initData.dossierlogsApi + '/' + data.dossierId + '/logs', param).then(function (response) {
             var serializable = response.data
             for (var key in serializable.data) {
               if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
@@ -1353,7 +1353,7 @@ export const store = new Vuex.Store({
             groupId: state.initData.groupId
           },
           params: {
-            abc: data.abc
+            // abc: dât.abc
           }
         }
         let url = state.initData.dossierApi + '/' + data + '/documents'
@@ -1371,7 +1371,7 @@ export const store = new Vuex.Store({
             groupId: state.initData.groupId
           },
           params: {
-            abc: data.abc
+            // abc: data.abc
           }
         }
         let url = state.initData.dossierApi + '/' + data.dossierId + '/payment'
@@ -1389,7 +1389,7 @@ export const store = new Vuex.Store({
             groupId: state.initData.groupId
           },
           params: {
-            abc: data.abc
+            stepType: data.stepType
           }
         }
         let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
@@ -1407,7 +1407,7 @@ export const store = new Vuex.Store({
             groupId: state.initData.groupId
           },
           params: {
-            abc: data.abc
+            info: data.info
           }
         }
         let url = state.initData.dossierApi + '/' + data.dossierId + '/syncs'
