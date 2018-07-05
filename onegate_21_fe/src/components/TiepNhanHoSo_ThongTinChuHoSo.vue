@@ -374,9 +374,8 @@ export default {
   },
   watch: {
     thongTinChuHoSo: {
-      handler: function () {
-        var vm = this
-        let value = vm.thongTinChuHoSo
+      handler: function (value) {
+        let vm = this
         let tempData = {
           delegateName: value.applicantName,
           delegateCityCode: value.cityCode,
@@ -387,14 +386,13 @@ export default {
           delegateTelNo: value.contactTelNo,
           delegateIdNo: value.applicantIdNo
         }
-        this.$store.dispatch('setThongTinNguoiNopHoSo', tempData)
+        vm.$store.commit('setThongTinNguoiNopHoSo', tempData)
       },
       deep: true
     },
     thongTinNguoiNopHoSo: {
-      handler: function () {
+      handler: function (value) {
         var vm = this
-        let value = vm.thongTinNguoiNopHoSo
         let dataChuHoSo = vm.thongTinChuHoSo
         if (value.sameUser) {
           let dataNguoiNop = {
@@ -407,7 +405,7 @@ export default {
             delegateTelNo: dataChuHoSo.contactTelNo,
             delegateIdNo: dataChuHoSo.applicantIdNo
           }
-          this.$store.dispatch('setThongTinNguoiNopHoSo', dataNguoiNop)
+          this.$store.commit('setThongTinNguoiNopHoSo', dataNguoiNop)
         } else {
           this.$store.dispatch('resetThongTinNguoiNopHoSo')
         }

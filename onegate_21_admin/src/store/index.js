@@ -62,6 +62,14 @@ export const store = new Vuex.Store({
             urlRequest = state.initData.getMenuConfigs
           } else if (filter.type === '3') {
             urlRequest = state.initData.getStepConfigs
+          } else if (filter.type === '4') {
+            urlRequest = state.initData.getServiceInfos
+          } else if (filter.type === '5') {
+            urlRequest = state.initData.getDossierTemplates
+          } else if (filter.type === '6') {
+            urlRequest = state.initData.getServiceProcesses
+          } else if (filter.type === '7') {
+            urlRequest = state.initData.getServiceConfigs
           }
           axios.get(urlRequest, param).then(function (response) {
             let serializable = response.data
