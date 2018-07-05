@@ -39,7 +39,7 @@
                 <content-placeholders-text :lines="1" />
               </content-placeholders>
               <v-layout row wrap class="flex__checkbox" v-else>
-                <v-flex style="width: 240px;" class="layout wrap">
+                <v-flex style="width: 270px;" class="layout wrap">
                   <v-checkbox light color="secondary" class="flex" v-model="thanhPhanHoSo.dossierTemplates[index].fileCheck"></v-checkbox>
                   <v-radio-group v-model="thanhPhanHoSo.dossierTemplates[index].fileType" row>
                     <v-radio :value="2" :disabled="!thanhPhanHoSo.dossierTemplates[index].fileCheck" ></v-radio>
@@ -79,7 +79,7 @@
             </div>
           </div>
           
-          <v-card-text>
+          <v-card-text class="note_trichyeu">
             <v-layout wrap>
               <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">

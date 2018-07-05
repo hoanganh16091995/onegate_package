@@ -209,6 +209,54 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialog_statusAction" scrollable persistent max-width="700px">
+      <v-card>
+        <v-card-title class="headline">
+          Trạng thái xử lý
+        </v-card-title>
+        <v-card-text style="max-height: 350px">
+          <div v-for="(item, index) in dossierSelected" v-bind:key="item.dossierIdCTN">
+            <v-layout wrap class="py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd;position:relative"> 
+              <v-flex xs11>
+                <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                <div class="ml-4">{{item.dossierIdCTN}} - {{item.serviceName}}</div>
+              </v-flex>
+              <v-flex xs1 class="text-right">
+                <v-tooltip top v-if="item.statusAction">
+                  <v-icon color="primary" slot="activator">
+                    check
+                  </v-icon>
+                  <span>Thành công</span>
+                </v-tooltip>
+                <v-tooltip top v-else>
+                  <v-icon color="red darken-3" slot="activator">
+                    clear
+                  </v-icon>
+                  <span>Thất bại</span>
+                </v-tooltip>
+              </v-flex>
+            </v-layout>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat="flat" @click.native="resend" 
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Thử lại &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+          <v-btn color="red darken-3" flat="flat" @click.native="dialog_statusAction = false"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Thoát &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -221,6 +269,39 @@ export default {
     'tiny-pagination': TinyPagination
   },
   data: () => ({
+    dialog_statusAction: false,
+    dossierSelected: [
+      {
+        dossierIdCTN: '18ACE289',
+        serviceName: 'Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất',
+        statusAction: false
+      },
+      {
+        dossierIdCTN: '18EC6501',
+        serviceName: 'Thủ tục Điều chỉnh quyết định thu hồi đất, giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất của Thủ tướng Chính phủ đã ban hành trước ngày 01/7/2004',
+        statusAction: true
+      },
+      {
+        dossierIdCTN: '18EC6312',
+        serviceName: 'Thủ tục Điều chỉnh quyết định thu hồi đất, giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất của Thủ tướng Chính phủ đã ban hành trước ngày 01/7/2004',
+        statusAction: false
+      },
+      {
+        dossierIdCTN: '18ACE299',
+        serviceName: 'Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất',
+        statusAction: false
+      },
+      {
+        dossierIdCTN: '20AA6501',
+        serviceName: 'Thủ tục Điều chỉnh quyết định thu hồi đất, giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất của Thủ tướng Chính phủ đã ban hành trước ngày 01/7/2004',
+        statusAction: true
+      },
+      {
+        dossierIdCTN: '20EC6312',
+        serviceName: 'Thủ tục Điều chỉnh quyết định thu hồi đất, giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất của Thủ tướng Chính phủ đã ban hành trước ngày 01/7/2004',
+        statusAction: false
+      }
+    ],
     valid: true,
     isCallBack: true,
     trangThaiHoSoList: null,
@@ -618,6 +699,9 @@ export default {
         }
         vm.processPullBtnDetailRouter(dossierItem, item, result)
       })
+    },
+    resend () {
+      alert('Thử lại')
     }
   }
 }

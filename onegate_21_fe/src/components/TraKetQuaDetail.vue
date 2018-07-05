@@ -1,201 +1,340 @@
 <template>
-  <div>
+  <div class="ketqua-detail">
     <content-placeholders class="mt-3" v-if="loading">
       <content-placeholders-text :lines="1" />
     </content-placeholders>
-    <div v-else class="row-header" style="margin-top: 6px;">
-      <div class="background-triangle-big"> TRẢ KẾT QUẢ </div> 
+    <div v-else class="row-header">
+      <div class="background-triangle-big"> <span>TRẢ KẾT QUẢ HỒ SƠ</span> </div>
       <div class="layout row wrap header_tools row-blue">
-        <div class="flex solo text-ellipsis">
-
-        </div> 
-        <div class="flex text-right" style="margin-left: auto;">
-          <v-btn flat class="my-0 mx-0 btn-border-left" @click="goBack" active-class="temp_active">
-            Quay lại &nbsp;
+        <div class="flex xs8 sm10 pl-3 text-ellipsis text-bold" >
+          {{thongTinChiTietHoSo.serviceName}}
+        </div>
+        <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
+          <v-btn flat class="my-0 mx-0 btn-border-left" @click="redirectBack" active-class="temp_active">
+          Quay lại &nbsp;
             <v-icon size="16">undo</v-icon>
           </v-btn>
         </div>
-      </div>
+      </div> 
     </div>
-    <v-layout row wrap>
-      <v-flex xs12 sm12>
-        <v-card class="mb-2">
-          <!-- <v-toolbar dark color="primary" height="40">
-            <v-toolbar-title class="white--text" style="font-size: 15px;">Thông tin chung</v-toolbar-title>
-            <v-spacer></v-spacer>
-          </v-toolbar> -->
-          <v-card-title primary-title>
-            <v-layout row wrap>
-              <v-flex xs12 sm6 class="mb-2">
-                <span>Loại hồ sơ: </span> 
-              </v-flex>
-              <v-flex xs12 sm6>
-                <v-chip small class="pl-0">
-                  Hồ sơ trực tuyến
-                </v-chip>
-              </v-flex>
-              <v-flex xs12 sm6 class="mb-2">
+    <v-expansion-panel expand class="expansion-p0">
+      <v-expansion-panel-content :value="true">
+        <div slot="header">
+          <div class="background-triangle-small">I. </div>THÔNG TIN HỒ SƠ
+        </div>
+        <v-card>
+          <v-card-text>
+            <v-layout wrap>
+              <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Mã hồ sơ: {{thongTinChiTietHoSo.dossierIdCTN}}</span> 
+                <v-subheader v-else class="pl-0 text-header">Thủ tục: </v-subheader>
               </v-flex>
-              <v-flex xs12 sm6 class="mb-2">
+              <v-flex xs12 sm10>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Ngày tiếp nhận: {{thongTinChiTietHoSo.receiveDate|dateTimeView}}</span>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.serviceName}} </v-subheader>
               </v-flex>
-              <v-flex xs12 sm6 class="mb-2">
+              <!--  -->
+              <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Chủ hồ sơ: {{thongTinChiTietHoSo.applicantName}}</span>
+                <v-subheader v-else class="pl-0">Mã hồ sơ: </v-subheader>
               </v-flex>
-              <v-flex xs12 sm12 class="mb-2">
+              <v-flex xs12 sm4>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Địa chỉ: {{thongTinChiTietHoSo.address}}</span>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.dossierIdCTN}}</v-subheader>
               </v-flex>
-              <v-flex xs12 sm6 class="mb-2">
+              <!--  -->
+              <v-flex xs12 sm2>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Người nộp: {{thongTinChiTietHoSo.delegateName}}</span>
+                <v-subheader v-else class="pl-0">Ngày tiếp nhận: </v-subheader>
               </v-flex>
-              <v-flex xs12 sm6 class="mb-2">
+              <v-flex xs12 sm4>
                 <content-placeholders class="mt-1" v-if="loading">
                   <content-placeholders-text :lines="1" />
                 </content-placeholders>
-                <span v-else>Số CMND: {{thongTinChiTietHoSo.applicantIdNo}}</span>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.receiveDate|dateTimeView}}</v-subheader>
               </v-flex>
-              <v-flex xs12 sm12 class="mb-3">
-                <span>Kết quả trả:</span>
-                <v-data-table
-                :headers="headers"
-                :items="resultFiles"
-                class="elevation-1 mt-2 table-landing table-bordered"
-                hide-actions
-                >
-                <template slot="items" slot-scope="props">
-                  <td class="text-xs-center" style="width: 5%;">{{ props.index + 1 }}</td>
-                  <td class="text-xs-left">{{ props.item.so_giay }}</td>
-                  <td class="text-xs-left">{{ props.item.ngay_cap }}</td>
-                  <td class="text-xs-left">{{ props.item.ten_giay }}</td>
-                </template>
-              </v-data-table>
+              <!--  -->
+              <v-flex xs12 sm2>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0">Chủ hồ sơ: </v-subheader>
               </v-flex>
-              <v-flex xs12 sm12>
-                <v-checkbox :label="'Phí phải nộp: ' + thongTinChiTietHoSo.fee + 'VNĐ'" v-model="checkboxFee"></v-checkbox> 
+              <v-flex xs12 sm10>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.applicantName}} </v-subheader>
               </v-flex>
-              <v-flex xs12 sm12>
-                <div class="text-right mt-2">
-                  <v-btn color="primary" v-on:click.native="daTra">
-                    Đã trả &nbsp;
-                    <v-icon>save</v-icon>
-                  </v-btn>
-                  <v-btn color="primary" @click="goBack">
-                    Quay lại &nbsp;
-                    <v-icon>undo</v-icon>
-                  </v-btn>
-                </div>
+              <!--  -->
+              <v-flex xs12 sm2>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0">Địa chỉ: </v-subheader>
+              </v-flex>
+              <v-flex xs12 sm10>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0 header-text-field">  {{thongTinChiTietHoSo.address}} </v-subheader>
+              </v-flex>
+              <!--  -->
+              <v-flex xs12 sm2>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0">Người nộp: </v-subheader>
+              </v-flex>
+              <v-flex xs12 sm4>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.delegateName}} </v-subheader>
+              </v-flex>
+              <!--  -->
+              <v-flex xs12 sm2>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0">Số CMND: </v-subheader>
+              </v-flex>
+              <v-flex xs12 sm4>
+                <content-placeholders class="mt-1" v-if="loading">
+                  <content-placeholders-text :lines="1" />
+                </content-placeholders>
+                <v-subheader v-else class="pl-0 header-text-field"> {{thongTinChiTietHoSo.applicantIdNo}} </v-subheader>
               </v-flex>
             </v-layout>
-          </v-card-title>
+          </v-card-text>
         </v-card>
-      </v-flex>
-    </v-layout>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    <!--  -->
+    <v-expansion-panel expand class="expansion-p0 ex-table">
+      <v-expansion-panel-content :value="true">
+        <div slot="header">
+          <div class="background-triangle-small"> II. </div>GIẤY TỜ TRẢ KẾT QUẢ
+        </div>
+        <v-card>
+          <v-card-text class="px-0">
+            <!--  -->
+            <content-placeholders v-if="loadingTable">
+              <content-placeholders-img />
+              <content-placeholders-heading />
+            </content-placeholders>
+            <v-data-table v-else
+              :headers="headers"
+              :items="resultFiles"
+              item-key="no"
+              class="table-bordered"
+              hide-actions
+              :no-data-text="'Không có giấy tờ trả kết quả'"
+            >
+              <template slot="headerCell" slot-scope="props">
+                <v-tooltip bottom>
+                  <span slot="activator">
+                    {{ props.header.text }}
+                  </span>
+                  <span>
+                    {{ props.header.text }}
+                  </span>
+                </v-tooltip>
+              </template>
+              <template slot="items" slot-scope="props">
+                <td class="text-xs-center" style="width:5%"> {{ props.index + 1 }} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.so_giay }} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.ngay_cap|dateTimeView }} </td>
+                <td class="text-xs-left" style="width:75%"> {{props.item.ten_giay}} </td>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+      </v-expansion-panel-content>
+    </v-expansion-panel>
+    <!--  -->
+    <v-flex xs12>
+      <content-placeholders class="mt-1" v-if="loading">
+        <content-placeholders-text :lines="1" />
+      </content-placeholders>
+      <div v-else class="pl-3 py-2 fee-info">
+        <v-checkbox :label="`Phí phải nộp: ${currency(thongTinChiTietHoSo.fee)} VNĐ`" v-model="checkPaid"></v-checkbox>
+        <span class="red--text">* </span> Đánh dấu để xác định người làm thủ tục đã hoàn thành nộp phí.
+      </div>
+    </v-flex>
+    <!--  -->
+    <v-flex xs12 sm12>
+      <div class="text-right mt-2">
+        <v-btn color="primary" @click="daTra">
+          Đã trả &nbsp;
+          <v-icon>save</v-icon>
+        </v-btn>
+        <v-btn color="primary" @click="redirectBack">
+          Quay lại &nbsp;
+          <v-icon>undo</v-icon>
+        </v-btn>
+      </div>
+    </v-flex>
+    <!--  -->
+    <v-dialog v-model="dialog_add_dined" persistent max-width="500px">
+      <v-card>
+        <v-card-text>
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12>
+                <v-text-field v-model="note_reason" placeholder="Nhập lý do từ chối" multi-line></v-text-field>
+              </v-flex>
+            </v-layout>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" flat="flat" @click.native="submitAddReason(note_reason)"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Chấp nhận &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+          <v-btn color="red darken-3" flat="flat" @click.native="dialog_add_dined = false"
+            :loading="loadingAction"
+            :disabled="loadingAction"
+          >
+            Bỏ qua &nbsp;
+            <span slot="loader">Loading...</span>
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
+
 <script>
-  export default {
-    data: () => ({
-      checkboxFee: false,
-      resultFiles: [{
-        so_giay: 'ABC#1234',
-        ngay_cap: '1/6/2018',
-        ten_giay: 'Giấy chứng nhận abcxyz.....'
-      }],
-      thongTinChiTietHoSo: {
-        dossierIdCTN: '182CB683',
-        receiveDate: 1529409276000,
-        applicantName: 'Lê việt Đức',
-        dossierId: '67501',
-        address: 'Phường Tân Hồng, Thị xã Từ Sơn, Tỉnh Bắc Ninh',
-        releaseDate: 1529409276000,
-        dossierStatusText: 'Đang xử lý',
-        durationDate: 3,
-        delegateName: 'Lê việt Đức',
-        applicantIdNo: '123456778',
-        fee: '1.000.000.000'
-      },
-      headers: [{
-        text: 'STT',
-        align: 'center',
-        sortable: false,
-        value: 'stt'
-      },
-      {
-        text: 'Số giấy',
-        align: 'left',
-        sortable: true,
-        value: 'so_giay'
-      },
-      {
-        text: 'Ngày cấp',
-        align: 'left',
-        sortable: true,
-        value: 'ngay_cap'
-      },
-      {
-        text: 'Tên giấy',
-        align: 'left',
-        sortable: true,
-        value: 'ten_giay'
-      }]
-    }),
-    computed: {
-      loading () {
-        return this.$store.getters.loading
-      }
+import router from '@/router'
+export default {
+  props: ['index', 'id'],
+  data: () => ({
+    dialog_add_dined: false,
+    loadingAction: false,
+    note_reason: '',
+    resultFiles: [{
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
     },
-    components: {
+    {
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
     },
-    created () {
+    {
+      so_giay: 'ABC#1234',
+      ngay_cap: 1529633042000,
+      ten_giay: 'Giấy chứng nhận abcxyz.....'
+    }
+    ],
+    thongTinChiTietHoSo: {
+      serviceName: 'Đăng ký, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở và tài sản khác gắn liền với đất lần đầu đối với tài sản gắn liền với đất mà chủ sở hữu không đồng thời là người sử dụng đất',
+      dossierIdCTN: '182CB683',
+      receiveDate: 1529409276000,
+      applicantName: 'Lê việt Đức',
+      dossierId: '67501',
+      address: 'Phường Tân Hồng, Thị xã Từ Sơn, Tỉnh Bắc Ninh',
+      releaseDate: 1529409276000,
+      dossierStatusText: 'Đang xử lý',
+      durationDate: 3,
+      delegateName: 'Lê việt Đức',
+      applicantIdNo: '123456778',
+      fee: 1000000
     },
-    watch: {
+    headers: [{
+      text: 'STT',
+      align: 'center',
+      sortable: false
     },
-    methods: {
-      initData (data) {
-        var vm = this
-        vm.$store.dispatch('getDetailDossier', data).then(resultDossier => {
-          vm.thongTinChiTietHoSo = resultDossier
+    {
+      text: 'Số giấy',
+      align: 'center',
+      sortable: false
+    },
+    {
+      text: 'Ngày cấp',
+      align: 'center',
+      sortable: false
+    },
+    {
+      text: 'Tên giấy tờ',
+      align: 'center',
+      sortable: false
+    }
+    ],
+    checkPaid: false
+  }),
+  computed: {
+    loading () {
+      return this.$store.getters.loading
+    },
+    loadingTable () {
+      return this.$store.getters.loadingTable
+    }
+  },
+  created () {
+    var vm = this
+    vm.$nextTick(function () {})
+  },
+  methods: {
+    initData (data) {
+      var vm = this
+      vm.$store.dispatch('getDetailDossier', vm.id).then(resultDossier => {
+        vm.thongTinChiTietHoSo = resultDossier
+        vm.$store.dispatch('loadAllDossierTemplates', vm.$store.getters.thongTinChungHoSo).then(function (result) {
+          vm.resultFiles = result.filter((val, index) => {
+            return val.partType === 2
+          })
+        }).catch(function (reject) {
+          console.log(reject)
         })
-      },
-      goBack () {
-        window.history.back()
-      },
-      daTra () {
-        console.log('Đã tra')
-      }
+      }).catch(reject => {
+        console.log(reject)
+      })
     },
-    filters: {
-      dateTimeView (arg) {
-        if (arg) {
-          let value = new Date(arg)
-          return `${value.getDate().toString().padStart(2, '0')}/${(value.getMonth() + 1).toString().padStart(2, '0')}/${value.getFullYear()} | ${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`
-        }
-        //  else {
-        //   if (!arg) {
-        //     return ''
-        //   }
-        //   const [date, time] = date.split(' ')
-        //   const [day, month, year] = date.split('/')
-        //   const [hour, minute] = time.split(':')
-        //   return `${day.toString().padStart(2, '0')}/${(month + 1).toString().padStart(2, '0')}/${year} | ${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`
-        // }
+    submitAddReason (reason) {
+      var vm = this
+      console.log('note_reason', reason)
+    },
+    daTra () {
+      console.log('SUCCESS')
+    },
+    redirectBack () {
+      window.history.back()
+    },
+    currency (value) {
+      if (value) {
+        let moneyCur = (value / 1).toFixed(0).replace('.', ',')
+        return moneyCur.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
+      }
+      return ''
+    }
+  },
+  filters: {
+    dateTimeView (arg) {
+      if (arg) {
+        let value = new Date(arg)
+        return `${value.getDate().toString().padStart(2, '0')}/${(value.getMonth() + 1).toString().padStart(2, '0')}/${value.getFullYear()}`
+      } else {
+        return ''
       }
     }
   }
+}
 </script>
