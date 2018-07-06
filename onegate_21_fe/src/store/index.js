@@ -1320,6 +1320,7 @@ export const store = new Vuex.Store({
     // Action for comment office - Ý kiến chính thức
     getcomment_official ({commit, state}, data) {
       var vm = this
+      commit('setLoading', true)
       return new Promise((resolve, reject) => {
         let param = {
           headers: {
@@ -1331,8 +1332,10 @@ export const store = new Vuex.Store({
         }
         axios.get(state.initData.commentApi + '/' + data.className + '/' + data.classPK, param).then(function (response) {
           resolve(response.data.data)
+          commit('setLoading', false)
         })
         .catch(function (error) {
+          commit('setLoading', false)
           reject(error)
         })
       })

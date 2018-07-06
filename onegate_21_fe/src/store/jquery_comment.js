@@ -1,5 +1,5 @@
 /* eslint-disable */
-
+var argShowMore2;
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -1205,7 +1205,6 @@
 
 			createHTML: function() {
 					var self = this;
-
 					// Commenting field
 					var mainCommentingField = this.createCommentingFieldElement();
 					mainCommentingField.addClass('main');
@@ -1227,11 +1226,20 @@
 					this.$el.append(spinner);
 
 					// Comments container
-					var commentsContainer = $('<div/>', {
-							'class': 'data-container',
-							'data-container': 'comments'
-					});
-					this.$el.append(commentsContainer);
+					if(argShowMore2) {
+						var commentsContainer = $('<div/>', {
+								'class': 'data-container overflowComment fullEl',
+								'data-container': 'comments'
+						});
+						this.$el.append(commentsContainer);
+					} else {
+						var commentsContainer = $('<div/>', {
+								'class': 'data-container overflowComment lessEl',
+								'data-container': 'comments'
+						});
+						this.$el.append(commentsContainer);
+					}
+					
 
 					// "No comments" placeholder
 					var noComments = $('<div/>', {
@@ -2015,7 +2023,11 @@
 
 			getComments: function() {
 					var self = this;
-					
+					if (self.commentsById.length > 3) {
+						argShowMore2 = true
+					} else {
+						argShowMore2 = false
+					}
 					return Object.keys(this.commentsById).map(function(id){return self.commentsById[id]});
 			},
 

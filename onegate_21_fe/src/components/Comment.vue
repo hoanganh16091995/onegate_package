@@ -3,8 +3,16 @@
     <div style="position: relative; overflow: hidden" class="jquery-comments comp_activity_comment">
       <v-expansion-panel class="expansion-pl-transparent" >
         <v-expansion-panel-content hide-actions :value="true" class="activity_comment">
-          <div slot="header"><div class="background-triangle-small"> <v-icon size="18" color="white">star_rate</v-icon> </div>Ý KIẾN CHÍNH THỨC</div>
-          <v-card>
+          <div slot="header">
+            <div class="background-triangle-small"> 
+              <v-icon size="18" color="white">star_rate</v-icon> 
+            </div>
+            Ý KIẾN CHÍNH THỨC
+          </div>
+          <content-placeholders v-if="loading">
+            <content-placeholders-text :lines="5" />
+          </content-placeholders>
+          <v-card v-else>
             <v-card-text>
               <div class="panel-heading">
                 <div class="px-0 py-0">
@@ -28,7 +36,7 @@
                       </v-btn>
                     </v-flex>
                   </div>
-                  <div class="overflowComment" :class="argStyle?'fullEl':'lessEl'">
+                  <div class="overflowComment" :class="argShowMore?'fullEl':'lessEl'">
                     <v-layout wrap class="mx-0 " v-for="item in comment_official" :key="item.commentId" v-if="item.commentId">
                       <v-flex xs12 class="commentClass mt-1 pb-1">
                         <div class="media">
@@ -47,8 +55,8 @@
                       </v-flex>
                     </v-layout>
                   </div>
-                  <v-flex v-if="!argStyle"><span class="action-show primary--text mx-2 my-2" @click="clickXemthem">Xem thêm</span></v-flex>
-                  <v-flex v-if="argStyle"><span class="action-show primary--text mx-2 my-2" @click="clickXemthem">Rút gọn</span></v-flex>
+                  <v-flex v-if="!argShowMore"><span class="action-show primary--text mx-2 my-2" @click="showMore">Xem thêm</span></v-flex>
+                  <v-flex v-if="argShowMore"><span class="action-show primary--text mx-2 my-2" @click="showMore">Rút gọn</span></v-flex>
                 </div>
               </div>
             </v-card-text>
@@ -60,12 +68,21 @@
     <div>
       <v-expansion-panel class="expansion-pl-transparent">
         <v-expansion-panel-content hide-actions :value="true">
-          <div slot="header"><div class="background-triangle-small"> <v-icon size="18" color="white">star_rate</v-icon> </div>Ý KIẾN TRAO ĐỔI</div>
-          <v-card class="comments__container">
+          <div slot="header">
+            <div class="background-triangle-small"> 
+              <v-icon size="18" color="white">star_rate</v-icon> 
+            </div>
+            Ý KIẾN TRAO ĐỔI
+          </div>
+          
+          <v-card class="comments__container" >
             <v-card-text>
               <div id="comments-container-el"></div>
+              <v-flex v-if="argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Xem thêm</span></v-flex>
+              <v-flex v-if="!argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Rút gọn</span></v-flex>
             </v-card-text>
           </v-card>
+          
         </v-expansion-panel-content>
       </v-expansion-panel>
     </div>
@@ -98,7 +115,8 @@ export default {
     comment_official: [],
     official_opinion: '',
     commentId: '',
-    argStyle: true,
+    argShowMore: true,
+    argShowMore2: true,
     commentValue: true,
     comment_hidden: true,
     comment: [],
@@ -392,9 +410,9 @@ export default {
         }
         vm.comment_official = result
         if (result.length > 3) {
-          vm.argStyle = false
+          vm.argShowMore = false
         } else {
-          vm.argStyle = true
+          vm.argShowMore = true
         }
         console.log('result', result)
       })
@@ -449,9 +467,20 @@ export default {
         })
       }
     },
-    clickXemthem: function () {
+    showMore: function () {
       var vm = this
-      vm.argStyle = !vm.argStyle
+      vm.argShowMore = !vm.argShowMore
+    },
+    showMore2: function () {
+      var vm = this
+      vm.argShowMore2 = !vm.argShowMore2
+      if (vm.argShowMore2) {
+        $('.data-container').removeClass('fullEl')
+        $('.data-container').addClass('lessEl')
+      } else {
+        $('.data-container').removeClass('lessEl')
+        $('.data-container').addClass('fullEl')
+      }
     },
     nameCreateCmt (userId, name) {
       var vm = this
@@ -499,7 +528,7 @@ export default {
   .comp_activity_comment .commentClass .contentClass{
     white-space: pre-line;
   }
-  .comp_activity_comment .action-show{
+  .action-show{
     float: right;
     cursor: pointer;
   }
