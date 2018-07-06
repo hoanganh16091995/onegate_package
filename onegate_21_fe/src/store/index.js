@@ -1231,8 +1231,7 @@ export const store = new Vuex.Store({
           resolve(response)
         })
         .catch(function (error) {
-          // onError();
-          console.log(error)
+          reject(error)
         })
       })
     },

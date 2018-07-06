@@ -727,8 +727,8 @@ http://viima.github.io/jquery-comments/*/
 	background-color: rgb(181, 181, 181);
 }
 .fullEl {
-	height: auto;
-	overflow: hidden
+	max-height: 600px;
+	overflow: auto
 }
 .lessEl {
 	height: 300px;

@@ -1,5 +1,6 @@
 <template>
   <div class="comment-temp">
+    <!-- Component Ý kiến chính thức -->
     <div style="position: relative; overflow: hidden" class="jquery-comments comp_activity_comment">
       <v-expansion-panel class="expansion-pl-transparent" >
         <v-expansion-panel-content hide-actions :value="true" class="activity_comment">
@@ -64,7 +65,7 @@
         </v-expansion-panel-content>
       </v-expansion-panel>
     </div>
-
+    <!-- Component Trao đổi thảo luận -->
     <div>
       <v-expansion-panel class="expansion-pl-transparent">
         <v-expansion-panel-content hide-actions :value="true">
@@ -72,7 +73,7 @@
             <div class="background-triangle-small"> 
               <v-icon size="18" color="white">star_rate</v-icon> 
             </div>
-            Ý KIẾN TRAO ĐỔI
+            TRAO ĐỔI THÔNG TIN
           </div>
           
           <v-card class="comments__container" >
@@ -111,18 +112,14 @@ export default {
         pictureUrl: 'https://app.viima.com/static/media/user_profiles/user-icon.png'
       }
     ],
-    userId: 101,
+    comment: [],
+    argShowMore: true,
+    //
+    userId: 111,
     comment_official: [],
     official_opinion: '',
     commentId: '',
-    argShowMore: true,
-    argShowMore2: true,
-    commentValue: true,
-    comment_hidden: true,
-    comment: [],
-    less: true,
-    hidden__text: false,
-    expanded: true
+    argShowMore2: true
   }),
   computed: {
     loading () {
@@ -191,30 +188,27 @@ export default {
         upvoteCount: 'upvoteCount',
         userHasUpvoted: 'userHasUpvoted',
         email: 'email',
+        opinion: 'opinion',
         className: 'className',
         classPK: 'classPK'
       },
       timeFormatter: function (time) {
-        if (time !== null) {
-          var dt = time.split(/\ |\s/)
-          if (dt.length === 2) {
-            var d = dt[0].split(/\-|\s/)
-            return (d.slice(0, 3).reverse().join('/')) + ' ' + dt[1]
-          } else {
-            return time
-          }
+        if (time) {
+          let value = new Date(time)
+          return `${value.getDate().toString().padStart(2, '0')}/${(value.getMonth() + 1).toString().padStart(2, '0')}/${value.getFullYear()} ${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`
+        } else {
+          return ''
         }
-        return ''
       },
       getUsers: function (onSuccess, onError) {
         onSuccess(vm.usersComment)
       },
       getComments: function (onSuccess, onError) {
-        let data = {
+        var dataGet = {
           'classPK': vm.classPK,
           'className': vm.className
         }
-        let promise = vm.$store.dispatch('loadCommentItems', data)
+        let promise = vm.$store.dispatch('loadCommentItems', dataGet)
         promise.then(result => {
           var data = []
           $.each(result, function (index, item) {
@@ -251,6 +245,8 @@ export default {
         data.className = vm.className
         vm.$store.dispatch('deleteComment', data).then(result => {
           onSuccess()
+        }).catch(reject => {
+          console.log(reject)
         })
       },
       upvoteComment: function (data, onSuccess, onError) {
@@ -260,6 +256,8 @@ export default {
           vm.comment = result
           vm.formatComment(vm.comment)
           onSuccess(vm.comment)
+        }).catch(reject => {
+          console.log(reject)
         })
       },
       uploadAttachments: function (comments, onSuccess, onError) {
@@ -318,46 +316,46 @@ export default {
             }
           })
         })
-      },
-      appendNewComments: function (commentJSONs, onSuccess, onError) {
-        const config = {
-          headers: {
-            'groupId': vm.group_id
-          }
-        }
-        let commentById = {}
-        let oldCommentsId = commentJSONs.map(function (c) {
-          commentById[c.id] = c.id + '' + c.userHasUpvoted + '' + c.upvoteCount + '' + c.content
-          return c.id
-        })
-        let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.classPK + '?start=0&end=10&sort=modified_Number&order=true'
-        axios.get(url, config).then(function (response) {
-          let data = []
-          let dataEdited = []
-          if (response.hasOwnProperty('data')) {
-            var serializable = response.data.data
-            let curId = 0
-            let code = ''
-            for (var key in serializable) {
-              vm.comment = serializable[key]
-              curId = vm.comment['commentId']
-              code = vm.comment['commentId'] + '' + vm.comment['userHasUpvoted'] + '' + vm.comment['upvoteCount'] + '' + vm.comment['content']
-              vm.formatComment(vm.comment)
-              /* check return if not exist */
-              if (oldCommentsId.indexOf(curId) === -1) {
-                data.push(vm.comment)
-              } else if (code !== commentById[curId]) {
-                /* if have changed */
-                dataEdited.push(vm.comment)
-              }
-            }
-            onSuccess(data, dataEdited)
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
       }
+      // appendNewComments: function (commentJSONs, onSuccess, onError) {
+      //   const config = {
+      //     headers: {
+      //       'groupId': vm.group_id
+      //     }
+      //   }
+      //   let commentById = {}
+      //   let oldCommentsId = commentJSONs.map(function (c) {
+      //     commentById[c.id] = c.id + '' + c.userHasUpvoted + '' + c.upvoteCount + '' + c.content
+      //     return c.id
+      //   })
+      //   let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.classPK + '?start=0&end=10&sort=modified_Number&order=true'
+      //   axios.get(url, config).then(function (response) {
+      //     let data = []
+      //     let dataEdited = []
+      //     if (response.hasOwnProperty('data')) {
+      //       var serializable = response.data.data
+      //       let curId = 0
+      //       let code = ''
+      //       for (var key in serializable) {
+      //         vm.comment = serializable[key]
+      //         curId = vm.comment['commentId']
+      //         code = vm.comment['commentId'] + '' + vm.comment['userHasUpvoted'] + '' + vm.comment['upvoteCount'] + '' + vm.comment['content']
+      //         vm.formatComment(vm.comment)
+      //         /* check return if not exist */
+      //         if (oldCommentsId.indexOf(curId) === -1) {
+      //           data.push(vm.comment)
+      //         } else if (code !== commentById[curId]) {
+      //           /* if have changed */
+      //           dataEdited.push(vm.comment)
+      //         }
+      //       }
+      //       onSuccess(data, dataEdited)
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error)
+      //   })
+      // }
     })
   },
   methods: {
@@ -380,9 +378,10 @@ export default {
         vm.comment.pictureUrl = 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png'
       }
       vm.comment.fullname = comment.fullname
+      vm.comment.opinion = comment.opinion
       vm.comment.pings = comment.pings.toString().split(',')
-      vm.comment.createdDate = vm.dateTimeView(vm.comment.createDate)
-      vm.comment.modifiedDate = vm.dateTimeView(vm.comment.modifiedDate)
+      vm.comment.createdDate = vm.comment.createDate
+      vm.comment.modifiedDate = vm.comment.modifiedDate
     },
     dateTimeView (arg) {
       if (arg) {
@@ -564,8 +563,8 @@ export default {
     background-color: rgb(181, 181, 181);
   }
   .fullEl {
-    height: auto;
-    overflow: hidden
+    max-height: 500px;
+    overflow: auto
   }
   .lessEl {
     height: 250px;

@@ -197,7 +197,7 @@
         <v-tab key="2" class="mr-2">
         TIẾN TRÌNH XỬ LÝ
         </v-tab>
-        <v-tab key="3" @click="getContacts()">
+        <v-tab key="3">
           TRAO ĐỔI THÔNG TIN
         </v-tab>
         <!-- <v-tab key="4" class="mr-2">

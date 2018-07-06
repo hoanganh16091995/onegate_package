@@ -123,6 +123,7 @@ var argShowMore2;
 				textareaPlaceholderText: 'Thêm bình luận mới',
 				newestText: 'Mới nhất',
 				oldestText: 'Cũ nhất',
+				importantCmtText: 'Kết luận',
 				popularText: 'Phổ biến',
 				attachmentsText: 'Tệp đính kèm',
 				sendText: 'Gửi',
@@ -167,8 +168,8 @@ var argShowMore2;
 				fieldMappings: {
 					id: 'id',
 					parent: 'parent',
-					created: 'created',
-					modified: 'modified',
+					created: 'createdDate',
+					modified: 'modifiedDate',
 					content: 'content',
 					file: 'file',
 					fileURL: 'file_url',
@@ -383,6 +384,9 @@ var argShowMore2;
 
 					// Create attachments if enabled
 					if(this.options.enableAttachments) this.createAttachments(); 
+					
+					// Create important comment
+					this.createImportantComments();
 
 					// Remove spinner
 					this.$el.find('> .spinner').remove();
@@ -400,7 +404,7 @@ var argShowMore2;
 
 			createComments: function() {
 					var self = this;
-
+					console.log('create commentsList')
 					// Create the list element before appending to DOM in order to reach better performance
 					this.$el.find('#comment-list').remove();
 					var commentList = $('<ul/>', {
@@ -438,7 +442,7 @@ var argShowMore2;
 
 			createAttachments: function() {
 					var self = this;
-
+					console.log('create acttachmentsList')
 					// Create the list element before appending to DOM in order to reach better performance
 					this.$el.find('#attachment-list').remove();
 					var attachmentList = $('<ul/>', {
@@ -456,7 +460,27 @@ var argShowMore2;
 					// Appned list to DOM
 					this.$el.find('[data-container="attachments"]').prepend(attachmentList);
 			},
+			createImportantComments: function() {
+					var self = this;
+					console.log('create importantCmtList')
+					// Create the list element before appending to DOM in order to reach better performance
+					this.$el.find('#importantCmt-list').remove();
+					var importantCmtList = $('<ul/>', {
+							id: 'importantCmt-list',
+							'class': 'main'
+					});
 
+					var importantCmt = this.getImportantCmt();
+					console.log("importantCmt", importantCmt)
+					this.sortComments(importantCmt, 'newest');
+					importantCmt.reverse();    // Reverse the order as they are prepended to DOM
+					$(importantCmt).each(function(index, commentModel) {
+							self.addImportantCmt(commentModel, importantCmtList);
+					});
+
+					// Appned list to DOM
+					this.$el.find('[data-container="importantCmt"]').prepend(importantCmtList);
+			},
 			addComment: function(commentModel, commentList) {
 				commentList = commentList || this.$el.find('#comment-list');
 				var commentEl = this.createCommentElement(commentModel);
@@ -491,11 +515,17 @@ var argShowMore2;
 			},
 
 			addAttachment: function(commentModel, commentList) {
+				console.log("addAttachment")
 				commentList = commentList || this.$el.find('#attachment-list');
 				var commentEl = this.createCommentElement(commentModel);
 				commentList.prepend(commentEl);
 			},
-
+			addImportantCmt: function(commentModel, commentList) {
+				console.log("addImportantCmt")
+				commentList = commentList || this.$el.find('#importantCmt-list');
+				var commentEl = this.createCommentElement(commentModel);
+				commentList.prepend(commentEl);
+			},
 			removeComment: function(commentId) {
 				var self = this;
 				var commentModel = this.commentsById[commentId];
@@ -676,12 +706,11 @@ var argShowMore2;
 											return createdB - createdA;
 									}
 							});
-
 					// Sort by date
 					} else {
 							comments.sort(function(commentA, commentB) {
-									var createdA = new Date(commentA.created).getTime();
-									var createdB = new Date(commentB.created).getTime();
+									var createdA = (new Date(commentA.created)).getTime();
+									var createdB = (new Date(commentB.created)).getTime();
 									if(sortKey == 'oldest') {
 											return createdA - createdB;
 									} else {
@@ -781,7 +810,6 @@ var argShowMore2;
 					if(sortKey != 'attachments') {
 							this.sortAndReArrangeComments(sortKey);
 					}
-
 					// Save the current sort key
 					this.currentSortKey = sortKey;
 					this.showActiveSort();
@@ -1255,7 +1283,12 @@ var argShowMore2;
 					}
 					noComments.prepend($('<br/>')).prepend(noCommentsIcon);            
 					commentsContainer.append(noComments);
-
+					// important Comment Container
+					var importantCmtContainer = $('<div/>', {
+							'class': 'data-container',
+							'data-container': 'importantCmt'
+					});
+					this.$el.append(importantCmtContainer);
 					// Attachments
 					if(this.options.enableAttachments) {
 
@@ -1374,15 +1407,15 @@ var argShowMore2;
 					if(existingCommentId) {
 							var saveButtonText = this.options.textFormatter(this.options.saveText);
 
-							// Delete button
-							var deleteButton = $('<span/>', {
-									'class': 'delete',
-									text: this.options.textFormatter(this.options.deleteText)
-							}).css('background-color', this.options.deleteButtonColor);
-							controlRow.append(deleteButton);
+							// Delete button Edit Comment
+							// var deleteButton = $('<span/>', {
+							// 		'class': 'delete',
+							// 		text: this.options.textFormatter(this.options.deleteText)
+							// }).css('background-color', this.options.deleteButtonColor);
+							// controlRow.append(deleteButton);
 
-							// Enable the delete button only if the user is allowed to delete
-							if(this.isAllowedToDelete(existingCommentId)) deleteButton.addClass('enabled')
+							// // Enable the delete button only if the user is allowed to delete
+							// if(this.isAllowedToDelete(existingCommentId)) deleteButton.addClass('enabled')
 
 					} else {
 							var saveButtonText = this.options.textFormatter(this.options.sendText);
@@ -1580,7 +1613,12 @@ var argShowMore2;
 							'data-sort-key': 'oldest',
 							'data-container-name': 'comments'
 					});
-
+					// Important
+					var important = $('<li/>', {
+							text: this.options.textFormatter(this.options.importantCmtText),
+							'data-sort-key': 'important',
+							'data-container-name': 'importantCmt'
+					});
 					// Popular
 					var popular = $('<li/>', {
 							text: this.options.textFormatter(this.options.popularText),
@@ -1625,8 +1663,8 @@ var argShowMore2;
 
 
 					// Populate elements
-					navigationWrapper.append(newest).append(oldest);
-					dropdownNavigation.append(newest.clone()).append(oldest.clone());
+					navigationWrapper.append(newest).append(oldest).append(important);
+					dropdownNavigation.append(newest.clone()).append(oldest.clone()).append(important.clone());
 
 					if(this.options.enableReplying || this.options.enableUpvoting) {
 							navigationWrapper.append(popular);
@@ -2043,7 +2081,9 @@ var argShowMore2;
 			getAttachments: function() {
 					return this.getComments().filter(function(comment){return comment.fileURL != undefined});
 			},
-
+			getImportantCmt: function() {
+					return this.getComments().filter(function(comment){return comment.opinion == true});
+			},
 			getOutermostParent: function(directParentId) {
 					var parentId = directParentId;
 					do {
