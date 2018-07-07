@@ -1,70 +1,5 @@
 <template>
   <div class="comment-temp">
-    <!-- Component Ý kiến chính thức -->
-    <div style="position: relative; overflow: hidden" class="jquery-comments comp_activity_comment">
-      <v-expansion-panel class="expansion-pl-transparent" >
-        <v-expansion-panel-content hide-actions :value="true" class="activity_comment">
-          <div slot="header">
-            <div class="background-triangle-small"> 
-              <v-icon size="18" color="white">star_rate</v-icon> 
-            </div>
-            Ý KIẾN CHÍNH THỨC
-          </div>
-          <content-placeholders v-if="loading">
-            <content-placeholders-text :lines="5" />
-          </content-placeholders>
-          <v-card v-else>
-            <v-card-text>
-              <div class="panel-heading">
-                <div class="px-0 py-0">
-                  <div row class="mx-0 mb-2" v-if="commentId === ''">
-                    <v-layout wrap>
-                      <img src="https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png" class="profile-picture">
-                      <v-text-field
-                        class="textarea-wrapper xs12"
-                        placeholder="Nhập ý kiến chính thức"
-                        textarea
-                        rows="2"
-                        v-model="official_opinion"
-                      ></v-text-field>
-                    </v-layout>
-                    <v-flex text-right>
-                      <v-btn small class="primary mr-2" @click="addCmtOfficial" style="height: 24px;width: 71px">
-                        Lưu
-                      </v-btn>
-                      <v-btn small class="primary" @click="official_opinion = ''" style="height: 24px;width: 71px">
-                        Xóa
-                      </v-btn>
-                    </v-flex>
-                  </div>
-                  <div class="overflowComment" :class="argShowMore?'fullEl':'lessEl'">
-                    <v-layout wrap class="mx-0 " v-for="item in comment_official" :key="item.commentId" v-if="item.commentId">
-                      <v-flex xs12 class="commentClass mt-1 pb-1">
-                        <div class="media">
-                          <img :src="item.pictureUrl" class="profile-picture">
-                          <div class="media-body">
-                            <div class="media-heading"><span class="text-bold name highlight-font-bold">{{nameCreateCmt(item.userId, item.fullname)}}</span>
-                              <span class="time_right text-gray mt-1 mr-2">{{item.createDate|dateTimeView}}</span>
-                            </div>
-                            <div class="contentClass">{{item.content}}</div>
-                            <span class="action" v-if="userId === item.userId">
-                              <button class="action-delete" @click="deleteCmtOfficial">Xóa</button>
-                              <i class="fas fa-trash" style="color: red"></i>
-                            </span>
-                          </div>
-                        </div>
-                      </v-flex>
-                    </v-layout>
-                  </div>
-                  <v-flex v-if="!argShowMore"><span class="action-show primary--text mx-2 my-2" @click="showMore">Xem thêm</span></v-flex>
-                  <v-flex v-if="argShowMore"><span class="action-show primary--text mx-2 my-2" @click="showMore">Rút gọn</span></v-flex>
-                </div>
-              </div>
-            </v-card-text>
-          </v-card>
-        </v-expansion-panel-content>
-      </v-expansion-panel>
-    </div>
     <!-- Component Trao đổi thảo luận -->
     <div>
       <v-expansion-panel class="expansion-pl-transparent">
@@ -113,13 +48,8 @@ export default {
       }
     ],
     comment: [],
-    argShowMore: true,
+    argShowMore: true
     //
-    userId: 111,
-    comment_official: [],
-    official_opinion: '',
-    commentId: '',
-    argShowMore2: true
   }),
   computed: {
     loading () {
@@ -136,7 +66,6 @@ export default {
       vm.$store.dispatch('loadUsersComment', vm.classPK).then(result => {
         vm.usersComment = result
       })
-      vm.getcomment_official()
     })
   },
   mounted () {
@@ -392,94 +321,9 @@ export default {
       }
     },
     // action ý kiến chính thức
-    getcomment_official: function () {
-      var vm = this
-      vm.commentId = ''
-      let data = {
-        'classPK': vm.classPK,
-        'className': vm.className
-      }
-      vm.$store.dispatch('getcomment_official', data).then(result => {
-        for (var key in result) {
-          if (vm.userId === result[key].userId) {
-            vm.commentId = result[key].commentId
-            // vm.official_opinion=serializable.data[key].content
-            break
-          }
-        }
-        vm.comment_official = result
-        if (result.length > 3) {
-          vm.argShowMore = false
-        } else {
-          vm.argShowMore = true
-        }
-        console.log('result', result)
-      })
-      .catch(reject => {
-        vm.comment_official = []
-      })
-    },
-    getreload: function () {
-      var vm = this
-      vm.commentId = ''
-      vm.comment_official = []
-      vm.getcomment_official()
-    },
-    addCmtOfficial: function () {
-      var vm = this
-      if (vm.official_opinion !== '') {
-        let data = {
-          'classPK': vm.classPK,
-          'className': vm.className,
-          'official_opinion': vm.official_opinion
-        }
-        vm.$store.dispatch('addCmtOfficial', data).then(result => {
-          setTimeout(function () {
-            vm.getreload()
-          }, 500)
-          vm.commentId = result.commentId
-          // showMessageToastr('success', 'Cập nhật thành công')
-        })
-        .catch(reject => {
-          console.log(reject)
-          // showMessageByAPICode(error.response.status, error.response.data)
-        })
-      }
-    },
-    deleteCmtOfficial: function () {
-      var vm = this
-      if (vm.commentId !== '') {
-        let data = {
-          'commentId': vm.commentId
-        }
-        vm.$store.dispatch('deleteCmtOfficial', data).then(result => {
-          // showMessageToastr('success', 'Xóa thành công')
-          vm.official_opinion = ''
-          setTimeout(function () {
-            vm.getreload()
-          }, 500)
-          vm.commentId = ''
-        })
-        .catch(reject => {
-          // showMessageToastr('error', 'Xóa thất bại')
-          console.log(reject)
-        })
-      }
-    },
     showMore: function () {
       var vm = this
       vm.argShowMore = !vm.argShowMore
-    },
-    showMore2: function () {
-      var vm = this
-      vm.argShowMore2 = !vm.argShowMore2
-      if (vm.argShowMore2) {
-        $('.data-container').removeClass('fullEl')
-        $('.data-container').addClass('lessEl')
-      } else {
-        $('.data-container').removeClass('lessEl')
-        $('.data-container').addClass('fullEl')
-      }
     },
     nameCreateCmt (userId, name) {
       var vm = this
