@@ -1,7 +1,6 @@
 /* eslint-disable */
 var argShowMore2;
-var argShowMore3;
-argShowMore3 = 23123123;
+var opinionActive = false;
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -271,12 +270,12 @@ argShowMore3 = 23123123;
 
 		fetchDataAndRender: function () {
 				var self = this;
-				
+
 				setTimeout(function(){self.appendNewComments()},30000);
 
 				this.commentsById = {};
 				this.usersById = {};
-
+				
 				this.$el.empty();
 				this.createHTML();
 
@@ -304,7 +303,6 @@ argShowMore3 = 23123123;
 						$(commentModels).each(function(index, commentModel) {
 								self.addCommentToDataModel(commentModel);
 						});
-
 						dataFetched();
 				};
 				this.options.getComments(commentsFetched, dataFetched);
@@ -322,7 +320,7 @@ argShowMore3 = 23123123;
 								dataFetched();
 						}
 						this.options.getUsers(usersFetched, dataFetched);
-				}
+				};
 		},
 
 			fetchNext: function() {
@@ -349,8 +347,7 @@ argShowMore3 = 23123123;
 			createCommentModel: function(commentJSON) {
 					var commentModel = this.applyInternalMappings(commentJSON);
 					commentModel.childs = [];
-					
-					// custome 31/10/2017
+
 					this.commentsById[commentModel.id] = commentModel;
 					return commentModel;
 			},
@@ -406,7 +403,6 @@ argShowMore3 = 23123123;
 
 			createComments: function() {
 					var self = this;
-					console.log('create commentsList')
 					// Create the list element before appending to DOM in order to reach better performance
 					this.$el.find('#comment-list').remove();
 					var commentList = $('<ul/>', {
@@ -417,6 +413,7 @@ argShowMore3 = 23123123;
 					// Divide commments into main level comments and replies
 					var mainLevelComments = [];
 					var replies = [];
+
 					$(this.getComments()).each(function(index, commentModel) {
 							if(commentModel.parent == null) {
 									mainLevelComments.push(commentModel);
@@ -444,7 +441,6 @@ argShowMore3 = 23123123;
 
 			createAttachments: function() {
 					var self = this;
-					console.log('create acttachmentsList')
 					// Create the list element before appending to DOM in order to reach better performance
 					this.$el.find('#attachment-list').remove();
 					var attachmentList = $('<ul/>', {
@@ -464,7 +460,6 @@ argShowMore3 = 23123123;
 			},
 			createImportantComments: function() {
 					var self = this;
-					console.log('create importantCmtList')
 					// Create the list element before appending to DOM in order to reach better performance
 					this.$el.find('#importantCmt-list').remove();
 					var importantCmtList = $('<ul/>', {
@@ -473,7 +468,7 @@ argShowMore3 = 23123123;
 					});
 
 					var importantCmt = this.getImportantCmt();
-					console.log("importantCmt", importantCmt)
+
 					this.sortComments(importantCmt, 'newest');
 					importantCmt.reverse();    // Reverse the order as they are prepended to DOM
 					$(importantCmt).each(function(index, commentModel) {
@@ -515,15 +510,13 @@ argShowMore3 = 23123123;
 					commentList.prepend(commentEl);
 				}
 			},
-
 			addAttachment: function(commentModel, commentList) {
-				console.log("addAttachment")
+
 				commentList = commentList || this.$el.find('#attachment-list');
 				var commentEl = this.createCommentElement(commentModel);
 				commentList.prepend(commentEl);
 			},
 			addImportantCmt: function(commentModel, commentList) {
-				console.log("addImportantCmt")
 				commentList = commentList || this.$el.find('#importantCmt-list');
 				var commentEl = this.createCommentElement(commentModel);
 				commentList.prepend(commentEl);
@@ -1365,7 +1358,6 @@ argShowMore3 = 23123123;
 
 			createCommentingFieldElement: function(parentId, existingCommentId, enableOpinion) {
 					var self = this;
-
 					// Commenting field
 					var commentingField = $('<div/>', {
 							'class': 'commenting-field'
@@ -1454,15 +1446,16 @@ argShowMore3 = 23123123;
 							text: saveButtonText
 					});
 					// Check opinion
+
 					if (enableOpinion) {
 						var checkOpinion = $('<input/>', {
-								'class': 'checkOpinion mt-1 mr-1',
+								'class': 'opinion checkOpinion mt-1 mr-1',
 								'id': 'opinion' + opinionCmtId,
 								'name': 'opinion' + opinionCmtId,
 								'type': 'checkbox'
 						});
 						var labelCheckOpinion = $('<label/>', {
-								'class': 'label-opinion',
+								'class': 'opinion label-opinion',
 								'for': 'opinion'+opinionCmtId,
 								text: 'Ý kiến chính thức'
 						});
@@ -1498,7 +1491,7 @@ argShowMore3 = 23123123;
 									/**match: /(^|\s)@(([a-zäöüß]|\s)*)$/im,*/
 								match: /(^|\s)@(([0-9]|[^\u0000-\u007F]|[a-zäöüß]|\s)*)$/im,
 									search: function (term, callback) {
-										console.log(term);
+										// console.log(term);
 											term = self.normalizeSpaces(term);
 
 											// Users excluding self and already pinged users

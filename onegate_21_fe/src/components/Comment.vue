@@ -147,6 +147,13 @@ export default {
             vm.formatComment(vm.comment)
             data.push(vm.comment)
           })
+          if (data.filter(function (comment) {
+            return comment.opinion && comment.createdByCurrentUser
+          }).length > 0) {
+            $('.opinion').hide()
+          } else {
+            $('.opinion').show()
+          }
           onSuccess(data)
         }).catch(reject => {
           onSuccess([])
@@ -157,6 +164,9 @@ export default {
         data.classPK = vm.classPK
         data.className = vm.className
         vm.$store.dispatch('postComment', data).then(result => {
+          if (result.opinion) {
+            $('.opinion').hide()
+          }
           vm.comment = result
           vm.formatComment(vm.comment)
           onSuccess(vm.comment)
@@ -175,6 +185,9 @@ export default {
         data.classPK = vm.classPK
         data.className = vm.className
         vm.$store.dispatch('deleteComment', data).then(result => {
+          if (data.opinion) {
+            $('.opinion').show()
+          }
           onSuccess()
         }).catch(reject => {
           console.log(reject)
