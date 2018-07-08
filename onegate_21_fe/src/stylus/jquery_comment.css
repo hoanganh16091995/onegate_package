@@ -33,7 +33,22 @@ http://viima.github.io/jquery-comments/*/
 	outline: 0;
 	background: rgba(0, 0, 0, 0);
 }
-
+.jquery-comments input.checkOpinion {
+	-webkit-appearance: checkbox;
+	-moz-appearance: checkbox;
+	-ms-appearance: checkbox;
+	appearance: checkbox;
+	cursor: pointer;
+}	
+.jquery-comments label.label-opinion {
+	font-size: 0.9em !important;
+	cursor: pointer;
+	font-weight: bold;
+	color: #999
+}
+.jquery-comments label.label-opinion:hover {
+	color: #666
+}
 .jquery-comments button {
 	vertical-align: inherit;
 }

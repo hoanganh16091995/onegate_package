@@ -14,8 +14,9 @@
           <v-card class="comments__container" >
             <v-card-text>
               <div id="comments-container-el"></div>
-              <v-flex v-if="argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Xem thêm</span></v-flex>
-              <v-flex v-if="!argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Rút gọn</span></v-flex>
+              <!-- <v-checkbox class="checkOpinion" label="Ý kiến chính thức" v-model="checkOpinion"></v-checkbox> -->
+              <!-- <v-flex v-if="argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Xem thêm</span></v-flex>
+              <v-flex v-if="!argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Rút gọn</span></v-flex> -->
             </v-card-text>
           </v-card>
           
@@ -48,8 +49,9 @@ export default {
       }
     ],
     comment: [],
-    argShowMore: true
+    argShowMore: true,
     //
+    checkOpinion: true
   }),
   computed: {
     loading () {

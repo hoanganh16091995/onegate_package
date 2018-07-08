@@ -1,5 +1,7 @@
 /* eslint-disable */
 var argShowMore2;
+var argShowMore3;
+argShowMore3 = 23123123;
 (function (factory) {
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
@@ -1122,7 +1124,7 @@ var argShowMore2;
 
 					// Create the reply field (do not re-create)
 					if(previousParentId != parentId) {
-							replyField = this.createCommentingFieldElement(parentId);
+							replyField = this.createCommentingFieldElement(parentId, null, false);
 							outermostParent.find('.child-comments').append(replyField);
 
 							// Move cursor to end
@@ -1145,12 +1147,11 @@ var argShowMore2;
 					var commentEl = editButton.parents('li.comment').first();
 					var commentModel = commentEl.data().model;
 					
-					//get model(edit by trungnt)
 					commentModel = this.commentsById[commentModel.id];
 					commentEl.addClass('edit');
 
 					// Create the editing field
-					var editField = this.createCommentingFieldElement(commentModel.parent, commentModel.id);
+					var editField = this.createCommentingFieldElement(commentModel.parent, commentModel.id, false);
 					commentEl.find('.comment-wrapper').first().append(editField);
 
 					// Append original content
@@ -1234,7 +1235,7 @@ var argShowMore2;
 			createHTML: function() {
 					var self = this;
 					// Commenting field
-					var mainCommentingField = this.createCommentingFieldElement();
+					var mainCommentingField = this.createCommentingFieldElement(null, null, true);
 					mainCommentingField.addClass('main');
 					this.$el.append(mainCommentingField);
 
@@ -1362,7 +1363,7 @@ var argShowMore2;
 					return profilePicture;
 			},
 
-			createCommentingFieldElement: function(parentId, existingCommentId) {
+			createCommentingFieldElement: function(parentId, existingCommentId, enableOpinion) {
 					var self = this;
 
 					// Commenting field
@@ -1406,7 +1407,7 @@ var argShowMore2;
 					// Save button text
 					if(existingCommentId) {
 							var saveButtonText = this.options.textFormatter(this.options.saveText);
-
+							var opinionCmtId = existingCommentId
 							// Delete button Edit Comment
 							// var deleteButton = $('<span/>', {
 							// 		'class': 'delete',
@@ -1419,7 +1420,7 @@ var argShowMore2;
 
 					} else {
 							var saveButtonText = this.options.textFormatter(this.options.sendText);
-
+							var opinionCmtId =''
 							// Add upload button if attachments are enabled
 							if(this.options.enableAttachments) {
 									var uploadButton = $('<span/>', {
@@ -1452,7 +1453,22 @@ var argShowMore2;
 							'class': saveButtonClass + ' save highlight-background',
 							text: saveButtonText
 					});
-
+					// Check opinion
+					if (enableOpinion) {
+						var checkOpinion = $('<input/>', {
+								'class': 'checkOpinion mt-1 mr-1',
+								'id': 'opinion' + opinionCmtId,
+								'name': 'opinion' + opinionCmtId,
+								'type': 'checkbox'
+						});
+						var labelCheckOpinion = $('<label/>', {
+								'class': 'label-opinion',
+								'for': 'opinion'+opinionCmtId,
+								text: 'Ý kiến chính thức'
+						});
+						controlRow.append(checkOpinion).append(labelCheckOpinion);
+					}
+					
 					// Populate the element
 					controlRow.prepend(saveButton);
 					textareaWrapper.append(closeButton).append(textarea).append(controlRow);
