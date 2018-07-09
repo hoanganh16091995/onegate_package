@@ -14,12 +14,11 @@
           <v-card class="comments__container" >
             <v-card-text>
               <div id="comments-container-el"></div>
-              <!-- <v-checkbox class="checkOpinion" label="Ý kiến chính thức" v-model="checkOpinion"></v-checkbox> -->
+              
               <!-- <v-flex v-if="argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Xem thêm</span></v-flex>
               <v-flex v-if="!argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Rút gọn</span></v-flex> -->
             </v-card-text>
           </v-card>
-          
         </v-expansion-panel-content>
       </v-expansion-panel>
     </div>
@@ -147,13 +146,6 @@ export default {
             vm.formatComment(vm.comment)
             data.push(vm.comment)
           })
-          if (data.filter(function (comment) {
-            return comment.opinion && comment.createdByCurrentUser
-          }).length > 0) {
-            $('.opinion').hide()
-          } else {
-            $('.opinion').show()
-          }
           onSuccess(data)
         }).catch(reject => {
           onSuccess([])
@@ -163,10 +155,12 @@ export default {
       postComment: function (data, onSuccess, onError) {
         data.classPK = vm.classPK
         data.className = vm.className
+        data.opinion = document.getElementById('opinion').checked
         vm.$store.dispatch('postComment', data).then(result => {
           if (result.opinion) {
             $('.opinion').hide()
           }
+          document.getElementById('opinion').checked = false
           vm.comment = result
           vm.formatComment(vm.comment)
           onSuccess(vm.comment)
@@ -185,9 +179,6 @@ export default {
         data.classPK = vm.classPK
         data.className = vm.className
         vm.$store.dispatch('deleteComment', data).then(result => {
-          if (data.opinion) {
-            $('.opinion').show()
-          }
           onSuccess()
         }).catch(reject => {
           console.log(reject)
@@ -207,7 +198,6 @@ export default {
       uploadAttachments: function (comments, onSuccess, onError) {
         var responses = 0
         var successfulUploads = []
-        console.log('comments===', comments)
         var serverResponded = function () {
           responses++
           if (responses === comments.length) {
@@ -421,13 +411,6 @@ export default {
     -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
     background-color: rgb(181, 181, 181);
   }
-  .fullEl {
-    max-height: 500px;
-    overflow: auto
-  }
-  .lessEl {
-    height: 250px;
-    overflow: auto
-  }
+
 </style>
 

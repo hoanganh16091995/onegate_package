@@ -749,3 +749,7 @@ http://viima.github.io/jquery-comments/*/
 	height: 300px;
 	overflow: auto
 }
+.note-opinion {
+	font-style: italic;
+	color: #999
+}
