@@ -370,19 +370,19 @@ export default {
   .action-delete:hover {
     color: #666
   }
-  .comp_activity_comment .commentClass{
+  /* .comp_activity_comment .commentClass{
     border-bottom: 1px solid #ddd;
   }
   .comp_activity_comment .commentClass .contentClass{
     white-space: pre-line;
-  }
+  } */
   .action-show{
     float: right;
     cursor: pointer;
   }
-  .comp_activity_comment .commentClass i{
+  /* .comp_activity_comment .commentClass i{
     font-size: 3.4em;
-  }
+  } */
   .time_right{
     float: right;
     font-size: 0.8em;
@@ -391,9 +391,9 @@ export default {
   .media-heading{
     margin: 0!important;
   }
-  .comp_activity_comment .btn{
+  /* .comp_activity_comment .btn{
     margin-right: 0;
-  }
+  } */
   .activity_comment{
     max-width: 100%;
   }

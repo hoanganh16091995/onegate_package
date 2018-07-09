@@ -2319,3 +2319,48 @@ body .has-error.alpaca-field-text:before {
 .phancong .input-group--selection-controls__ripple {
     left: 5px;
 }
+/*  */
+.overflowComment::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    background-color: #F5F5F5;
+}
+.overflowComment::-webkit-scrollbar{
+    width: 8px;
+    background-color: #F5F5F5;
+}
+.overflowComment::-webkit-scrollbar-thumb{
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: rgb(181, 181, 181);
+}
+.comments__container .textarea-wrapper .input-group__input {
+    border: 1px solid #CCC !important;
+    padding-top: 10px !important;
+}
+.comments__container .action {
+    display: inline-block;
+}
+.comments__container .action-delete {
+    cursor: pointer;
+    font-size: 0.9em;
+    opacity: 1;
+    pointer-events: auto;
+    color: #999;
+    font-weight: bold;
+}
+.comments__container .action-delete:hover {
+    color: #666
+}
+.comments__container .action-show{
+    float: right;
+    cursor: pointer;
+}
+.comments__container .time_right{
+    float: right;
+    font-size: 0.8em;
+    color: #666;
+}
+.comments__container .media-heading{
+    margin: 0!important;
+}
