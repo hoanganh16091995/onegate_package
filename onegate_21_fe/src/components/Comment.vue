@@ -233,8 +233,8 @@ export default {
             dataType: 'json',
             type: 'POST',
             headers: {
-              // 'groupId': themeDisplay.getScopeGroupId()
-              'groupId': 55301
+              'groupId': vm.initData.groupId
+              // 'groupId': 55301
             },
             data: formData,
             cache: false,
