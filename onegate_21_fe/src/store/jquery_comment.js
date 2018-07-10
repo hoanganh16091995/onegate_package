@@ -1504,45 +1504,45 @@
 					// OVERIDE TEXTCOMPLETE DROPDOWN POSITIONING
 
 					$.fn.textcomplete.Dropdown.prototype.render = function(zippedData) {
-							var contentsHtml = this._buildContents(zippedData);
-							var unzippedData = $.map(zippedData, function (d) { return d.value; });
-							if (zippedData.length) {
-								var strategy = zippedData[0].strategy;
-								if (strategy.id) {
-									this.$el.attr('data-strategy', strategy.id);
-								} else {
-									this.$el.removeAttr('data-strategy');
-								}
-								this._renderHeader(unzippedData);
-								this._renderFooter(unzippedData);
-								if (contentsHtml) {
-									this._renderContents(contentsHtml);
-									this._fitToBottom();
-									this._fitToRight();
-									this._activateIndexedItem();
-								}
-								this._setScroll();
-							} else if (this.noResultsMessage) {
-								this._renderNoResultsMessage(unzippedData);
-							} else if (this.shown) {
-								this.deactivate();
+						var contentsHtml = this._buildContents(zippedData);
+						var unzippedData = $.map(zippedData, function (d) { return d.value; });
+						if (zippedData.length) {
+							var strategy = zippedData[0].strategy;
+							if (strategy.id) {
+								this.$el.attr('data-strategy', strategy.id);
+							} else {
+								this.$el.removeAttr('data-strategy');
 							}
+							this._renderHeader(unzippedData);
+							this._renderFooter(unzippedData);
+							if (contentsHtml) {
+								this._renderContents(contentsHtml);
+								this._fitToBottom();
+								this._fitToRight();
+								this._activateIndexedItem();
+							}
+							this._setScroll();
+						} else if (this.noResultsMessage) {
+							this._renderNoResultsMessage(unzippedData);
+						} else if (this.shown) {
+							this.deactivate();
+						}
 
-							// CUSTOM CODE
-							// ===========
+						// CUSTOM CODE
+						// ===========
 
-							// Adjust vertical position
-							var top = parseInt(this.$el.css('top')) + self.options.scrollContainer.scrollTop();
-							this.$el.css('top', top);
+						// Adjust vertical position
+						var top = parseInt(this.$el.css('top')) + self.options.scrollContainer.scrollTop();
+						this.$el.css('top', top);
 
-							// Adjust horizontal position
-							var originalLeft = this.$el.css('left');
-							this.$el.css('left', 0);    // Left must be set to 0 in order to get the real width of the el
-							var maxLeft = self.$el.width() - this.$el.outerWidth();
-							var left = Math.min(maxLeft, parseInt(originalLeft));
-							this.$el.css('left', left);
+						// Adjust horizontal position
+						var originalLeft = this.$el.css('left');
+						this.$el.css('left', 0);    // Left must be set to 0 in order to get the real width of the el
+						var maxLeft = self.$el.width() - this.$el.outerWidth();
+						var left = Math.min(maxLeft, parseInt(originalLeft));
+						this.$el.css('left', left);
 
-							// ===========
+						// ===========
 					}
 			}
 
