@@ -260,20 +260,66 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <v-btn color="primary" @click.native="dialog_statusAction = true">
+      TEST StatusAction &nbsp;
+      <v-icon>save</v-icon>
+    </v-btn>
+    <!--  -->
+
+    <phan-cong v-model="data_pc" :assign_items="assign_items" :type="type" @exportData="expDataPC"></phan-cong>
+    
+    <v-btn color="primary" @click.native="expDataPC">
+      TEST PhanCong &nbsp;
+      <v-icon>save</v-icon>
+    </v-btn>
+    <!--  -->
   </div>
 </template>
 
 <script>
 import TinyPagination from './pagging/hanghai_pagination.vue'
 import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
+import PhanCong from './PhanCong.vue'
 import router from '@/router'
 export default {
   props: ['index'],
   components: {
     'tiny-pagination': TinyPagination,
     'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo
+    'phan-cong': PhanCong
   },
   data: () => ({
+    //
+    data_pc: [],
+    type: 2,
+    assign_items: [{
+      userId: 101,
+      userName: 'Trịnh Công Trình',
+      assigned: 1
+    },
+    {
+      userId: 102,
+      userName: 'Nguyễn Văn Nam',
+      assigned: 0
+    },
+    {
+      userId: 103,
+      userName: 'Trần Minh Quang',
+      assigned: 0
+    },
+    {
+      userId: 104,
+      userName: 'Vũ Tiến Dũng',
+      assigned: 1
+    },
+    {
+      userId: 105,
+      userName: 'Phạm Huy Hoàng',
+      assigned: 0
+    }
+    ],
+    //
     dialog_statusAction: false,
     dossierSelected: [
       {
@@ -438,6 +484,10 @@ export default {
     }
   },
   methods: {
+    expDataPC (data) {
+      this.data_pc = data
+      console.log('dataPKKKK', this.data_pc)
+    },
     processListTTHC (currentQuery) {
       let vm = this
       vm.$store.dispatch('loadListThuTucHanhChinh').then(function (result) {

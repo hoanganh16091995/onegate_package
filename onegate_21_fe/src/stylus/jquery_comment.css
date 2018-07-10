@@ -33,7 +33,22 @@ http://viima.github.io/jquery-comments/*/
 	outline: 0;
 	background: rgba(0, 0, 0, 0);
 }
-
+.jquery-comments input.checkOpinion {
+	-webkit-appearance: checkbox;
+	-moz-appearance: checkbox;
+	-ms-appearance: checkbox;
+	appearance: checkbox;
+	cursor: pointer;
+}	
+.jquery-comments label.label-opinion {
+	font-size: 0.9em !important;
+	cursor: pointer;
+	font-weight: bold;
+	color: #999
+}
+.jquery-comments label.label-opinion:hover {
+	color: #666
+}
 .jquery-comments button {
 	vertical-align: inherit;
 }
@@ -710,4 +725,32 @@ http://viima.github.io/jquery-comments/*/
 }
 .jquery-comments.read-only .actions {
 	display: none;
+}
+/*style bổ sung  */
+.overflowComment::-webkit-scrollbar-track{
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+	border-radius: 8px;
+	background-color: #F5F5F5;
+}
+.overflowComment::-webkit-scrollbar{
+	width: 8px;
+	background-color: #F5F5F5;
+}
+.overflowComment::-webkit-scrollbar-thumb{
+	border-radius: 8px;
+	-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+	background-color: rgb(181, 181, 181);
+}
+.fullEl {
+	max-height: 600px;
+	overflow: auto
+}
+.lessEl {
+	height: 300px;
+	overflow: auto
+}
+.note-opinion {
+	font-style: italic;
+	color: #999;
+	font-size: 0.9em
 }

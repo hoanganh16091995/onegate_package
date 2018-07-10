@@ -182,14 +182,8 @@
         <v-tab key="2" class="mr-2" @click="loadDossierActions()">
         TIẾN TRÌNH THỤ LÝ
         </v-tab>
-        <v-tab key="3" class="mr-2" @click="loadDossierLogs()">
-        NHẬT KÝ HỒ SƠ
-        </v-tab>
-        <v-tab key="4" @click="getContacts()">
-          TRAO ĐỔI NỘI BỘ
-        </v-tab>
-        <v-tab key="5" @click="loadDossierSyncs()">
-          TRAO ĐỔI THẢO LUẬN
+        <v-tab key="3">
+          TRAO ĐỔI THÔNG TIN
         </v-tab>
         <!--  -->
         <v-tab-item key="1">
