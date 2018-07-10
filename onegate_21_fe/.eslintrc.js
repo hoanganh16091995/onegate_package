@@ -11,6 +11,7 @@ module.exports = {
   },
   // https://github.com/feross/standard/blob/master/RULES.md#javascript-standard-style
   extends: 'standard',
+  // 'extends': 'eslint:recommended',
   // required to lint *.vue files
   plugins: [
     'html'
@@ -23,9 +24,13 @@ module.exports = {
     'generator-star-spacing': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
+<<<<<<< HEAD
     'no-unused-vars': 'off',
     'no-eval': 'off',
     'no-useless-escape': 'off',
     'no-unreachable': 'off'
+=======
+    'no-useless-escape': 0
+>>>>>>> origin/dev
   }
 }
