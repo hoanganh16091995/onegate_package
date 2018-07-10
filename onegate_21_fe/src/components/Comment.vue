@@ -226,7 +226,7 @@ export default {
           formData.append('pings', comment.pings.join())
           formData.append('email', 'congtrinh0209@gmail.com')
           formData.append('fullName', 'Công Trình')
-          // formData.append('email', themeDisplay.getUserId())
+          // formData.append('email', themeDisplay.getUser().getEmailAddress())
           // formData.append('fullName', themeDisplay.getUserName())
           $.ajax({
             url: vm.initData.commentApi + '/uploads',
@@ -324,19 +324,6 @@ export default {
       } else {
         return ''
       }
-    },
-    // action ý kiến chính thức
-    showMore: function () {
-      var vm = this
-      vm.argShowMore = !vm.argShowMore
-    },
-    nameCreateCmt (userId, name) {
-      var vm = this
-      if (vm.userId === userId) {
-        return 'Bạn'
-      } else {
-        return name
-      }
     }
   },
   filters: {
@@ -351,66 +338,3 @@ export default {
   }
 }
 </script>
-<style type="text/css">
-  .textarea-wrapper .input-group__input {
-    border: 1px solid #CCC !important;
-    padding-top: 10px !important;
-  }
-  .action {
-    display: inline-block;
-  }
-  .action-delete {
-    cursor: pointer;
-    font-size: 0.9em;
-    opacity: 1;
-    pointer-events: auto;
-    color: #999;
-    font-weight: bold;
-  }
-  .action-delete:hover {
-    color: #666
-  }
-  /* .comp_activity_comment .commentClass{
-    border-bottom: 1px solid #ddd;
-  }
-  .comp_activity_comment .commentClass .contentClass{
-    white-space: pre-line;
-  } */
-  .action-show{
-    float: right;
-    cursor: pointer;
-  }
-  /* .comp_activity_comment .commentClass i{
-    font-size: 3.4em;
-  } */
-  .time_right{
-    float: right;
-    font-size: 0.8em;
-    color: #666;
-  }
-  .media-heading{
-    margin: 0!important;
-  }
-  /* .comp_activity_comment .btn{
-    margin-right: 0;
-  } */
-  .activity_comment{
-    max-width: 100%;
-  }
-  .overflowComment::-webkit-scrollbar-track{
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
-    border-radius: 8px;
-    background-color: #F5F5F5;
-  }
-  .overflowComment::-webkit-scrollbar{
-    width: 8px;
-    background-color: #F5F5F5;
-  }
-  .overflowComment::-webkit-scrollbar-thumb{
-    border-radius: 8px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-    background-color: rgb(181, 181, 181);
-  }
-
-</style>
-
