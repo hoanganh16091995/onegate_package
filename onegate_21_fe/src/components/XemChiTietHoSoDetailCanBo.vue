@@ -176,14 +176,17 @@
         <v-tab key="1" class="mr-2">
         THÀNH PHẦN HỒ SƠ
         </v-tab>
-        <!-- <v-tab key="2" class="mr-2" >
-        THỤ LÝ HỒ SƠ
-        </v-tab> -->
         <v-tab key="2" class="mr-2" @click="loadDossierActions()">
         TIẾN TRÌNH THỤ LÝ
         </v-tab>
-        <v-tab key="3">
-          TRAO ĐỔI THÔNG TIN
+        <v-tab key="3" class="mr-2" @click="loadDossierLogs()">
+          NHẬT KÝ HỒ SƠ
+        </v-tab>
+        <v-tab key="4">
+          TRAO ĐỔI THẢO LUẬN
+        </v-tab>
+        <v-tab key="5" @click="loadDossierSyncs()">
+          TRAO ĐỔI NỘI BỘ
         </v-tab>
         <!--  -->
         <v-tab-item key="1">
@@ -360,7 +363,7 @@
           </div>
         </v-tab-item>
         <v-tab-item key="4" style="background: #ffff;">
-          <comment :classPK="id" :className="className"></comment>
+          <comment :classPK="dossierId" :className="className"></comment>
         </v-tab-item>
         <v-tab-item key="5" style="background: #ffff;">
           <!-- <div class="text-xs-right">
@@ -401,8 +404,6 @@
             </template>
           </v-data-table>
         </v-tab-item>
-        <!-- <v-tab-item key="4" reverse-transition="slide-y-transition" transition="slide-y-transition">
-        </v-tab-item> -->
       </v-tabs>
     </div>
     
@@ -414,11 +415,12 @@
 import '../store/jquery_comment'
 import Comment from './Comment.vue'
 export default {
-  props: ['index', 'id'],
+  // props: ['index', 'id'],
   components: {
     'comment': Comment
   },
   data: () => ({
+    dossierId: '',
     className: 'org.opencps.dossiermgt.model.Dossier',
     dossierTemplateFiles: [],
     dossierTemplatesItems: [],
@@ -498,6 +500,8 @@ export default {
   methods: {
     initData (data) {
       var vm = this
+      vm.dossierId = data
+      console.log(data)
       vm.$store.dispatch('getDetailDossier', data).then(resultDossier => {
         vm.thongTinChiTietHoSo = resultDossier
         let promise2 = vm.$store.dispatch('loadDossierTemplates', resultDossier)
