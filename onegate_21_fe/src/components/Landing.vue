@@ -264,7 +264,7 @@
     </v-btn>
     <!--  -->
 
-    <phan-cong v-model="data_pc" :assign_items="assign_items" :type="type" @exportData="expDataPC"></phan-cong>
+    <phan-cong v-model="assign_items" :type="type" ></phan-cong>
     
     <v-btn color="primary" @click.native="expDataPC">
       TEST PhanCong &nbsp;
@@ -288,31 +288,32 @@ export default {
     //
     data_pc: [],
     type: 2,
-    assign_items: [{
-      userId: 101,
-      userName: 'Trịnh Công Trình',
-      assigned: 1
-    },
-    {
-      userId: 102,
-      userName: 'Nguyễn Văn Nam',
-      assigned: 0
-    },
-    {
-      userId: 103,
-      userName: 'Trần Minh Quang',
-      assigned: 0
-    },
-    {
-      userId: 104,
-      userName: 'Vũ Tiến Dũng',
-      assigned: 1
-    },
-    {
-      userId: 105,
-      userName: 'Phạm Huy Hoàng',
-      assigned: 0
-    }
+    assign_items: [
+      {
+        userId: 101,
+        userName: 'Trịnh Công Trình',
+        assigned: 1
+      },
+      {
+        userId: 102,
+        userName: 'Nguyễn Văn Nam',
+        assigned: 0
+      },
+      {
+        userId: 103,
+        userName: 'Trần Minh Quang',
+        assigned: 0
+      },
+      {
+        userId: 104,
+        userName: 'Vũ Tiến Dũng',
+        assigned: 1
+      },
+      {
+        userId: 105,
+        userName: 'Phạm Huy Hoàng',
+        assigned: 0
+      }
     ],
     //
     dialog_statusAction: false,
@@ -479,9 +480,9 @@ export default {
     }
   },
   methods: {
-    expDataPC (data) {
-      this.data_pc = data
-      console.log('dataPKKKK', this.data_pc)
+    expDataPC () {
+      // this.data_pc = data
+      console.log('dataPKKKK', this.assign_items)
     },
     processListTTHC (currentQuery) {
       let vm = this

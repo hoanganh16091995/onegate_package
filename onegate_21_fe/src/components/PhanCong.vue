@@ -1,12 +1,7 @@
 <template>  
   <div class="phancong" style="background-color: white">
-    <div xs12 v-if="loading">
-      <content-placeholders class="mt-1">
-        <content-placeholders-text :lines="2" />
-      </content-placeholders>
-    </div>
-    <div xs12 v-else>
-      <div v-for="(item, index) in dataPhanCong" v-bind:key="item.userId" style="display: inline-block">
+    <div xs12>
+      <div v-for="(item, index) in data_phancong" v-bind:key="item.userId" style="display: inline-block">
         <v-layout wrap v-if="type === 1">
           <v-flex class="pt-1">
             <span>{{item.userName}}</span>&nbsp;
@@ -41,10 +36,22 @@
 </template>
 
 <script>
-import router from '@/router'
 export default {
-  props: ['assign_items', 'type', 'id'],
+  props: {
+    assign_items: {
+      type: Array,
+      default: () => []
+    },
+    type: {
+      type: Number,
+      default: () => 1
+    }
+  },
+  model: {
+    prop: 'assign_items'
+  },
   data: () => ({
+    data_phancong: [],
     assignedtype_items: [
       {text: 'Không có phân công', value: 0},
       {text: 'Thực hiện chính', value: 1},
@@ -52,65 +59,25 @@ export default {
       {text: 'Theo dõi', value: 3}
     ]
   }),
-  computed: {
-    loading () {
-      return this.$store.getters.loading
-    },
-    dataPhanCong () {
-      return this.$store.getters.dataPhanCong
-    }
-  },
-  created () {
-    var vm = this
-    vm.$nextTick(function () {
-      this.$store.commit('setDataPhanCong', vm.assign_items)
-    })
+  mounted () {
+    this.data_phancong = this.assign_items
   },
   methods: {
-    initData (data) {},
     changeAssigned (event, index) {
       var vm = this
       if (vm.type === 1) {
         if (event === true) {
-          vm.dataPhanCong[index].assigned = 1
+          vm.assign_items[index].assigned = 1
         } else {
-          vm.dataPhanCong[index].assigned = 0
+          vm.assign_items[index].assigned = 0
         }
-        console.log('dataPhanCong-change', vm.$store.getters.dataPhanCong)
       } else {
-        vm.dataPhanCong[index].assigned = event.value
-        console.log('dataPhanCong-change', vm.$store.getters.dataPhanCong)
+        vm.assign_items[index].assigned = event.value
       }
+      // vm.data_pc = vm.assign_items
+      // vm.$emit('change', vm.data_pc)
     }
   }
 }
-// props truyền vào demo=====>
-// type: 2,
-// assign_items: [{
-//   userId: 101,
-//   userName: 'Trịnh Công Trình',
-//   assigned: 1
-// },
-// {
-//   userId: 102,
-//   userName: 'Nguyễn Văn Nam',
-//   assigned: 0
-// },
-// {
-//   userId: 103,
-//   userName: 'Trần Minh Quang',
-//   assigned: 0
-// },
-// {
-//   userId: 104,
-//   userName: 'Vũ Tiến Dũng',
-//   assigned: 1
-// },
-// {
-//   userId: 105,
-//   userName: 'Phạm Huy Hoàng',
-//   assigned: 0
-// }
-// ]
 </script>
 
