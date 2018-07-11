@@ -125,6 +125,11 @@ export const store = new Vuex.Store({
           if (coma > 0) {
             orginURL = window.location.href.substr(0, coma)
           }
+          // test locale
+          orginURL = 'http://127.0.0.1:8081/api/initdata'
+          console.log('orginURL', orginURL)
+          console.log('url', orginURL + support.renderURLInit)
+          //
           axios.get(orginURL + support.renderURLInit, param).then(function (response) {
             let serializable = response.data
             commit('setInitData', serializable)
@@ -250,7 +255,11 @@ export const store = new Vuex.Store({
               end: filter.page * 15,
               agency: filter.agency,
               service: filter.service,
-              template: filter.template
+              template: filter.template,
+              status: filter.statusSearch,
+              dueCode: filter.dueSearch,
+              register: filter.registerSearch,
+              keyword: filter.keywordSearch
             }
           }
           axios.get(filter.queryParams, param).then(function (response) {
@@ -650,20 +659,22 @@ export const store = new Vuex.Store({
       }
     },
     postDossier ({ commit, state }, data) {
+      console.log('data-------------', data)
       return new Promise((resolve, reject) => {
         commit('setLoading', true)
         let options = {
           headers: {
-            'groupId': state.initData.groupId,
-            'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': state.initData.cps_auth
+            // 'groupId': state.initData.groupId,
+            // 'Accept': 'application/json',
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+            // 'cps_auth': state.initData.cps_auth
           }
         }
         var dataPostdossier = new URLSearchParams()
         dataPostdossier.append('serviceCode', data.serviceCode)
         dataPostdossier.append('govAgencyCode', data.govAgencyCode)
         dataPostdossier.append('dossierTemplateNo', data.templateNo)
+        console.log('dataPostdossier-------------', dataPostdossier)
         axios.post(state.initData.postDossierApi, dataPostdossier, options).then(function (response) {
           response.data.serviceConfig = state.serviceConfigObj
           commit('setLoading', false)
@@ -1095,8 +1106,9 @@ export const store = new Vuex.Store({
           },
           params: {}
         }
-        axios.get('/o/rest/v2/onegate/token', param).then(function (response) {
-          resolve(response.data)
+        axios.get('http://127.0.0.1:8081/api/onegate/token', param).then(function (response) {
+          // resolve(response.data)
+          resolve('asa1wsasaaddsdsdscsfsfs1212121212')
         })
         .catch(function (error) {
           reject(error)
@@ -1437,6 +1449,21 @@ export const store = new Vuex.Store({
             })
           })
         })
+      },
+      loadDossierCounting ({state, commit}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          }
+        }
+        let url = '/o/rest/v2/statistics/dossiers/counting'
+        return new Promise((resolve, reject) => {
+          axios.get(url, config).then(function (response) {
+            resolve(response.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
       }
     // ----End---------
   },
@@ -1497,7 +1524,7 @@ export const store = new Vuex.Store({
         applicantName: payload.applicantName,
         address: payload.address,
         // cityCode: payload.cityCode,
-        cityCode: 25,
+        cityCode: payload.cityCode,
         districtCode: payload.districtCode,
         wardCode: payload.wardCode,
         contactEmail: payload.contactEmail,

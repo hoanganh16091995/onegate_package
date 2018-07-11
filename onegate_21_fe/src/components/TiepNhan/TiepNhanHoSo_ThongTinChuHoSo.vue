@@ -416,6 +416,7 @@ export default {
   methods: {
     initData (data) {
       var vm = this
+      console.log('data-------------', data)
       vm.$nextTick(function () {
         var filter = {
           collectionCode: 'ADMINISTRATIVE_REGION',

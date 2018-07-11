@@ -221,9 +221,9 @@ export default {
           level: 0,
           parent: 0
         }
-        vm.$store.getters.getDictItems(filter).then(function (result) {
-          vm.vnPostItems = result.data
-        })
+        // vm.$store.getters.getDictItems(filter).then(function (result) {
+        //   vm.vnPostItems = result.data
+        // })
       })
     },
     onChangeResultCity (data) {

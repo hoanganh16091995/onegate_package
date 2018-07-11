@@ -161,15 +161,15 @@
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Quay lại
-            <span slot="loader">Loading...</span>
+              Quay lại
+              <span slot="loader">Loading...</span>
             </v-btn>
             <v-btn color="primary" flat="flat" @click.native="doSubmitDialogAction(itemAction)"
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Đồng ý
-            <span slot="loader">Loading...</span>
+              Đồng ý
+              <span slot="loader">Loading...</span>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -187,7 +187,7 @@
             <v-layout wrap>
               <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
               <div v-if="showThongTinCoBanHoSo">
-                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="111"></thong-tin-co-ban-ho-so>
+                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
               </div>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
@@ -498,8 +498,16 @@ export default {
       let vm = this
       let currentQuery = router.history.current.query
       if (currentQuery.hasOwnProperty('q')) {
+        // let filter = {
+        //   queryParams: currentQuery.q,
+        //   page: vm.hosoDatasPage,
+        //   agency: vm.govAgencyCode,
+        //   service: vm.serviceCode,
+        //   template: vm.templateNo
+        // }
+        // test locale
         let filter = {
-          queryParams: currentQuery.q,
+          queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
           page: vm.hosoDatasPage,
           agency: vm.govAgencyCode,
           service: vm.serviceCode,
@@ -550,6 +558,7 @@ export default {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
+      console.log('item action---------------------', item)
       if (String(item.form) === 'NEW') {
         let isOpenDialog = true
         if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
@@ -582,6 +591,7 @@ export default {
     doSubmitDialogAction (item) {
       let vm = this
       if (vm.$refs.form.validate()) {
+        console.log('yes-----')
         vm.doCreateDossier()
       }
     },
