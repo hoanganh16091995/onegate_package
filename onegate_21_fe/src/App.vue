@@ -157,7 +157,7 @@
               for (let keyChild in vm.trangThaiHoSoList[key].items) {
                 vm.trangThaiHoSoList[key].items[keyChild]['counter'] = 0
                 for (let countKey in vm.counterData) {
-                  if (vm.counterData[countKey].stepCode === vm.trangThaiHoSoList[key].items[keyChild].stepCode) {
+                  if (vm.counterData[countKey].dossierStatus === vm.trangThaiHoSoList[key].items[keyChild].dossierStatus && vm.counterData[countKey].dossierSubStatus === vm.trangThaiHoSoList[key].items[keyChild].dossierSubStatus) {
                     let countCurrent = vm.counterData[countKey].totalCount
                     vm.trangThaiHoSoList[key].items[keyChild]['counter'] = countCurrent
                     parentCount = parentCount + countCurrent

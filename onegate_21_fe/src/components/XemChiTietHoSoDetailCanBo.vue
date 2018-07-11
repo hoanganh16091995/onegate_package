@@ -302,7 +302,7 @@
 </template>
 
 <script>
-import $ from 'jquery'
+// import $ from 'jquery'
 import '../store/jquery_comment'
 import Comment from './Comment.vue'
 export default {

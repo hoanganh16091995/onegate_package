@@ -108,8 +108,9 @@ export default {
         classPK: 'classPK'
       },
       timeFormatter: function (time) {
+        /*
         if (time !== null) {
-          var dt = time.split(/\ |\s/)
+          var dt = time.split(/\|\s/)
           if (dt.length === 2) {
             var d = dt[0].split(/\-|\s/)
             return (d.slice(0, 3).reverse().join('/')) + ' ' + dt[1]
@@ -117,6 +118,7 @@ export default {
             return time
           }
         }
+        */
         return ''
       },
       getUsers: function (onSuccess, onError) {
@@ -207,14 +209,14 @@ export default {
           formData.append('pings', comment.pings.join())
           // formData.append('email', 'congtrinh0209@gmail.com')
           // formData.append('fullName', 'Công Trình')
-          formData.append('email', themeDisplay.getUserId())
-          formData.append('fullName', themeDisplay.getUserName())
+          // formData.append('email', themeDisplay.getUserId())
+          // formData.append('fullName', themeDisplay.getUserName())
           $.ajax({
             url: vm.initData.commentApi + '/uploads',
             dataType: 'json',
             type: 'POST',
             headers: {
-              'groupId': themeDisplay.getScopeGroupId()
+              // 'groupId': themeDisplay.getScopeGroupId()
               // 'groupId': 55301
             },
             data: formData,
