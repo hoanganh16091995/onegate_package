@@ -108,8 +108,9 @@ export default {
         classPK: 'classPK'
       },
       timeFormatter: function (time) {
+        /*
         if (time !== null) {
-          var dt = time.split(/\ |\s/)
+          var dt = time.split(/\|\s/)
           if (dt.length === 2) {
             var d = dt[0].split(/\-|\s/)
             return (d.slice(0, 3).reverse().join('/')) + ' ' + dt[1]
@@ -117,6 +118,7 @@ export default {
             return time
           }
         }
+        */
         return ''
       },
       getUsers: function (onSuccess, onError) {
@@ -215,7 +217,6 @@ export default {
             type: 'POST',
             headers: {
               'groupId': vm.initData.groupId
-              // 'groupId': 55301
             },
             data: formData,
             cache: false,
