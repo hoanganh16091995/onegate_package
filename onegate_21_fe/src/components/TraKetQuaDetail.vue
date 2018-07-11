@@ -309,8 +309,7 @@ export default {
       })
     },
     submitAddReason (reason) {
-      // var vm = this
-      // console.log('note_reason', reason)
+      console.log('note_reason', reason)
     },
     daTra () {
       console.log('SUCCESS')
