@@ -161,15 +161,15 @@
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Quay lại
-            <span slot="loader">Loading...</span>
+              Quay lại
+              <span slot="loader">Loading...</span>
             </v-btn>
             <v-btn color="primary" flat="flat" @click.native="doSubmitDialogAction(itemAction)"
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Đồng ý
-            <span slot="loader">Loading...</span>
+              Đồng ý
+              <span slot="loader">Loading...</span>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -560,7 +560,6 @@ export default {
         //   service: vm.serviceCode,
         //   template: vm.templateNo
         // }
-
         // test locale
         let filter = {
           queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
@@ -615,6 +614,7 @@ export default {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
+      console.log('item action---------------------', item)
       if (String(item.form) === 'NEW') {
         let isOpenDialog = true
         if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
@@ -632,7 +632,8 @@ export default {
       let data = {
         serviceCode: vm.serviceCode,
         govAgencyCode: vm.govAgencyCode,
-        templateNo: vm.templateNo
+        templateNo: vm.templateNo,
+        originality: 3
       }
       vm.loadingAction = true
       vm.$store.dispatch('postDossier', data).then(function (result) {
@@ -647,6 +648,7 @@ export default {
     doSubmitDialogAction (item) {
       let vm = this
       if (vm.$refs.form.validate()) {
+        console.log('yes-----')
         vm.doCreateDossier()
       }
     },

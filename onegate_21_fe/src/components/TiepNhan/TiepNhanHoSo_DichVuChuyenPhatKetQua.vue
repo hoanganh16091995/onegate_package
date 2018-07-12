@@ -178,14 +178,25 @@ export default {
         itemName: 'VNPOST',
         itemCode: 'VNPOST'
       }
-    ]
+    ],
+    dichVuChuyenPhatKetQua: {
+      viaPostal: false,
+      postalServiceCode: '',
+      postalServiceName: '',
+      postalAddress: '',
+      postalCityCode: '',
+      postalCityName: '',
+      postalDistrictCode: '',
+      postalDistrictName: '',
+      postalWardCode: '',
+      postalWardName: '',
+      postalTelNo: '',
+      vnPostCode: ''
+    }
   }),
   computed: {
     loading () {
       return this.$store.getters.loading
-    },
-    dichVuChuyenPhatKetQua () {
-      return this.$store.getters.dichVuChuyenPhatKetQua
     }
   },
   created () {
@@ -193,6 +204,21 @@ export default {
   methods: {
     initData (data) {
       var vm = this
+      let dichVuChuyenPhatKetQuaTemp = {
+        viaPostal: data.viaPostal,
+        postalServiceCode: data.postalServiceCode,
+        postalServiceName: data.postalServiceName,
+        postalAddress: data.postalAddress,
+        postalCityCode: data.postalCityCode,
+        postalCityName: data.postalCityName,
+        postalDistrictCode: data.postalDistrictCode,
+        postalDistrictName: data.postalDistrictName,
+        postalWardCode: data.postalWardCode,
+        postalWardName: data.postalWardName,
+        postalTelNo: data.postalTelNo,
+        vnPostCode: data.vnPostCode
+      }
+      vm.dichVuChuyenPhatKetQua = dichVuChuyenPhatKetQuaTemp
       vm.$nextTick(function () {
         var filter = {
           collectionCode: 'ADMINISTRATIVE_REGION',
@@ -221,9 +247,9 @@ export default {
           level: 0,
           parent: 0
         }
-        vm.$store.getters.getDictItems(filter).then(function (result) {
-          vm.vnPostItems = result.data
-        })
+        // vm.$store.getters.getDictItems(filter).then(function (result) {
+        //   vm.vnPostItems = result.data
+        // })
       })
     },
     onChangeResultCity (data) {
