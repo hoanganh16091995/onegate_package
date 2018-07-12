@@ -30,22 +30,14 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
     <!--  -->
-    <v-expansion-panel class="expansion-pl">
+    <v-expansion-panel class="expansion-pl" style="position:relative">
       <v-expansion-panel-content :value="true" >
         <div slot="header">
           <div class="background-triangle-small"> II.</div>
-          KẾT QUẢ LIÊN THÔNG&nbsp;&nbsp;&nbsp;&nbsp; 
-         <!--  <i><span style="color: red">(*)</span> Những thành phần bắt buộc</i> -->
-          <div class="absolute-lable">
-            <span class="text-bold">Bản chính |</span>
-            <span class="text-bold">Bản chụp |</span>
-            <span class="text-bold">Công chứng</span>
-          </div>
+          KẾT QUẢ LIÊN THÔNG
         </div>
         <!--  -->
-        <v-card>
-          <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
-        </v-card>
+        <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
         <!--  -->
       </v-expansion-panel-content>
     </v-expansion-panel>

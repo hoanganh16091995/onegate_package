@@ -66,7 +66,7 @@
           </v-layout>
         </div>
       </div>
-      <v-card-text class="note_trichyeu">
+      <!-- <v-card-text class="note_trichyeu">
         <v-layout wrap>
           <v-flex xs12 sm2>
             <content-placeholders class="mt-1" v-if="loading">
@@ -86,7 +86,7 @@
             ></v-text-field>
           </v-flex>
         </v-layout>
-      </v-card-text>
+      </v-card-text> -->
     </v-card>
     <!--  <i><span style="color: red">(*)</span> Những thành phần bắt buộc</i> -->
     <div class="absolute-lable" style="font-size: 12px">
