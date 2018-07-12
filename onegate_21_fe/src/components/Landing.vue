@@ -217,6 +217,9 @@
         <v-card-title class="headline">
           Trạng thái xử lý
         </v-card-title>
+        <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialog_statusAction = false">
+            <v-icon>clear</v-icon>
+          </v-btn>
         <v-card-text style="max-height: 350px">
           <div v-for="(item, index) in dossierSelected" v-bind:key="item.dossierIdCTN">
             <v-layout wrap class="py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd;position:relative"> 
@@ -261,18 +264,18 @@
       </v-card>
     </v-dialog>
 
-    <v-btn color="primary" @click.native="dialog_statusAction = true">
+    <!-- <v-btn color="primary" @click.native="dialog_statusAction = true">
       TEST StatusAction &nbsp;
       <v-icon>save</v-icon>
-    </v-btn>
+    </v-btn> -->
     <!--  -->
 
-    <phan-cong v-model="data_pc" :assign_items="assign_items" :type="type" @exportData="expDataPC"></phan-cong>
+    <!-- <phan-cong v-model="assign_items" :type="type" ></phan-cong>
     
     <v-btn color="primary" @click.native="expDataPC">
       TEST PhanCong &nbsp;
       <v-icon>save</v-icon>
-    </v-btn>
+    </v-btn> -->
     <!--  -->
   </div>
 </template>
@@ -286,38 +289,39 @@ export default {
   props: ['index'],
   components: {
     'tiny-pagination': TinyPagination,
-    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo
+    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
     'phan-cong': PhanCong
   },
   data: () => ({
     //
     data_pc: [],
-    type: 2,
-    assign_items: [{
-      userId: 101,
-      userName: 'Trịnh Công Trình',
-      assigned: 1
-    },
-    {
-      userId: 102,
-      userName: 'Nguyễn Văn Nam',
-      assigned: 0
-    },
-    {
-      userId: 103,
-      userName: 'Trần Minh Quang',
-      assigned: 0
-    },
-    {
-      userId: 104,
-      userName: 'Vũ Tiến Dũng',
-      assigned: 1
-    },
-    {
-      userId: 105,
-      userName: 'Phạm Huy Hoàng',
-      assigned: 0
-    }
+    type: 1,
+    assign_items: [
+      {
+        userId: 101,
+        userName: 'Trịnh Công Trình',
+        assigned: 1
+      },
+      {
+        userId: 102,
+        userName: 'Nguyễn Văn Nam',
+        assigned: 0
+      },
+      {
+        userId: 103,
+        userName: 'Trần Minh Quang',
+        assigned: 0
+      },
+      {
+        userId: 104,
+        userName: 'Vũ Tiến Dũng',
+        assigned: 1
+      },
+      {
+        userId: 105,
+        userName: 'Phạm Huy Hoàng',
+        assigned: 0
+      }
     ],
     //
     dialog_statusAction: false,
@@ -484,9 +488,9 @@ export default {
     }
   },
   methods: {
-    expDataPC (data) {
-      this.data_pc = data
-      console.log('dataPKKKK', this.data_pc)
+    expDataPC () {
+      // this.data_pc = data
+      console.log('dataPKKKK', this.assign_items)
     },
     processListTTHC (currentQuery) {
       let vm = this
@@ -547,6 +551,7 @@ export default {
     doLoadingDataHoSo () {
       let vm = this
       let currentQuery = router.history.current.query
+      console.log('currentQuery', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
         // let filter = {
         //   queryParams: currentQuery.q,
@@ -563,6 +568,7 @@ export default {
           service: vm.serviceCode,
           template: vm.templateNo
         }
+        //
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -765,6 +771,9 @@ export default {
         }
         vm.processPullBtnDetailRouter(dossierItem, item, result)
       })
+    },
+    goBack () {
+      window.history.back()
     },
     resend () {
       alert('Thử lại')

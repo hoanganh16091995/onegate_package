@@ -11,22 +11,22 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    initData: {
-      groupId: 55301,
-      serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
-      serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
-      regionApi: 'http://127.0.0.1:8081/api/dictcollections',
-      serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
-      postDossierApi: 'http://127.0.0.1:8081/api/onegate',
-      dossierApi: 'http://127.0.0.1:8081/api/dossiers',
-      dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
-      applicantApi: '/o/rest/v2/applicant',
-      dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
-      commentApi: 'http://127.0.0.1:8081/api/comments',
-      govAgency: 'abc',
-      user: {}
-    },
-    // initData: null,
+    // initData: {
+    //   groupId: 55301,
+    //   serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
+    //   serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
+    //   regionApi: 'http://127.0.0.1:8081/api/dictcollections',
+    //   serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
+    //   postDossierApi: 'http://127.0.0.1:8081/api/onegate',
+    //   dossierApi: 'http://127.0.0.1:8081/api/dossiers',
+    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
+    //   applicantApi: '/o/rest/v2/applicant',
+    //   dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
+    //   commentApi: 'http://127.0.0.1:8081/api/comments',
+    //   govAgency: 'abc',
+    //   user: {}
+    // },
+    initData: null,
     loading: false,
     loadingTable: false,
     loadingDynamicBtn: false,
@@ -561,6 +561,7 @@ export const store = new Vuex.Store({
             }
           }
           if (data > 0) {
+            commit('setLoading', true)
             axios.get(state.initData.postDossierApi + '/' + data, param).then(function (response) {
               let thongTinNguoiNop = {
                 delegateName: response.data.delegateName,
@@ -572,6 +573,7 @@ export const store = new Vuex.Store({
                 delegateTelNo: response.data.delegateTelNo,
                 delegateIdNo: response.data.delegateIdNo
               }
+              commit('setLoading', false)
               commit('setDossier', response.data)
               commit('setThongTinChuHoSo', response.data)
               commit('setLePhi', response.data)
@@ -580,6 +582,7 @@ export const store = new Vuex.Store({
               commit('setDichVuChuyenPhatKetQua', response.data)
               resolve(response.data)
             }, error => {
+              commit('setLoading', false)
               reject(error)
             }).catch(function (xhr) {
               console.log(xhr)
@@ -587,6 +590,23 @@ export const store = new Vuex.Store({
           } else {
             resolve()
           }
+        })
+      })
+    },
+    getGovAgency ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        let paramGetGovAgency = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            sort: 'sibling'
+          }
+        }
+        axios.get(state.initData.regionApi + '/GOVERMENT_AGENCY/dictitems', paramGetGovAgency).then(function (response) {
+          resolve(response.data.data)
+        }).catch(function (xhr) {
+          console.log(xhr)
         })
       })
     },
@@ -625,12 +645,17 @@ export const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('setLoading', true)
         let options = {
+          // headers: {
+          //   'groupId': state.initData.groupId,
+          //   'Accept': 'application/json',
+          //   'Content-Type': 'application/x-www-form-urlencoded',
+          //   'cps_auth': state.initData.cps_auth
+          // }
+          // test locale
           headers: {
-            // 'groupId': state.initData.groupId,
-            // 'Accept': 'application/json',
-            // 'Content-Type': 'application/x-www-form-urlencoded',
-            // 'cps_auth': state.initData.cps_auth
+            'groupId': state.initData.groupId
           }
+          //
         }
         var dataPostdossier = new URLSearchParams()
         dataPostdossier.append('serviceCode', data.serviceCode)

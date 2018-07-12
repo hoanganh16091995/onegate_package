@@ -78,11 +78,13 @@
         vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
           vm.trangThaiHoSoList = result
           let currentParams = vm.$router.history.current.params
-          vm.trangThaiHoSoList[currentParams.index]['active'] = true
+          // vm.trangThaiHoSoList[currentParams.index]['active'] = true
+          //
           // test locale
-          // vm.trangThaiHoSoList[0]['active'] = true
+          vm.trangThaiHoSoList[0]['active'] = true
           //
           vm.loadingCounter()
+          vm.loading = false
         })
       })
     },
