@@ -1,14 +1,27 @@
 <template>
   <div class="comment-temp">
-    <v-expansion-panel expand class="expansion-blue">
-			<v-expansion-panel-content v-bind:value="expanded">
-				<v-card class="comments__container">
-					<v-card-text>
-						<div id="comments-container-el"></div>
-					</v-card-text>
-				</v-card>
-			</v-expansion-panel-content>
-    </v-expansion-panel>
+    <!-- Component Trao đổi thảo luận -->
+    <div>
+      <v-expansion-panel class="expansion-pl-transparent">
+        <v-expansion-panel-content hide-actions :value="true">
+          <div slot="header">
+            <div class="background-triangle-small"> 
+              <v-icon size="18" color="white">star_rate</v-icon> 
+            </div>
+            TRAO ĐỔI THÔNG TIN
+          </div>
+          
+          <v-card class="comments__container" >
+            <v-card-text>
+              <div id="comments-container-el"></div>
+              
+              <!-- <v-flex v-if="argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Xem thêm</span></v-flex>
+              <v-flex v-if="!argShowMore2"><span class="action-show primary--text mx-2 my-2" @click="showMore2">Rút gọn</span></v-flex> -->
+            </v-card-text>
+          </v-card>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </div>
   </div>
 </template>
 
@@ -20,23 +33,24 @@ import '../store/jquery_comment'
 export default {
   props: ['classPK', 'className'],
   data: () => ({
-    usersComment: [{
-      id: 1,
-      fullname: 'Trịnh Công Trình',
-      email: 'trinhtc@fds.vn.com',
-      pictureUrl: 'https://app.viima.com/static/media/user_profiles/user-icon.png'
-    },
-    {
-      id: 2,
-      fullname: 'Thái Hoàng Anh',
-      email: 'anhth@fds.vn',
-      pictureUrl: 'https://app.viima.com/static/media/user_profiles/user-icon.png'
-    }
+    usersComment: [
+      {
+        id: 1,
+        fullname: 'Trịnh Công Trình',
+        email: 'trinhtc@fds.vn.com',
+        pictureUrl: 'https://app.viima.com/static/media/user_profiles/user-icon.png'
+      },
+      {
+        id: 2,
+        fullname: 'Thái Hoàng Anh',
+        email: 'anhth@fds.vn',
+        pictureUrl: 'https://app.viima.com/static/media/user_profiles/user-icon.png'
+      }
     ],
     comment: [],
-    less: true,
-    hidden__text: false,
-    expanded: true
+    argShowMore: true,
+    //
+    checkOpinion: true
   }),
   computed: {
     loading () {
@@ -104,32 +118,27 @@ export default {
         upvoteCount: 'upvoteCount',
         userHasUpvoted: 'userHasUpvoted',
         email: 'email',
+        opinion: 'opinion',
         className: 'className',
         classPK: 'classPK'
       },
       timeFormatter: function (time) {
-        /*
-        if (time !== null) {
-          var dt = time.split(/\|\s/)
-          if (dt.length === 2) {
-            var d = dt[0].split(/\-|\s/)
-            return (d.slice(0, 3).reverse().join('/')) + ' ' + dt[1]
-          } else {
-            return time
-          }
+        if (time) {
+          let value = new Date(time)
+          return `${value.getDate().toString().padStart(2, '0')}/${(value.getMonth() + 1).toString().padStart(2, '0')}/${value.getFullYear()} ${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`
+        } else {
+          return ''
         }
-        */
-        return ''
       },
       getUsers: function (onSuccess, onError) {
         onSuccess(vm.usersComment)
       },
       getComments: function (onSuccess, onError) {
-        let data = {
+        var dataGet = {
           'classPK': vm.classPK,
           'className': vm.className
         }
-        let promise = vm.$store.dispatch('loadCommentItems', data)
+        let promise = vm.$store.dispatch('loadCommentItems', dataGet)
         promise.then(result => {
           var data = []
           $.each(result, function (index, item) {
@@ -146,7 +155,12 @@ export default {
       postComment: function (data, onSuccess, onError) {
         data.classPK = vm.classPK
         data.className = vm.className
+        data.opinion = document.getElementById('opinion').checked
         vm.$store.dispatch('postComment', data).then(result => {
+          if (result.opinion) {
+            $('.opinion').hide()
+          }
+          document.getElementById('opinion').checked = false
           vm.comment = result
           vm.formatComment(vm.comment)
           onSuccess(vm.comment)
@@ -166,6 +180,8 @@ export default {
         data.className = vm.className
         vm.$store.dispatch('deleteComment', data).then(result => {
           onSuccess()
+        }).catch(reject => {
+          console.log(reject)
         })
       },
       upvoteComment: function (data, onSuccess, onError) {
@@ -175,12 +191,13 @@ export default {
           vm.comment = result
           vm.formatComment(vm.comment)
           onSuccess(vm.comment)
+        }).catch(reject => {
+          console.log(reject)
         })
       },
       uploadAttachments: function (comments, onSuccess, onError) {
         var responses = 0
         var successfulUploads = []
-        console.log('comments===', comments)
         var serverResponded = function () {
           responses++
           if (responses === comments.length) {
@@ -207,10 +224,10 @@ export default {
           formData.append('fileType', comment.file.type)
           formData.append('fileSize', comment.file.size)
           formData.append('pings', comment.pings.join())
-          // formData.append('email', 'congtrinh0209@gmail.com')
-          // formData.append('fullName', 'Công Trình')
-          formData.append('email', vm.initData.user.userId)
-          formData.append('fullName', vm.initData.user.userName)
+          formData.append('email', 'congtrinh0209@gmail.com')
+          formData.append('fullName', 'Công Trình')
+          // formData.append('email', themeDisplay.getUserId())
+          // formData.append('fullName', themeDisplay.getUserName())
           $.ajax({
             url: vm.initData.commentApi + '/uploads',
             dataType: 'json',
@@ -232,46 +249,46 @@ export default {
             }
           })
         })
-      },
-      appendNewComments: function (commentJSONs, onSuccess, onError) {
-        const config = {
-          headers: {
-            'groupId': vm.group_id
-          }
-        }
-        let commentById = {}
-        let oldCommentsId = commentJSONs.map(function (c) {
-          commentById[c.id] = c.id + '' + c.userHasUpvoted + '' + c.upvoteCount + '' + c.content
-          return c.id
-        })
-        let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.classPK + '?start=0&end=10&sort=modified_Number&order=true'
-        axios.get(url, config).then(function (response) {
-          let data = []
-          let dataEdited = []
-          if (response.hasOwnProperty('data')) {
-            var serializable = response.data.data
-            let curId = 0
-            let code = ''
-            for (var key in serializable) {
-              vm.comment = serializable[key]
-              curId = vm.comment['commentId']
-              code = vm.comment['commentId'] + '' + vm.comment['userHasUpvoted'] + '' + vm.comment['upvoteCount'] + '' + vm.comment['content']
-              vm.formatComment(vm.comment)
-              /* check return if not exist */
-              if (oldCommentsId.indexOf(curId) === -1) {
-                data.push(vm.comment)
-              } else if (code !== commentById[curId]) {
-                /* if have changed */
-                dataEdited.push(vm.comment)
-              }
-            }
-            onSuccess(data, dataEdited)
-          }
-        })
-        .catch(function (error) {
-          console.log(error)
-        })
       }
+      // appendNewComments: function (commentJSONs, onSuccess, onError) {
+      //   const config = {
+      //     headers: {
+      //       'groupId': vm.group_id
+      //     }
+      //   }
+      //   let commentById = {}
+      //   let oldCommentsId = commentJSONs.map(function (c) {
+      //     commentById[c.id] = c.id + '' + c.userHasUpvoted + '' + c.upvoteCount + '' + c.content
+      //     return c.id
+      //   })
+      //   let url = vm.initData.commentApi + '/org.opencps.dossiermgt.model.Dossier/' + vm.classPK + '?start=0&end=10&sort=modified_Number&order=true'
+      //   axios.get(url, config).then(function (response) {
+      //     let data = []
+      //     let dataEdited = []
+      //     if (response.hasOwnProperty('data')) {
+      //       var serializable = response.data.data
+      //       let curId = 0
+      //       let code = ''
+      //       for (var key in serializable) {
+      //         vm.comment = serializable[key]
+      //         curId = vm.comment['commentId']
+      //         code = vm.comment['commentId'] + '' + vm.comment['userHasUpvoted'] + '' + vm.comment['upvoteCount'] + '' + vm.comment['content']
+      //         vm.formatComment(vm.comment)
+      //         /* check return if not exist */
+      //         if (oldCommentsId.indexOf(curId) === -1) {
+      //           data.push(vm.comment)
+      //         } else if (code !== commentById[curId]) {
+      //           /* if have changed */
+      //           dataEdited.push(vm.comment)
+      //         }
+      //       }
+      //       onSuccess(data, dataEdited)
+      //     }
+      //   })
+      //   .catch(function (error) {
+      //     console.log(error)
+      //   })
+      // }
     })
   },
   methods: {
@@ -294,9 +311,10 @@ export default {
         vm.comment.pictureUrl = 'https://viima-app.s3.amazonaws.com/media/user_profiles/user-icon.png'
       }
       vm.comment.fullname = comment.fullname
+      vm.comment.opinion = comment.opinion
       vm.comment.pings = comment.pings.toString().split(',')
-      vm.comment.createdDate = vm.dateTimeView(vm.comment.createDate)
-      vm.comment.modifiedDate = vm.dateTimeView(vm.comment.modifiedDate)
+      vm.comment.createdDate = vm.comment.createDate
+      vm.comment.modifiedDate = vm.comment.modifiedDate
     },
     dateTimeView (arg) {
       if (arg) {
@@ -305,9 +323,93 @@ export default {
       } else {
         return ''
       }
+    },
+    // action ý kiến chính thức
+    showMore: function () {
+      var vm = this
+      vm.argShowMore = !vm.argShowMore
+    },
+    nameCreateCmt (userId, name) {
+      var vm = this
+      if (vm.userId === userId) {
+        return 'Bạn'
+      } else {
+        return name
+      }
     }
-    //
+  },
+  filters: {
+    dateTimeView (arg) {
+      if (arg) {
+        let value = new Date(arg)
+        return `${value.getDate().toString().padStart(2, '0')}/${(value.getMonth() + 1).toString().padStart(2, '0')}/${value.getFullYear()}  ${value.getHours().toString().padStart(2, '0')}:${value.getMinutes().toString().padStart(2, '0')}`
+      } else {
+        return ''
+      }
+    }
   }
 }
 </script>
+<style type="text/css">
+  .textarea-wrapper .input-group__input {
+    border: 1px solid #CCC !important;
+    padding-top: 10px !important;
+  }
+  .action {
+    display: inline-block;
+  }
+  .action-delete {
+    cursor: pointer;
+    font-size: 0.9em;
+    opacity: 1;
+    pointer-events: auto;
+    color: #999;
+    font-weight: bold;
+  }
+  .action-delete:hover {
+    color: #666
+  }
+  /* .comp_activity_comment .commentClass{
+    border-bottom: 1px solid #ddd;
+  }
+  .comp_activity_comment .commentClass .contentClass{
+    white-space: pre-line;
+  } */
+  .action-show{
+    float: right;
+    cursor: pointer;
+  }
+  /* .comp_activity_comment .commentClass i{
+    font-size: 3.4em;
+  } */
+  .time_right{
+    float: right;
+    font-size: 0.8em;
+    color: #666;
+  }
+  .media-heading{
+    margin: 0!important;
+  }
+  /* .comp_activity_comment .btn{
+    margin-right: 0;
+  } */
+  .activity_comment{
+    max-width: 100%;
+  }
+  .overflowComment::-webkit-scrollbar-track{
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 8px;
+    background-color: #F5F5F5;
+  }
+  .overflowComment::-webkit-scrollbar{
+    width: 8px;
+    background-color: #F5F5F5;
+  }
+  .overflowComment::-webkit-scrollbar-thumb{
+    border-radius: 8px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
+    background-color: rgb(181, 181, 181);
+  }
+
+</style>
 

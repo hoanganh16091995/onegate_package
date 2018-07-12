@@ -11,22 +11,22 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    // initData: {
-    //   groupId: 55301,
-    //   serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
-    //   serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
-    //   regionApi: 'http://127.0.0.1:8081/api/dictcollections',
-    //   serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
-    //   postDossierApi: 'http://127.0.0.1:8081/api/onegate',
-    //   dossierApi: 'http://127.0.0.1:8081/api/dossiers',
-    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
-    //   applicantApi: '/o/rest/v2/applicant',
-    //   dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
-    //   commentApi: 'http://127.0.0.1:8081/api/comments',
-    //   govAgency: 'abc',
-    //   user: {}
-    // },
-    initData: null,
+    initData: {
+      groupId: 55301,
+      serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
+      serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
+      regionApi: 'http://127.0.0.1:8081/api/dictcollections',
+      serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
+      postDossierApi: 'http://127.0.0.1:8081/api/onegate',
+      dossierApi: 'http://127.0.0.1:8081/api/dossiers',
+      dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
+      applicantApi: '/o/rest/v2/applicant',
+      dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
+      commentApi: 'http://127.0.0.1:8081/api/comments',
+      govAgency: 'abc',
+      user: {}
+    },
+    // initData: null,
     loading: false,
     loadingTable: false,
     loadingDynamicBtn: false,
@@ -1077,7 +1077,6 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId
           }
         }
-        console.log('dataPost', data)
         var strPings = data.pings.join()
         var params = new URLSearchParams()
         params.append('className', data.className)
@@ -1086,6 +1085,8 @@ export const store = new Vuex.Store({
         params.append('pings', strPings)
         params.append('content', data.content)
         params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        params.append('opinion', data.opinion)
+
         axios.post(state.initData.commentApi, params, config)
         .then(function (response) {
           var resPostCmt = {}
@@ -1109,15 +1110,15 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId
           }
         }
-        console.log('dataPut', data)
-        var strPings = data.pings.join()
+        var strPings = data.pings.join();
         var params = new URLSearchParams()
-        params.append('className', data.className)
-        params.append('classPK', data.classPK)
-        params.append('parent', data.parent != null ? data.parent : 0)
+        // params.append('className', data.className)
+        // params.append('classPK', data.classPK)
+        // params.append('parent', data.parent != null ? data.parent : 0)
         params.append('pings', strPings)
         params.append('content', data.content)
-        params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        // params.append('upvoteCount', data.upvoteCount != null ? data.upvoteCount : 0)
+        console.log('dataPut', data)
         axios.put(state.initData.commentApi + '/' + data.commentId, params, config)
         .then(function (response) {
           var resPutCmt = {}
@@ -1145,8 +1146,7 @@ export const store = new Vuex.Store({
           resolve(response)
         })
         .catch(function (error) {
-          // onError()
-          console.log(error)
+          reject(error)
         })
       })
     },
