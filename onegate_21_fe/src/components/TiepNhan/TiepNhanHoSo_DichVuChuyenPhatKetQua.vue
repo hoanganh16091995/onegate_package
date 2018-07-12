@@ -175,7 +175,7 @@ export default {
       }
     ],
     dichVuChuyenPhatKetQua: {
-      viaPostal: false,
+      viaPostal: 0,
       postalServiceCode: '',
       postalServiceName: '',
       postalAddress: '',
@@ -199,6 +199,7 @@ export default {
   methods: {
     initData (data) {
       var vm = this
+      console.log('ket qua-----', data)
       let dichVuChuyenPhatKetQuaTemp = {
         viaPostal: data.viaPostal,
         postalServiceCode: data.postalServiceCode,

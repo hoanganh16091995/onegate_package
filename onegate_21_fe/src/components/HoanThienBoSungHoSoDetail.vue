@@ -17,7 +17,7 @@
         </div>
       </div>
     </div>
-    <v-card class="mb-2">
+    <v-card>
       <!-- <v-toolbar dark color="primary" height="40">
         <v-toolbar-title class="white--text" style="font-size: 15px;">Thông tin chung</v-toolbar-title>
         <v-spacer></v-spacer>
@@ -71,7 +71,17 @@
         </v-layout>
       </v-card-title>
     </v-card>
-    <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
+    <div style="position: relative;">
+      <v-expansion-panel class="expansion-pl">
+        <v-expansion-panel-content hide-actions value="1">
+          <div slot="header">
+            <div class="background-triangle-small"> I.</div>
+            THÀNH PHẦN HỒ SƠ &nbsp;&nbsp;&nbsp;&nbsp; 
+          </div>
+          <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+    </div>
     <div class="text-center mt-2">
       <v-btn color="primary" v-on:click.native="daBoSung">
         Đã bổ sung &nbsp;
@@ -89,7 +99,7 @@
           Bổ sung hồ sơ
         </v-card-title>
         <v-card-text style="max-height: 350px" class="thanhphanhoso_bs">
-          <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
+          <!-- <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so> -->
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -143,7 +153,8 @@
         durationDate: 3,
         delegateName: 'Lê việt Đức',
         applicantIdNo: '123456778'
-      }
+      },
+      mark: false
     }),
     computed: {
       loading () {
@@ -169,6 +180,42 @@
       },
       daBoSung () {
         console.log('Đã bổ sung')
+        var vm = this
+        let thanhphanhoso = this.$refs.thanhphanhoso.dossierTemplateItems
+        let dossierFiles = vm.$refs.thanhphanhoso.dossierFilesItems
+        let dossierTemplates = thanhphanhoso
+        let listAction = []
+        let listDossierMark = []
+        if (dossierTemplates) {
+          dossierTemplates.forEach(function (val, index) {
+            if (val.partType === 1) {
+              val['dossierId'] = vm.thongTinChiTietHoSo.dossierId
+              listDossierMark.push(vm.$store.dispatch('postDossierMark', val))
+            }
+          })
+          dossierFiles.forEach(function (value, index) {
+            if (value.eForm) {
+              value['dossierId'] = vm.thongTinChiTietHoSo.dossierId
+              listAction.push(vm.$store.dispatch('putAlpacaForm', value))
+            }
+          })
+        }
+        Promise.all(listDossierMark).then(values => {
+        }).catch(function (xhr) {
+        })
+        Promise.all(listAction).then(values => {
+          console.log(values)
+          let dataPostAction = {
+            dossierId: vm.thongTinChiTietHoSo.dossierId,
+            actionCode: 7100,
+            actionUser: '',
+            actionNote: ''
+          }
+          vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
+          })
+        }).catch(reject => {
+          console.log('reject=============', reject)
+        })
       }
     }
   }
