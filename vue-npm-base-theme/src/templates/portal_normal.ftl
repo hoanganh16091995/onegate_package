@@ -21,7 +21,6 @@
 </head>
 
 <body class="${css_class} mBody">
-
 	<div class="mWrapper">
 		<header id="banner">		
 			<div class="container align-middle" style="padding: 0;">
@@ -49,7 +48,7 @@
 					${portletDisplay.recycle()}
 
 					${portletDisplay.setTitle(the_title)}
-
+					
 					<@liferay_theme["wrap-portlet"] page="portlet.ftl">
 						<@liferay_util["include"] page=content_include />
 					</@>
@@ -78,7 +77,6 @@
 			</div>
 		</footer>
 	</div>
-
 </body>
 
 </html>

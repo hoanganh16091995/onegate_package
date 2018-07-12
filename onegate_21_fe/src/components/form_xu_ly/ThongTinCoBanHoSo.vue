@@ -179,7 +179,8 @@
     },
     data: () => ({
       thongTinChiTietHoSo: {
-      }
+      },
+      showContactDetail: false
     }),
     computed: {
       loading () {
@@ -201,6 +202,9 @@
         vm.$store.dispatch('getDetailDossier', data).then(resultDossier => {
           vm.thongTinChiTietHoSo = resultDossier
         })
+      },
+      goBack () {
+        window.history.back()
       }
     },
     filters: {
