@@ -83,6 +83,7 @@
           vm.trangThaiHoSoList[0]['active'] = true
           //
           vm.loadingCounter()
+          vm.loading = false
         })
       })
     },
