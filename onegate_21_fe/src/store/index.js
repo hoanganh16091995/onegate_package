@@ -268,6 +268,27 @@ export const store = new Vuex.Store({
         })
       })
     },
+    loadDossierLienThong ({commit, state}, classPK) {
+      commit('setLoading', true)
+      return new Promise((resolve, reject) => {
+        let param = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            origin: classPK
+          }
+        }
+        axios.get(state.initData.dossierApi, param).then(function (response) {
+          let serializable = response.data
+          resolve(serializable)
+          commit('setLoading', false)
+        }).catch(function (error) {
+          commit('setLoading', false)
+          reject(error)
+        })
+      })
+    },
     loadingCounterHoSo ({commit, state}, filter) {
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
