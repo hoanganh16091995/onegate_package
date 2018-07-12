@@ -19,6 +19,8 @@
       ref="feedetail"></fee-detail>
     <!-- <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo> -->
     <!-- <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail> -->
+    <!-- <chi-tiet-tinh-trang-lien-thong v-if="formCode === 'NEW'"  ref="xemchitiethosotinhtrangxulylienthong"></chi-tiet-tinh-trang-lien-thong> -->
+    <!-- <chi-tiet-ho-so-lien-thong v-if="formCode === 'NEW'"  ref="xemchitiethosolienthong"></chi-tiet-ho-so-lien-thong> -->
   </div>
 </template>
 
@@ -48,7 +50,9 @@ export default {
     'tiep-nhan-ho-so-truc-tuyen-detail': TiepNhanHoSoTrucTuyenDetail,
     'tra-ket-qua-detail': TraKetQuaDetail,
     'xem-chi-tiet-ho-so-detail': XemChiTietHoSoDetail,
-    'xem-chi-tiet-ho-so-detail-can-bo': XemChiTietHoSoDetailCanBo
+    'xem-chi-tiet-ho-so-detail-can-bo': XemChiTietHoSoDetailCanBo,
+    'chi-tiet-tinh-trang-lien-thong': HoSoLienThongTinhTrangXuLyDetail,
+    'chi-tiet-ho-so-lien-thong': HoSoLienThongDetail
   },
   data: () => ({
     initData: null,
@@ -70,6 +74,8 @@ export default {
           let feedetail = vm.$refs.feedetail
           let chuyenphatketquadetail = vm.$refs.chuyenphatketquadetail
           let xemchitiethosodetailcanbo = vm.$refs.xemchitiethosodetailcanbo
+          let xemchitiethosotinhtrangxulylienthong = vm.$refs.xemchitiethosotinhtrangxulylienthong
+          let xemchitiethosolienthong = vm.$refs.xemchitiethosolienthong
           if (tiepnhanhosodetail !== null && tiepnhanhosodetail !== undefined && tiepnhanhosodetail !== 'undefined') {
             vm.$refs.tiepnhanhosodetail.initData(vm.id)
           } else if (hoanthienbosunghosodetail !== null && hoanthienbosunghosodetail !== undefined && hoanthienbosunghosodetail !== 'undefined') {
@@ -82,6 +88,10 @@ export default {
             vm.$refs.chuyenphatketquadetail.initData(vm.id)
           } else if (xemchitiethosodetailcanbo !== null && xemchitiethosodetailcanbo !== undefined && xemchitiethosodetailcanbo !== 'undefined') {
             vm.$refs.xemchitiethosodetailcanbo.initData(vm.id)
+          } else if (xemchitiethosotinhtrangxulylienthong !== null && xemchitiethosotinhtrangxulylienthong !== undefined && xemchitiethosotinhtrangxulylienthong !== 'undefined') {
+            vm.$refs.xemchitiethosotinhtrangxulylienthong.initData(vm.id)
+          } else if (xemchitiethosolienthong !== null && xemchitiethosolienthong !== undefined && xemchitiethosolienthong !== 'undefined') {
+            vm.$refs.xemchitiethosolienthong.initData(vm.id)
           }
         }
       })

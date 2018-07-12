@@ -2265,7 +2265,7 @@ body .input-group--selection-controls__ripple {
 }
 .absolute-lable {
     position: absolute;
-    right: 100px;
+    right: 108px;
     top: 10px
 }
 .absolute-lable span {
@@ -2379,4 +2379,8 @@ body .input-group--selection-controls__ripple {
 }
 .comments__container .media-heading{
     margin: 0!important;
+}
+/*  */
+body .expansion-panel .expansion-panel__body div > .card {
+    border-top: 1px solid #dddddd;
 }
