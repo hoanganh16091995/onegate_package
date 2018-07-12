@@ -261,18 +261,17 @@
       </v-card>
     </v-dialog>
 
-    <v-btn color="primary" @click.native="dialog_statusAction = true">
+    <!-- <v-btn color="primary" @click.native="dialog_statusAction = true">
       TEST StatusAction &nbsp;
       <v-icon>save</v-icon>
     </v-btn>
-    <!--  -->
 
     <phan-cong v-model="data_pc" :assign_items="assign_items" :type="type" @exportData="expDataPC"></phan-cong>
     
     <v-btn color="primary" @click.native="expDataPC">
       TEST PhanCong &nbsp;
       <v-icon>save</v-icon>
-    </v-btn>
+    </v-btn> -->
     <!--  -->
   </div>
 </template>
@@ -286,7 +285,7 @@ export default {
   props: ['index'],
   components: {
     'tiny-pagination': TinyPagination,
-    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo
+    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
     'phan-cong': PhanCong
   },
   data: () => ({
