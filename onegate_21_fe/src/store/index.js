@@ -561,6 +561,7 @@ export const store = new Vuex.Store({
             }
           }
           if (data > 0) {
+            commit('setLoading', true)
             axios.get(state.initData.postDossierApi + '/' + data, param).then(function (response) {
               let thongTinNguoiNop = {
                 delegateName: response.data.delegateName,
@@ -572,6 +573,7 @@ export const store = new Vuex.Store({
                 delegateTelNo: response.data.delegateTelNo,
                 delegateIdNo: response.data.delegateIdNo
               }
+              commit('setLoading', false)
               commit('setDossier', response.data)
               commit('setThongTinChuHoSo', response.data)
               commit('setLePhi', response.data)
@@ -580,6 +582,7 @@ export const store = new Vuex.Store({
               commit('setDichVuChuyenPhatKetQua', response.data)
               resolve(response.data)
             }, error => {
+              commit('setLoading', false)
               reject(error)
             }).catch(function (xhr) {
               console.log(xhr)
@@ -587,6 +590,23 @@ export const store = new Vuex.Store({
           } else {
             resolve()
           }
+        })
+      })
+    },
+    getGovAgency ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        let paramGetGovAgency = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            sort: 'sibling'
+          }
+        }
+        axios.get(state.initData.regionApi + '/GOVERMENT_AGENCY/dictitems', paramGetGovAgency).then(function (response) {
+          resolve(response.data.data)
+        }).catch(function (xhr) {
+          console.log(xhr)
         })
       })
     },
