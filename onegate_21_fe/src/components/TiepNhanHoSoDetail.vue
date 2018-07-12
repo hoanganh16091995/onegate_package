@@ -77,7 +77,8 @@ export default {
     'dich-vu-chuyen-phat-ket-qua': DichVuChuyenPhatKetQua
   },
   data: () => ({
-    validTNHS: false
+    validTNHS: false,
+    dossierId: ''
   }),
   computed: {
     loading () {
@@ -105,6 +106,9 @@ export default {
         vm.$refs.thanhphanhoso.initData(result)
         // call initData dich vu ket qua
         vm.$refs.dichvuchuyenphatketqua.initData(result)
+
+        vm.$refs.thongtinchung.initData(result)
+        vm.dossierId = data
       }).catch(reject => {
       })
     },
@@ -112,28 +116,32 @@ export default {
       var vm = this
       console.log('luu Ho So--------------------')
       vm.$store.commit('setPrintPH', false)
-      let thongtinchung = this.$store.getters.thongTinChungHoSo
-      let thongtinchuhoso = this.$store.getters.thongTinChuHoSo
-      let thongtinnguoinophoso = this.$store.getters.thongTinNguoiNopHoSo
-      let thanhphanhoso = this.$store.getters.thanhPhanHoSo
-      let lephi = this.$store.getters.lePhi
-      let dichvuchuyenphatketqua = this.$store.getters.dichVuChuyenPhatKetQua
+      let thongtinchung = this.$refs.thongtinchung.thongTinChungHoSo
+      let thongtinchuhoso = this.$refs.thongtinchuhoso.thongTinChuHoSo
+      let thongtinnguoinophoso = this.$refs.thongtinchuhoso.thongTinNguoiNopHoSo
+      let thanhphanhoso = this.$refs.thanhphanhoso.dossierTemplateItems
+      let lephi = this.$refs.lephi.lePhi
+      let dichvuchuyenphatketqua = this.$refs.dichvuchuyenphatketqua.dichVuChuyenPhatKetQua
       console.log('validate TNHS formThongtinchuhoso.validate()', vm.$refs.formTiepNhanHoSo.validate())
       if (vm.$refs.formTiepNhanHoSo.validate()) {
         vm.$store.dispatch('getCpsAuthen').then(resultAuthen => {
-          let dossierTemplates = thanhphanhoso.dossierTemplates
-          console.log('dossierTemplates ------', dossierTemplates)
+          let dossierFiles = vm.$refs.thanhphanhoso.dossierFilesItems
+          let dossierTemplates = thanhphanhoso
           let listAction = []
           let listDossierMark = []
           if (dossierTemplates) {
             dossierTemplates.forEach(function (val, index) {
-              if (val.hasForm && val.partType === 1) {
-                val.cps_auth = resultAuthen
-                listAction.push(vm.$store.dispatch('putAlpacaForm', val))
-              }
               if (val.partType === 1) {
                 val.cps_auth = resultAuthen
+                val['dossierId'] = vm.dossierId
                 listDossierMark.push(vm.$store.dispatch('postDossierMark', val))
+              }
+            })
+            dossierFiles.forEach(function (value, index) {
+              if (value.eForm) {
+                value.cps_auth = resultAuthen
+                value['dossierId'] = vm.dossierId
+                listAction.push(vm.$store.dispatch('putAlpacaForm', value))
               }
             })
           }
@@ -161,11 +169,8 @@ export default {
             console.log('data put dossier -->', tempData)
             vm.$store.dispatch('getCpsAuthen').then(resultAuthenPut => {
               tempData['cps_auth'] = resultAuthenPut
+              tempData['dossierId'] = vm.dossierId
               vm.$store.dispatch('putDossier', tempData).then(function (result) {
-                // let index = vm.$store.getters.index
-                // let id = result.dossierId
-                // utils.showMessageToastr('success', 'Lưu thành công')
-                // router.push('/danh-sach-ho-so/' + index + '/tiep-nhan-ho-so/' + id + '/phieu-hen')
               })
             }).catch(reject => {
               console.log(reject)
@@ -198,7 +203,7 @@ export default {
       console.log('tempData------------', tempData)
       vm.$store.dispatch('getCpsAuthen').then(result => {
         let dataPostAction = {
-          dossierId: vm.thongTinChungHoSo.dossierId,
+          dossierId: vm.dossierId,
           actionCode: 10000,
           cps_auth: result
         }
@@ -211,65 +216,61 @@ export default {
     },
     boSungHoSo () {
       var vm = this
-      let thongtinchung = this.$store.getters.thongTinChungHoSo
-      let thongtinchuhoso = this.$store.getters.thongTinChuHoSo
-      let thongtinnguoinophoso = this.$store.getters.thongTinNguoiNopHoSo
-      let thanhphanhoso = this.$store.getters.thanhPhanHoSo
-      let lephi = this.$store.getters.lePhi
-      let dichvuchuyenphatketqua = this.$store.getters.dichVuChuyenPhatKetQua
-      console.log('thongtinchung:', thongtinchung)
-      console.log('thongtinchuhoso:', thongtinchuhoso)
-      console.log('thongtinnguoinophoso:', thongtinnguoinophoso)
-      console.log('thanhphanhoso:', thanhphanhoso)
-      console.log('lephi:', lephi)
-      console.log('dichvuchuyenphatketqua:', dichvuchuyenphatketqua)
-      // Save dossier mark and save Alpaca
+      console.log('luu Ho So--------------------')
+      vm.$store.commit('setPrintPH', false)
+      let thongtinchung = this.$refs.thongtinchung.thongTinChungHoSo
+      let thongtinchuhoso = this.$refs.thongtinchuhoso.thongTinChuHoSo
+      let thongtinnguoinophoso = this.$refs.thongtinchuhoso.thongTinNguoiNopHoSo
+      let thanhphanhoso = this.$refs.thanhphanhoso.dossierTemplateItems
+      let lephi = this.$refs.lephi.lePhi
+      let dichvuchuyenphatketqua = this.$refs.dichvuchuyenphatketqua.dichVuChuyenPhatKetQua
       console.log('validate TNHS formThongtinchuhoso.validate()', vm.$refs.formTiepNhanHoSo.validate())
       if (vm.$refs.formTiepNhanHoSo.validate()) {
         vm.$store.dispatch('getCpsAuthen').then(resultAuthen => {
-          let dossierTemplates = thanhphanhoso.dossierTemplates
-          console.log('dosierTemplates ------', dossierTemplates)
+          let dossierFiles = vm.$refs.thanhphanhoso.dossierFilesItems
+          let dossierTemplates = thanhphanhoso
           let listAction = []
           let listDossierMark = []
           if (dossierTemplates) {
             dossierTemplates.forEach(function (val, index) {
-              if (val.hasForm && val.partType === 1) {
-                val.cps_auth = resultAuthen
-                listAction.push(vm.$store.dispatch('putAlpacaForm', val))
-              }
               if (val.partType === 1) {
                 val.cps_auth = resultAuthen
+                val['dossierId'] = vm.dossierId
                 listDossierMark.push(vm.$store.dispatch('postDossierMark', val))
+              }
+            })
+            dossierFiles.forEach(function (value, index) {
+              if (value.eForm) {
+                value.cps_auth = resultAuthen
+                value['dossierId'] = vm.dossierId
+                listAction.push(vm.$store.dispatch('putAlpacaForm', value))
               }
             })
           }
           Promise.all(listDossierMark).then(values => {
           }).catch(function (xhr) {
           })
-          console.log('run tiep nhan')
           Promise.all(listAction).then(values => {
             console.log(values)
             let tempData = Object.assign(thongtinchung, thongtinchuhoso, thongtinnguoinophoso, thanhphanhoso, lephi, dichvuchuyenphatketqua)
             console.log('data put dossier -->', tempData)
             vm.$store.dispatch('getCpsAuthen').then(resultAuthenPut => {
-              tempData.cps_auth = resultAuthenPut
+              tempData['cps_auth'] = resultAuthenPut
+              tempData['dossierId'] = vm.dossierId
               vm.$store.dispatch('putDossier', tempData).then(function (result) {
                 let dataPostAction = {
-                  dossierId: vm.thongTinChungHoSo.dossierId,
+                  dossierId: vm.dossierId,
                   actionCode: 20000,
                   cps_auth: resultAuthenPut
                 }
                 vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
-                  // vm.$store.dispatch('showMessageToastr', ['success', 'Lưu thành công'])
-                  // router.push('/danh-sach-ho-so/3')
                 })
               })
             }).catch(reject => {
-
+              console.log(reject)
             })
           }).catch(reject => {
             console.log('reject=============', reject)
-            vm.$store.dispatch('showMessageToastr', ['error', 'Vui lòng kiểm tra lại Form thành phần hồ sơ'])
           })
         }).catch(reject => {
         })

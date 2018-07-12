@@ -576,7 +576,8 @@ export default {
       let data = {
         serviceCode: vm.serviceCode,
         govAgencyCode: vm.govAgencyCode,
-        templateNo: vm.templateNo
+        templateNo: vm.templateNo,
+        originality: 3
       }
       vm.loadingAction = true
       vm.$store.dispatch('postDossier', data).then(function (result) {

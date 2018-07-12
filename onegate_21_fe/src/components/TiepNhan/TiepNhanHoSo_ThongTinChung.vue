@@ -134,7 +134,7 @@
 </template>
 
 <script>
-  import router from '@/router'
+  // import router from '@/router'
   export default {
     data: () => ({
       minDate: null,
@@ -142,6 +142,20 @@
         serviceCode: '',
         govAgencyCode: '',
         processOptionId: ''
+      },
+      thongTinChungHoSo: {
+        serviceName: '',
+        dossierTemplateName: '',
+        serviceConfig: '',
+        serviceOption: '',
+        dossierNo: '',
+        receiveDate: new Date(),
+        dueDate: (new Date()).toString(),
+        durationDate: '',
+        dossierId: '',
+        dossierIdCTN: '',
+        dossierStatus: '',
+        dossierStatusText: ''
       }
     }),
     created () {
@@ -158,33 +172,27 @@
       },
       isDetail () {
         return this.$store.getters.isDetail
-      },
-      thongTinChungHoSo () {
-        return this.$store.getters.thongTinChungHoSo
-      },
-      serviceConfigItems () {
-        return this.$store.getters.serviceConfigItems
-      },
-      serviceOptionItems () {
-        return this.$store.getters.serviceOptionItems
-      },
-      dossierTemplates () {
-        return this.$store.getters.dossierTemplates
       }
     },
     watch: {},
     methods: {
-      // changeDate () {
-      //   var vm = this
-      //   console.log(vm.thongTinChungHoSo.dueDate)
-      //   var date = new Date(vm.thongTinChungHoSo.dueDate)
-      //   var dueDatePut = `${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-      //   if (vm.isDetail) {
-      //     vm.$store.dispatch('putDuedateDossier', dueDatePut)
-      //   }
-      //   // let durationDate = vm.getDuedate()
-      //   // vm.$store.commit('setThongTinChungHoSoDurationDate', durationDate)
-      // },
+      initData (data) {
+        var vm = this
+        console.log(data)
+        let thongTinChungHoSoTemp = {
+          serviceName: data.serviceName,
+          dossierTemplateName: data.dossierTemplateName,
+          dossierNo: data.dossierNo,
+          receiveDate: data.receiveDate,
+          dueDate: data.dueDate,
+          durationDate: data.durationDate,
+          dossierId: data.dossierId,
+          dossierIdCTN: data.dossierIdCTN,
+          dossierStatus: data.dossierStatus,
+          dossierStatusText: data.dossierStatusText
+        }
+        vm.thongTinChungHoSo = thongTinChungHoSoTemp
+      },
       getCurentDateTime (type) {
         let date = new Date()
         if (type === 'datetime') {
@@ -200,60 +208,6 @@
           return 1
         }
         return Math.ceil(dueDateMs / 1000 / 60 / 60 / 24)
-      },
-      changeServiceConfigs () {
-        var vm = this
-        vm.$store.commit('setSubStatusNew', false)
-        setTimeout(function () {
-          let optionItems = vm.thongTinChungHoSo.serviceConfig.options
-          // console.log(optionItems)
-          vm.dataPostDossier.serviceCode = vm.thongTinChungHoSo.serviceConfig.serviceCode
-          vm.dataPostDossier.govAgencyCode = vm.thongTinChungHoSo.serviceConfig.govAgencyCode
-          vm.$store.commit('setServiceConfigObj', vm.thongTinChungHoSo.serviceConfig)
-          if (optionItems.length !== 1) {
-            vm.$store.commit('setServiceOptionItems', optionItems)
-          } else {
-            vm.dataPostDossier.templateNo = optionItems[0].templateNo
-            vm.$store.commit('setServiceOptionItems', optionItems)
-            vm.$store.commit('setServiceOptionThongTinChungHoSo', optionItems[0].templateNo)
-            vm.$store.commit('setSubStatusNew', false)
-            vm.$store.dispatch('getCpsAuthen').then(function (result) {
-              vm.dataPostDossier.cps_auth = result
-              let promise = vm.$store.dispatch('postDossier', vm.dataPostDossier)
-              promise.then(function (result) {
-                console.log('result', result)
-                router.push('/danh-sach-ho-so/' + vm.$store.getters.index + '/tiep-nhan-ho-so/' + result.dossierId)
-                vm.$store.dispatch('loadDossierFiles')
-                vm.$store.dispatch('loadDossierTemplates', result).then(function (result) {
-                  setTimeout(function (argument) {
-                    console.log('result dossierTemplates=-------', result)
-                    result.forEach(val => {
-                      vm.$store.dispatch('loadAlpcaForm', val)
-                    })
-                  }, 500)
-                })
-              })
-            })
-          }
-        },
-        300)
-      },
-      changeServiceOption () {
-        var vm = this
-        vm.$store.commit('setSubStatusNew', false)
-        setTimeout(function () {
-          vm.dataPostDossier.templateNo = vm.thongTinChungHoSo.serviceOption
-          vm.$store.dispatch('getCpsAuthen').then(function (result) {
-            vm.dataPostDossier.cps_auth = result
-            let promise = vm.$store.dispatch('postDossier', vm.dataPostDossier)
-            promise.then(function (result) {
-              console.log('log', vm.$store.getters.index, result.dossierId)
-              router.push('/danh-sach-ho-so/' + vm.$store.getters.index + '/tiep-nhan-ho-so/' + result.dossierId)
-            })
-          }).catch(reject => {
-            console.log(reject)
-          })
-        }, 300)
       }
     },
     filters: {

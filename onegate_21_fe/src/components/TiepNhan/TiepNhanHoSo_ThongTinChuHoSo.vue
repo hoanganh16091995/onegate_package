@@ -357,17 +357,34 @@ export default {
         cmtnd: 'Mã số thuế',
         nguoi_nop: 'Tên tổ chức/ cá nhân'
       }
+    },
+    thongTinChuHoSo: {
+      userType: true,
+      cityCode: '',
+      districtCode: '',
+      wardCode: '',
+      applicantNote: '',
+      applicantIdNo: '',
+      contactEmail: '',
+      contactName: '',
+      address: '',
+      applicantName: ''
+    },
+    thongTinNguoiNopHoSo: {
+      sameUser: true,
+      delegateName: '',
+      delegateCityCode: '',
+      delegateAddress: '',
+      delegateDistrictCode: '',
+      delegateWardCode: '',
+      delegateEmail: '',
+      delegateTelNo: '',
+      delegateIdNo: ''
     }
   }),
   computed: {
     loading () {
       return this.$store.getters.loading
-    },
-    thongTinChuHoSo () {
-      return this.$store.getters.thongTinChuHoSo
-    },
-    thongTinNguoiNopHoSo () {
-      return this.$store.getters.thongTinNguoiNopHoSo
     }
   },
   created () {
@@ -386,7 +403,7 @@ export default {
           delegateTelNo: value.contactTelNo,
           delegateIdNo: value.applicantIdNo
         }
-        vm.$store.commit('setThongTinNguoiNopHoSo', tempData)
+        vm.thongTinNguoiNopHoSo = tempData
       },
       deep: true
     },
@@ -405,7 +422,7 @@ export default {
             delegateTelNo: dataChuHoSo.contactTelNo,
             delegateIdNo: dataChuHoSo.applicantIdNo
           }
-          this.$store.commit('setThongTinNguoiNopHoSo', dataNguoiNop)
+          vm.thongTinNguoiNopHoSo = dataNguoiNop
         } else {
           this.$store.dispatch('resetThongTinNguoiNopHoSo')
         }
@@ -417,6 +434,36 @@ export default {
     initData (data) {
       var vm = this
       console.log('data-------------', data)
+      let tempData = {
+        delegateName: data.delegateName,
+        delegateCityCode: data.delegateCityCode,
+        delegateAddress: data.delegateAddress,
+        delegateDistrictCode: data.delegateDistrictCode,
+        delegateWardCode: data.delegateWardCode,
+        delegateEmail: data.delegateEmail,
+        delegateTelNo: data.delegateTelNo,
+        delegateIdNo: data.delegateIdNo
+      }
+      let thongTinNguoiNopHoSoTemp = Object.assign(vm.thongTinNguoiNopHoSo, tempData)
+      vm.thongTinNguoiNopHoSo = thongTinNguoiNopHoSoTemp
+      let userTypeCondition = true
+      if (data.applicantIdType === 'business') {
+        userTypeCondition = false
+      }
+      let tempDataChuHs = {
+        userType: userTypeCondition,
+        cityCode: data.cityCode,
+        districtCode: data.districtCode,
+        wardCode: data.wardCode,
+        applicantNote: data.applicantNote,
+        applicantIdNo: data.applicantIdNo,
+        contactEmail: data.contactEmail,
+        contactName: data.contactName,
+        address: data.address,
+        applicantName: data.applicantName
+      }
+      let thongTinChuHoSoTemp = Object.assign(vm.thongTinChuHoSo, tempDataChuHs)
+      vm.thongTinChuHoSo = thongTinChuHoSoTemp
       vm.$nextTick(function () {
         var filter = {
           collectionCode: 'ADMINISTRATIVE_REGION',
