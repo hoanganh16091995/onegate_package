@@ -64,8 +64,8 @@
                     </v-flex>
                     <!-- <v-flex xs12 sm10></v-flex> -->
                     <v-flex xs12 sm10>
-                      <div class="mb-1" v-for="item in items.dossierSync" :key="item.dossierSyncId">
-                        - {{item.createDate|dateTimeView}}: {{item.actionName}}
+                      <div class="mb-1" v-for="item in items.dossierLog" :key="item.dossierLogId">
+                        - {{item.createDate|dateTimeView}}: {{item.content}}
                       </div>
                     </v-flex>
                   </v-layout>
@@ -114,22 +114,22 @@ export default {
         if (vm.hoSoLienThongItems.length > 0) {
           for (var key in vm.hoSoLienThongItems) {
             let itemDossier = vm.hoSoLienThongItems[key]
-            vm.getDossierSyncs(itemDossier)
+            vm.getDossierLogs(itemDossier)
           }
         }
       }).catch(reject => {
         console.log(reject)
       })
     },
-    getDossierSyncs (dossier) {
+    getDossierLogs (dossier) {
       var vm = this
       let data = {
         dossierId: dossier.dossierId,
-        info: 1
+        type: ''
       }
-      vm.$store.dispatch('loadDossierSyncs', data).then(result => {
+      vm.$store.dispatch('loadDossierLogs', data).then(result => {
         if (result.length > 0) {
-          dossier.dossierSync = result
+          dossier.dossierLog = result
         }
       }).catch(reject => {
         console.log(reject)

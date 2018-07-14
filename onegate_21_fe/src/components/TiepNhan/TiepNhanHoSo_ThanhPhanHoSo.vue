@@ -192,6 +192,7 @@ export default {
             }
           })
         }, 500)
+        console.log('dossierTemplateItems', vm.dossierTemplateItems)
       }).catch(reject => {
       })
     },

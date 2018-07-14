@@ -2301,8 +2301,8 @@ body .input-group--selection-controls__ripple {
     padding-top: 5px;
 }
 .form_alpaca .expansion-panel__header {
-    padding-bottom: 0px;
-    padding-top: 0px;
+    padding-bottom: 0px !important;
+    padding-top: 0px !important;
 }
 .expansion-pl .expansion-panel__body .expansion-panel__container .expansion-panel__header,
 .expansion-pl-transparent .expansion-panel__container .expansion-panel__header {

@@ -41,6 +41,24 @@
         <!--  -->
       </v-expansion-panel-content>
     </v-expansion-panel>
+    <!--  -->
+    <v-card-actions class="mt-2" style="float: right">
+      <v-btn color="primary" @click="goBack"
+        :loading="loadingAction"
+        :disabled="loadingAction"
+      >
+        Đã nhận kết quả
+        <span slot="loader">Loading...</span>
+      </v-btn>
+      <v-btn color="primary" @click="postDossierLienThong" style="height:30px"
+        :loading="loadingAction"
+        :disabled="loadingAction"
+      >
+        <v-icon>undo</v-icon> &nbsp;
+        Quay lại
+        <span slot="loader">Loading...</span>
+      </v-btn>
+    </v-card-actions>
   </div>
 </template>
 
@@ -56,7 +74,8 @@ export default {
   data: () => ({
     thongTinLienThong: {},
     govAgencyItems: [],
-    govAgency: ''
+    govAgency: '',
+    loadingAction: false
   }),
   computed: {
     loading () {
@@ -84,6 +103,10 @@ export default {
       }).catch(reject => {
         console.log(reject)
       })
+    },
+    postDossierLienThong () {
+      var vm = this
+      console.log('đã nhận kết quả')
     },
     goBack () {
       var vm = this

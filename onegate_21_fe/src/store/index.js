@@ -811,13 +811,11 @@ export const store = new Vuex.Store({
           headers: {
             'groupId': state.initData.groupId,
             'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': state.initData.cps_auth
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
         }
         var dataPostActionDossier = new URLSearchParams()
         dataPostActionDossier.append('actionCode', data.actionCode)
-        dataPostActionDossier.append('actionNote', '')
         let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
         axios.post(url, dataPostActionDossier, options).then(function (response) {
           resolve(response.data)
@@ -1005,6 +1003,24 @@ export const store = new Vuex.Store({
           .catch(function (error) {
             reject(error)
           })
+        })
+      })
+    },
+    loadDossierLogs ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            notificationType: data.type
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/logs'
+        axios.get(url, config).then(function (response) {
+          resolve(response.data.data)
+        }).catch(function (xhr) {
+          reject(xhr)
         })
       })
     },
@@ -1316,7 +1332,7 @@ export const store = new Vuex.Store({
         let url = state.initData.dossierApi + '/' + data.dossierId + '/payment'
         return new Promise((resolve, reject) => {
           axios.get(url, config).then(function (response) {
-            resolve(response.data.data)
+            resolve(response.data)
           }).catch(function (xhr) {
             reject(xhr)
           })
@@ -1354,7 +1370,7 @@ export const store = new Vuex.Store({
             let serializable = response.data.data
             if (serializable.length > 0) {
               for (var key in serializable) {
-                serializable[key].dossierSync = []
+                serializable[key].dossierLog = []
               }
             }
             resolve(serializable)
