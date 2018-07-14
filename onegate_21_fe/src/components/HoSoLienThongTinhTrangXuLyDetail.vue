@@ -15,93 +15,57 @@
           <div class="background-triangle-small">II. </div>TÌNH TRẠNG XỬ LÝ LIÊN THÔNG
         </div>
         <!--  -->
-        <v-card>
+        <v-card v-for="(items, index) in hoSoLienThongItems" :key="items.dossierId" :class="index>0?'bdt-0':''" class="bdb-0">
           <v-expansion-panel expand class="expansion-p0">
-            <v-expansion-panel-content :value="true">
+            <v-expansion-panel-content :value="index===0?true:false">
               <div slot="header" class="pl-3">
-                CƠ QUAN LIÊN THÔNG: {{thongTinLienThong.govAgencyName}}
+                CƠ QUAN LIÊN THÔNG: <span style="font-weight:normal">{{items.govAgencyName}}</span>
               </div>
-              <v-card class="bdt-0">
+              <v-card class="bdt-0 bdb-0">
                 <v-card-text>
                   <v-layout wrap>
                     <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Tình trạng: </v-subheader>
+                      <v-subheader class="pl-0 text-header">Tình trạng: </v-subheader>
                     </v-flex>
                     <v-flex xs12 sm10>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header header-text-field">  {{thongTinLienThong.dossierSubStatusText}} </v-subheader>
+                      <v-subheader class="pl-0 text-header header-text-field">  {{items.dossierSubStatusText}} </v-subheader>
                     </v-flex>
                     <!--  -->
                     <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Ngày gửi hồ sơ: </v-subheader>
+                      <v-subheader class="pl-0 text-header">Ngày gửi hồ sơ: </v-subheader>
                     </v-flex>
                     <v-flex xs12 sm4>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header header-text-field"> {{thongTinLienThong.submitDate|dateTimeView}}</v-subheader>
+                      <v-subheader class="pl-0 text-header header-text-field"> {{items.submitDate|dateTimeView}}</v-subheader>
                     </v-flex>
                     <!--  -->
                     <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Ngày tiếp nhận: </v-subheader>
+                      <v-subheader class="pl-0 text-header">Ngày tiếp nhận: </v-subheader>
                     </v-flex>
                     <v-flex xs12 sm4>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header header-text-field"> {{thongTinLienThong.receiveDate|dateTimeView}}</v-subheader>
+                      <v-subheader class="pl-0 text-header header-text-field"> {{items.receiveDate|dateTimeView}}</v-subheader>
                     </v-flex>
                     <!--  -->
                     <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Ngày hẹn trả: </v-subheader>
+                      <v-subheader class="pl-0 text-header">Ngày hẹn trả: </v-subheader>
                     </v-flex>
                     <v-flex xs12 sm4>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header header-text-field"> {{thongTinLienThong.dueDate|dateTimeView}}</v-subheader>
+                      <v-subheader class="pl-0 text-header header-text-field"> {{items.dueDate|dateTimeView}}</v-subheader>
                     </v-flex>
                     <!--  -->
                     <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Ngày hoàn thành: </v-subheader>
+                      <v-subheader class="pl-0 text-header">Ngày hoàn thành: </v-subheader>
                     </v-flex>
                     <v-flex xs12 sm4>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header header-text-field"> {{thongTinLienThong.releaseDate|dateTimeView}}</v-subheader>
+                      <v-subheader class="pl-0 text-header header-text-field"> {{items.releaseDate|dateTimeView}}</v-subheader>
                     </v-flex>
                     <!--  -->
-                    <v-flex xs12 sm2>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="1" />
-                      </content-placeholders>
-                      <v-subheader v-else class="pl-0 text-header">Chi tiết nhật ký: </v-subheader>
+                    <v-flex xs12 sm2 >
+                      <v-subheader class="pl-0 text-header">Chi tiết nhật ký: </v-subheader>
                     </v-flex>
                     <!-- <v-flex xs12 sm10></v-flex> -->
                     <v-flex xs12 sm10>
-                      <content-placeholders class="mt-1" v-if="loading">
-                        <content-placeholders-text :lines="5" />
-                      </content-placeholders>
-                      <div class="mb-1" v-for="item in lienThongLogs" :key="item.dossierSyncId">
-                        - {{item.createDate|dateTimeView}}: {{item.actionName}}
+                      <div class="mb-1" v-for="item in items.dossierLog" :key="item.dossierLogId">
+                        - {{item.createDate|dateTimeView}}: {{item.content}}
                       </div>
                     </v-flex>
                   </v-layout>
@@ -125,14 +89,13 @@ export default {
   },
   data: () => ({
     thongTinLienThong: {},
-    lienThongLogs: []
+    hoSoLienThongItems: []
   }),
   computed: {
     loading () {
       return this.$store.getters.loading
     }
   },
-  watch: {},
   created () {
     var vm = this
     vm.$nextTick(function () {})
@@ -145,12 +108,29 @@ export default {
       }).catch(reject => {
         console.log(reject)
       })
+      //
+      vm.$store.dispatch('loadDossierLienThong', classPK).then(result => {
+        vm.hoSoLienThongItems = result
+        if (vm.hoSoLienThongItems.length > 0) {
+          for (var key in vm.hoSoLienThongItems) {
+            let itemDossier = vm.hoSoLienThongItems[key]
+            vm.getDossierLogs(itemDossier)
+          }
+        }
+      }).catch(reject => {
+        console.log(reject)
+      })
+    },
+    getDossierLogs (dossier) {
+      var vm = this
       let data = {
-        dossierId: classPK,
-        info: 1
+        dossierId: dossier.dossierId,
+        type: ''
       }
-      vm.$store.dispatch('loadDossierSyncs', data).then(result => {
-        vm.lienThongLogs = result
+      vm.$store.dispatch('loadDossierLogs', data).then(result => {
+        if (result.length > 0) {
+          dossier.dossierLog = result
+        }
       }).catch(reject => {
         console.log(reject)
       })

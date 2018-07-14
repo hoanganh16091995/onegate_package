@@ -259,27 +259,6 @@ export const store = new Vuex.Store({
         })
       })
     },
-    loadDossierLienThong ({commit, state}, classPK) {
-      commit('setLoading', true)
-      return new Promise((resolve, reject) => {
-        let param = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {
-            origin: classPK
-          }
-        }
-        axios.get(state.initData.dossierApi, param).then(function (response) {
-          let serializable = response.data
-          resolve(serializable)
-          commit('setLoading', false)
-        }).catch(function (error) {
-          commit('setLoading', false)
-          reject(error)
-        })
-      })
-    },
     loadingCounterHoSo ({commit, state}, filter) {
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
@@ -767,8 +746,7 @@ export const store = new Vuex.Store({
           headers: {
             'groupId': state.initData.groupId,
             'Accept': 'application/json',
-            'Content-Type': 'application/x-www-form-urlencoded',
-            'cps_auth': state.initData.cps_auth
+            'Content-Type': 'application/x-www-form-urlencoded'
           }
         }
         var dataPostActionDossier = new URLSearchParams()
@@ -962,6 +940,24 @@ export const store = new Vuex.Store({
           .catch(function (error) {
             reject(error)
           })
+        })
+      })
+    },
+    loadDossierLogs ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          },
+          params: {
+            notificationType: data.type
+          }
+        }
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/logs'
+        axios.get(url, config).then(function (response) {
+          resolve(response.data.data)
+        }).catch(function (xhr) {
+          reject(xhr)
         })
       })
     },
@@ -1315,17 +1311,40 @@ export const store = new Vuex.Store({
           })
         })
       },
-      loadDossierSyncs ({commit, state}, data) {
-        let config = {
-          headers: {
-            groupId: state.initData.groupId
-          },
-          params: {
-            info: data.info
-          }
-        }
-        let url = state.initData.dossierApi + '/' + data.dossierId + '/syncs'
+      loadDossierLienThong ({commit, state}, classPK) {
         return new Promise((resolve, reject) => {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {
+              origin: classPK
+            }
+          }
+          axios.get(state.initData.dossierApi, param).then(function (response) {
+            let serializable = response.data.data
+            if (serializable.length > 0) {
+              for (var key in serializable) {
+                serializable[key].dossierLog = []
+              }
+            }
+            resolve(serializable)
+          }).catch(function (error) {
+            reject(error)
+          })
+        })
+      },
+      loadDossierSyncs ({commit, state}, data) {
+        return new Promise((resolve, reject) => {
+          let config = {
+            headers: {
+              groupId: state.initData.groupId
+            },
+            params: {
+              info: data.info
+            }
+          }
+          let url = state.initData.dossierApi + '/' + data.dossierId + '/syncs'
           axios.get(url, config).then(function (response) {
             resolve(response.data.data)
           }).catch(function (xhr) {

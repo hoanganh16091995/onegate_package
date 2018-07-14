@@ -569,10 +569,6 @@ export default {
       }
       this.$store.dispatch('downloadFile', dataCommit)
     },
-    getContacts () {
-      var vm = this
-      vm.$store.dispatch('loadUsersComment', 1005)
-    },
     loadDossierActions (data) {
       var vm = this
       if (vm.thongTinChiTietHoSo.dossierId) {
