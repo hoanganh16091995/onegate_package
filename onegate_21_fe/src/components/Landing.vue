@@ -267,15 +267,15 @@
     <!-- <v-btn color="primary" @click.native="dialog_statusAction = true">
       TEST StatusAction &nbsp;
       <v-icon>save</v-icon>
-    </v-btn> -->
-    <!--  -->
+    </v-btn>
 
-    <!-- <phan-cong v-model="assign_items" :type="type" ></phan-cong>
+    <phan-cong v-model="assign_items" :type="type" ></phan-cong>
     
     <v-btn color="primary" @click.native="expDataPC">
       TEST PhanCong &nbsp;
       <v-icon>save</v-icon>
     </v-btn> -->
+    
     <!--  -->
   </div>
 </template>

@@ -5,7 +5,7 @@
       ref="tiepnhanhosodetail"
     ></tiep-nhan-ho-so-detail> -->
     <!-- <xem-chi-tiet-ho-so-detail 
-      v-if="formCode === 'NEW'" 
+      v-if="formCode === 'VIEW_01'" 
       ref="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail> -->
     <!-- <hoan-thien-bo-sung-ho-so-detail
       v-if="formCode === 'ACTION_03' && (step === '500' || step === '510')"
@@ -14,6 +14,9 @@
     <tra-ket-qua-detail 
       v-if="formCode === 'ACTION_03' && (step === '300' || step === '301')"
       ref="traketquadetail"></tra-ket-qua-detail>
+    <!-- <fee-detail 
+      v-if="formCode === 'ACTION_03' && step === '600'"
+      ref="feedetail"></fee-detail> -->
     <!-- <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo> -->
     <!-- <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail> -->
     <!-- <chi-tiet-tinh-trang-lien-thong v-if="formCode === 'NEW'"  ref="xemchitiethosotinhtrangxulylienthong"></chi-tiet-tinh-trang-lien-thong> -->

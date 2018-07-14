@@ -14,7 +14,7 @@
           </content-placeholders>
           <v-text-field
             v-else
-            v-model.lazy="lePhi.fee"
+            v-model.lazy="lePhi.paymentFee"
             v-money="money"
           ></v-text-field>
         </v-flex>
@@ -34,8 +34,7 @@
           </content-placeholders>
           <v-text-field
             v-else
-            :value="dossier.feeNote"
-            v-model="lePhi.feeNote"
+            v-model="lePhi.paymentNote"
             multi-line
             rows="2"
           ></v-text-field>
@@ -57,27 +56,31 @@ export default {
       suffix: '',
       precision: 0,
       masked: false
+    },
+    lePhi: {
+      paymentFee: '',
+      paymentNote: ''
     }
   }),
   directives: {money: VMoney},
   computed: {
     loading () {
       return this.$store.getters.loading
-    },
-    lePhi () {
-      return this.$store.getters.lePhi
-    },
-    dossier () {
-      return this.$store.getters.dossier
-    },
-    subStatusNew () {
-      return this.$store.getters.subStatusNew
     }
   },
   methods: {
     clearTotalMoney () {
       var vm = this
       console.log(vm.lePhi.fee)
+    },
+    initData (data) {
+      var vm = this
+      let params = {
+        dossierId: data.dossierId
+      }
+      vm.$store.dispatch('loadDossierPayments', params).then(resultPayment => {
+        vm.lePhi = resultPayment
+      })
     }
   },
   filters: {
