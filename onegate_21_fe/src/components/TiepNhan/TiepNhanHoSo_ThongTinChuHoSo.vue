@@ -433,10 +433,6 @@ export default {
     }
   },
   methods: {
-    showValid () {
-      var vm = this
-      return vm.$refs.formChuHoSo.validate()
-    },
     initData (data) {
       var vm = this
       let tempData = {
