@@ -258,7 +258,7 @@
                   <v-flex xs1 class="text-right">
                     <v-tooltip top>
                       <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
-                        <v-icon>far fa-eye</v-icon>
+                        <v-icon>visibility</v-icon>
                       </v-btn>
                       <span>Xem</span>
                     </v-tooltip>
@@ -284,7 +284,7 @@
                   <v-flex xs1 class="text-right">
                     <v-tooltip top>
                       <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
-                        <v-icon>far fa-eye</v-icon>
+                        <v-icon>visibility</v-icon>
                       </v-btn>
                       <span>Xem</span>
                     </v-tooltip>
@@ -376,7 +376,17 @@
               @change="loadDossierSyncs"
             ></v-select>
           </div> -->
-          <v-data-table :headers="headerSyncs" :items="dossierSyncs" class="table-landing table-bordered"
+          <div v-for="(item, index) in dossierSyncs">
+            <div :class="{ 'text-xs-left': props.item.syncType === 1, 'text-xs-right': props.item.syncType === 2 }">
+              {{item.actionUser}} ({{item.createDate}}): <br>
+              {{item.actionNote}}
+            </div>
+          </div>
+          <v-text-field
+            v-model="messageChat"
+            @change="postChat"
+          ></v-text-field>
+          <!-- <v-data-table :headers="headerSyncs" :items="dossierSyncs" class="table-landing table-bordered"
             hide-actions no-data-text="Không có dữ liệu"
             >
             <template slot="headerCell" slot-scope="props">
@@ -390,19 +400,14 @@
               </v-tooltip>
             </template>
             <template slot="items" slot-scope="props">
-              <td class="text-xs-center">
-                <div v-if="props.item.actionCode !== 8001 && props.item.actionCode !== 8002">
-                  {{props.item.createDate}} : {{props.item.actionName}}
-                </div>
-              </td>
-              <td class="text-xs-center">
-                <div v-if="props.item.actionCode === 8001 || props.item.actionCode === 8002">
-                  {{props.item.actionUser}} ({{props.item.createDate}}) <br>
+              <td >
+                <div>
+                  {{props.item.actionUser}} ({{props.item.createDate}}): <br>
                   {{props.item.actionNote}}
                 </div>
               </td>
             </template>
-          </v-data-table>
+          </v-data-table> -->
         </v-tab-item>
       </v-tabs>
     </div>
@@ -422,7 +427,7 @@ export default {
   data: () => ({
     dossierId: '',
     className: 'org.opencps.dossiermgt.model.Dossier',
-    dossierTemplateFiles: [],
+    dossierFilesItems: [],
     dossierTemplatesItems: [],
     showContactDetail: false,
     listHistoryProcessing: [],
@@ -504,39 +509,43 @@ export default {
       console.log(data)
       vm.$store.dispatch('getDetailDossier', data).then(resultDossier => {
         vm.thongTinChiTietHoSo = resultDossier
-        let promise2 = vm.$store.dispatch('loadDossierTemplates', resultDossier)
-        promise2.then(function (result) {
-          vm.dossierTemplatesItems = []
-          vm.dossierTemplatesItems = result
-          console.log('dossierTemplatesItems', vm.dossierTemplatesItems)
-          vm.dossierTemplatesTN = []
-          vm.dossierTemplatesKQ = []
-          for (var key in vm.dossierTemplatesItems) {
-            if (vm.dossierTemplatesItems[key].partType === 1) {
-              vm.dossierTemplatesTN.push(vm.dossierTemplatesItems[key])
-            } else if (vm.dossierTemplatesItems[key].partType === 2) {
-              vm.dossierTemplatesKQ.push(vm.dossierTemplatesItems[key])
+        var arrTemp = []
+        console.log(resultDossier.dossierId)
+        arrTemp.push(vm.$store.dispatch('loadDossierTemplates', resultDossier))
+        arrTemp.push(vm.$store.dispatch('loadDossierFiles', resultDossier.dossierId))
+        vm.thongTinHoSo = resultDossier
+        Promise.all(arrTemp).then(values => {
+          console.log(values)
+          let dossierTemplates = values[0]
+          let dossierFiles = values[1]
+          dossierTemplates.forEach(item => {
+            if (item.partType === 1) {
+              vm.dossierTemplatesTN.push(item)
+            } else {
+              vm.dossierTemplatesKQ.push(item)
             }
+          })
+          vm.dossierFilesItems = dossierFiles
+          vm.dossierTemplatesItems = dossierTemplates
+          vm.recountFileTemplates()
+        }).catch(reject => {
+        })
+        vm.$store.dispatch('loadDossierDocuments', resultDossier).then(resultDocuments => {
+          vm.documents = resultDocuments
+        })
+        vm.$store.dispatch('loadDossierPayments', resultDossier).then(resultPayments => {
+          vm.payments = resultPayments
+        })
+      })
+    },
+    recountFileTemplates () {
+      var vm = this
+      vm.dossierTemplatesItems.forEach(itemTemplate => {
+        itemTemplate.count = 0
+        vm.dossierFilesItems.forEach(itemFile => {
+          if (itemTemplate.partNo === itemFile.dossierPartNo) {
+            itemTemplate.count ++
           }
-          console.log('dossierTemplatesTN', vm.dossierTemplatesTN)
-          console.log('dossierTemplatesKQ', vm.dossierTemplatesKQ)
-          vm.$store.dispatch('loadDossierFiles').then(function (result) {
-            setTimeout(function () {
-              vm.$store.dispatch('getDossierTemplateEdit').then(function (resultTemp) {
-                vm.dossierTemplateFiles = resultTemp
-                console.log('dossierTemplateFiles', vm.dossierTemplateFiles)
-              })
-            }, 200)
-          })
-          // vm.$store.dispatch('loadProcessStep', resultDossier).then(resultProcess => {
-          //   vm.processSteps = resultProcess
-          // })
-          vm.$store.dispatch('loadDossierDocuments', resultDossier).then(resultDocuments => {
-            vm.documents = resultDocuments
-          })
-          vm.$store.dispatch('loadDossierPayments', resultDossier).then(resultPayments => {
-            vm.payments = resultPayments
-          })
         })
       })
     },
@@ -544,7 +553,13 @@ export default {
       window.history.back()
     },
     viewFile (data) {
-      this.$store.dispatch('viewFile', data)
+      var vm = this
+      vm.dossierFilesItems.forEach(val => {
+        val['dossierId'] = vm.thongTinChiTietHoSo.dossierId
+        if (val.dossierPartNo === data.partNo) {
+          this.$store.dispatch('viewFile', val)
+        }
+      })
     },
     downloadFileLogs (data) {
       var vm = this
@@ -580,11 +595,26 @@ export default {
     },
     loadDossierLogs (data) {
       var vm = this
-      data.dossierId = vm.thongTinChiTietHoSo.dossierId
-      let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', data)
+      // data.dossierId = vm.thongTinChiTietHoSo.dossierId
+      let dataParams = {
+        dossierId: vm.thongTinChiTietHoSo.dossierId
+      }
+      let promiseHisProcessing = vm.$store.dispatch('getListHistoryProcessingItems', dataParams)
       promiseHisProcessing.then(function (result) {
         vm.listHistoryProcessing = []
         vm.listHistoryProcessing = result
+      })
+    },
+    postChat (data) {
+      var vm = this
+      let params = {
+        dossierId: vm.thongTinChiTietHoSo.dossierId,
+        actionCode: 8200,
+        actionNote: data,
+        actionUser: ''
+      }
+      vm.$store.dispatch('postAction', params).then(result => {
+        vm.loadDossierSyncs()
       })
     }
   },

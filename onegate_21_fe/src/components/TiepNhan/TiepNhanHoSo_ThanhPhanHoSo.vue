@@ -147,7 +147,11 @@ export default {
       var arrTemp = []
       console.log(data.dossierId)
       arrTemp.push(vm.$store.dispatch('loadDossierTemplates', data))
-      arrTemp.push(vm.$store.dispatch('loadDossierMark', data))
+      if (vm.mark) {
+        arrTemp.push(vm.$store.dispatch('loadDossierMark', data))
+      } else {
+        arrTemp.push([])
+      }
       arrTemp.push(vm.$store.dispatch('loadDossierFiles', data.dossierId))
       vm.thongTinHoSo = data
       Promise.all(arrTemp).then(values => {

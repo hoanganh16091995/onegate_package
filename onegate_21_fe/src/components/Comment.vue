@@ -27,7 +27,7 @@
 
 <script>
 import $ from 'jquery'
-import axios from 'axios'
+// import axios from 'axios'
 import 'jquery-textcomplete'
 import '../store/jquery_comment'
 export default {

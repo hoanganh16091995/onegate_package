@@ -11,21 +11,6 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
   state: {
-    // initData: {
-    //   groupId: 55301,
-    //   serviceInfoApi: 'http://hanoi.fds.vn:2281/api/serviceinfos',
-    //   serviceConfigApi: 'http://127.0.0.1:8081/api/onegate/serviceconfigs/processes',
-    //   regionApi: 'http://127.0.0.1:8081/api/dictcollections',
-    //   serviceOptionApi: 'http://hanoi.fds.vn:2281/api/serviceconfigs/301/processes',
-    //   postDossierApi: 'http://127.0.0.1:8081/api/onegate',
-    //   dossierApi: 'http://127.0.0.1:8081/api/dossiers',
-    //   dossierTemplatesApi: 'http://127.0.0.1:8081/api/dossiertemplates',
-    //   applicantApi: '/o/rest/v2/applicant',
-    //   dossierlogsApi: 'http://127.0.0.1:8081/api/dossiers/dossierlogs',
-    //   commentApi: 'http://127.0.0.1:8081/api/comments',
-    //   govAgency: 'abc',
-    //   user: {}
-    // },
     initData: null,
     loading: false,
     loadingTable: false,
@@ -400,56 +385,6 @@ export const store = new Vuex.Store({
           }, error => {
             reject(error)
           })
-          // axios.all([axios.get(state.initData.dossierTemplatesApi + '/' + data.dossierTemplateNo, param), axios.get(state.initData.dossierApi + '/' + state.thongTinChungHoSo.dossierId + '/marks', paramDossierMark)])
-          // .then(axios.spread(function (resDossierTemplates, resDossierMarks) {
-          //   let dossierTemplateItems = resDossierTemplates.data.dossierParts
-          //   let dossierMarkItems = resDossierMarks.data.data
-          //   if (dossierMarkItems) {
-          //     dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
-          //       if (itemTemplate.hasForm) {
-          //         itemTemplate.count = 1
-          //       } else {
-          //         itemTemplate.count = 0
-          //       }
-          //       dossierMarkItems.forEach(function (val, index) {
-          //         if (val.dossierPartNo === itemTemplate.partNo) {
-          //           itemTemplate.fileType = val.fileType
-          //           itemTemplate.fileCheck = val.fileCheck
-          //         }
-          //       })
-          //       // let itemMarkFinded = dossierMarkItems.find(itemMark => {
-          //       //   return itemMark && itemMark.dossierPartNo === itemTemplate.partNo
-          //       // })
-          //       // if (itemMarkFinded) {
-          //       //   itemTemplate.fileType = itemMarkFinded.fileType
-          //       //   itemTemplate.fileCheck = itemMarkFinded.fileCheck
-          //       // } else {
-          //       //   itemTemplate.fileType = 0
-          //       //   itemTemplate.fileCheck = false
-          //       // }
-          //       return itemTemplate
-          //     })
-          //   } else {
-          //     dossierTemplateItems = dossierTemplateItems.map(itemTemplate => {
-          //       if (itemTemplate.hasForm) {
-          //         itemTemplate.count = 1
-          //       } else {
-          //         itemTemplate.count = 0
-          //       }
-          //       itemTemplate.fileType = 0
-          //       itemTemplate.fileCheck = false
-          //       return itemTemplate
-          //     })
-          //   }
-          //   console.log(dossierTemplateItems)
-          //   commit('setDossierTemplates', dossierTemplateItems)
-          //   state.thanhPhanHoSo.dossierTemplates = dossierTemplateItems
-          //   state.thanhPhanHoSo.dossierTemplateId = resDossierTemplates.dossierTemplateId
-          //   resolve(dossierTemplateItems)
-          // })).catch(function (xhr) {
-          //   reject(xhr)
-          //   console.log(xhr)
-          // })
         })
       })
     },
@@ -816,6 +751,8 @@ export const store = new Vuex.Store({
         }
         var dataPostActionDossier = new URLSearchParams()
         dataPostActionDossier.append('actionCode', data.actionCode)
+        dataPostActionDossier.append('actionNote', data.actionNote)
+        dataPostActionDossier.append('actionUser', data.actionUser)
         let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
         axios.post(url, dataPostActionDossier, options).then(function (response) {
           resolve(response.data)
@@ -1311,7 +1248,7 @@ export const store = new Vuex.Store({
             // abc: dât.abc
           }
         }
-        let url = state.initData.dossierApi + '/' + data + '/documents'
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/documents'
         return new Promise((resolve, reject) => {
           axios.get(url, config).then(function (response) {
             resolve(response.data.data)
@@ -1332,6 +1269,24 @@ export const store = new Vuex.Store({
         let url = state.initData.dossierApi + '/' + data.dossierId + '/payment'
         return new Promise((resolve, reject) => {
           axios.get(url, config).then(function (response) {
+            resolve(response.data)
+          }).catch(function (xhr) {
+            reject(xhr)
+          })
+        })
+      },
+      postDossierPayments ({commit, state}, data) {
+        let config = {
+          headers: {
+            groupId: state.initData.groupId
+          }
+        }
+        var params = new URLSearchParams()
+        params.append('paymentFee', data.paymentFee)
+        params.append('paymentNote', data.paymentNote)
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/payment'
+        return new Promise((resolve, reject) => {
+          axios.post(url, params, config).then(function (response) {
             resolve(response.data)
           }).catch(function (xhr) {
             reject(xhr)
