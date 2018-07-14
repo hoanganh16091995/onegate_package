@@ -11,7 +11,7 @@
         </div>
         <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
           <v-btn flat class="my-0 mx-0 btn-border-left" @click="goBack" active-class="temp_active">
-          Quay lại &nbsp;
+            Quay lại &nbsp;
             <v-icon size="16">undo</v-icon>
           </v-btn>
         </div>
@@ -174,18 +174,21 @@
     <div>
       <v-tabs slider-color="primary" style="background-color: #dae8e8;">
         <v-tab key="1" class="mr-2">
-        THÀNH PHẦN HỒ SƠ
+          THÀNH PHẦN HỒ SƠ
         </v-tab>
-        <v-tab key="2" class="mr-2" @click="loadDossierActions()">
-        TIẾN TRÌNH THỤ LÝ
+        <!-- <v-tab key="2" class="mr-2" @click="getNextActions()">
+          THỤ LÝ HỒ SƠ
+        </v-tab> -->
+        <v-tab key="3" class="mr-2" @click="loadDossierActions()">
+          TIẾN TRÌNH THỤ LÝ
         </v-tab>
-        <v-tab key="3" class="mr-2" @click="loadDossierLogs()">
+        <v-tab key="4" class="mr-2" @click="loadDossierLogs()">
           NHẬT KÝ HỒ SƠ
         </v-tab>
-        <v-tab key="4">
+        <v-tab key="5">
           TRAO ĐỔI THẢO LUẬN
         </v-tab>
-        <v-tab key="5" @click="loadDossierSyncs()">
+        <v-tab key="6" @click="loadDossierSyncs()">
           TRAO ĐỔI NỘI BỘ
         </v-tab>
         <!--  -->
@@ -218,96 +221,174 @@
           </v-expansion-panel>
           <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
             <v-expansion-panel-content v-bind:value="true">
-            <div slot="header" class="text-bold">
-              <div class="background-triangle-small"> II.</div>
-              Kết quả
-            </div>
-            <div v-for="(item, index) in dossierTemplatesKQ" v-bind:key="item.partNo">
-              <v-card>
-                <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
-                  <v-flex xs11>
-                    <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
-                    <div style="margin-left: 30px;">{{item.partName}}</div>
-                  </v-flex>
-                  <v-flex xs1 class="text-right">
-                    <v-tooltip top>
-                      <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
-                        {{item.count}}
-                      </v-btn>
-                      <span>Xem</span>
-                    </v-tooltip>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </div>
+              <div slot="header" class="text-bold">
+                <div class="background-triangle-small"> II.</div>
+                Kết quả
+              </div>
+              <div v-for="(item, index) in dossierTemplatesKQ" v-bind:key="item.partNo">
+                <v-card>
+                  <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
+                    <v-flex xs11>
+                      <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                      <div style="margin-left: 30px;">{{item.partName}}</div>
+                    </v-flex>
+                    <v-flex xs1 class="text-right">
+                      <v-tooltip top>
+                        <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                          {{item.count}}
+                        </v-btn>
+                        <span>Xem</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
           <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
             <v-expansion-panel-content v-bind:value="true">
-            <div slot="header" class="text-bold">
-              <div class="background-triangle-small"> III.</div>
-              Văn bản hành chính
-            </div>
-            <div v-for="(item, index) in documents" v-bind:key="item.documentCode">
-              <v-card>
-                <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
-                  <v-flex xs11>
-                    <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
-                    <div style="margin-left: 30px;">{{item.documentName}}</div>
-                  </v-flex>
-                  <v-flex xs1 class="text-right">
-                    <v-tooltip top>
-                      <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
-                        <v-icon>visibility</v-icon>
-                      </v-btn>
-                      <span>Xem</span>
-                    </v-tooltip>
-                  </v-flex>
-                </v-layout>
-              </v-card>
-            </div>
+              <div slot="header" class="text-bold">
+                <div class="background-triangle-small"> III.</div>
+                Văn bản hành chính
+              </div>
+              <div v-for="(item, index) in documents" v-bind:key="item.documentCode">
+                <v-card>
+                  <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
+                    <v-flex xs11>
+                      <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                      <div style="margin-left: 30px;">{{item.documentName}}</div>
+                    </v-flex>
+                    <v-flex xs1 class="text-right">
+                      <v-tooltip top>
+                        <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                          <v-icon>visibility</v-icon>
+                        </v-btn>
+                        <span>Xem</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </div>
             </v-expansion-panel-content>
           </v-expansion-panel>
-           <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
+          <!-- <v-expansion-panel expand class="my-0 expansion-pl-transparent" style="border: none">
             <v-expansion-panel-content v-bind:value="true">
-            <div slot="header" class="text-bold">
-              <div class="background-triangle-small"> IV.</div>
-              Chứng từ thanh toán
+              <div slot="header" class="text-bold">
+                <div class="background-triangle-small"> IV.</div>
+                Chứng từ thanh toán
+              </div>
+              <div v-for="(item, index) in payments" :key="item.referenceUid">
+                <v-card>
+                  <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
+                    <v-flex xs11>
+                      <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
+                      <div style="margin-left: 30px;">{{item.paymentFee}}</div>
+                    </v-flex>
+                    <v-flex xs1 class="text-right">
+                      <v-tooltip top>
+                        <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
+                          <v-icon>visibility</v-icon>
+                        </v-btn>
+                        <span>Xem</span>
+                      </v-tooltip>
+                    </v-flex>
+                  </v-layout>
+                </v-card>
+              </div>
+            </v-expansion-panel-content>
+          </v-expansion-panel> -->
+        </v-tab-item>
+        <!-- <v-tab-item key="2" style="background: #ffff;">
+          <v-btn color="primary" v-for="(item, index) in nextActions" @click="getNextAction(item)" :key="item.processActionId">{{item.actionName}}</v-btn>
+          <v-card v-if="stepModel != null">
+            <div v-if="stepModel.plugin">
+              <div v-if="stepModel.pdf">
+                <div class="flex xs12 sm12 text-center">
+                  <object id="dossierPDFViewPlugin" data="" width="100%" height="100%">
+                    <iframe :src="stepModel.url" width="100%" height="100%"> </iframe>
+                  </object>
+                  <div id="dossierPDFViewNotFound" class="text-center">{{ stepModel.no_pdf }}</div>
+                </div>
+              </div>
+
+              <div v-if="stepModel.html">
+                <input type="hidden" class="dossierFilePartNo" name="">
+                <div id="alpacajs_form_plugin" class="expansion-panel__header"></div>
+                <div id="dossierAlpacaNotFound" class="text-center">{{ stepModel.no_html }}</div>
+              </div> 
             </div>
-            <div v-for="(item, index) in payments" :key="item.referenceUid">
-              <v-card>
-                <v-layout wrap class="px-3 py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd"> 
-                  <v-flex xs11>
-                    <span class="text-bold" style="position: absolute;">{{index + 1}}.</span> 
-                    <div style="margin-left: 30px;">{{item.paymentFee}}</div>
-                  </v-flex>
-                  <v-flex xs1 class="text-right">
-                    <v-tooltip top>
-                      <v-btn slot="activator" class="mx-0 my-0" fab dark small color="primary" @click="viewFile(item)" style="height:25px;width:25px">
-                        <v-icon>visibility</v-icon>
-                      </v-btn>
-                      <span>Xem</span>
-                    </v-tooltip>
+            <div v-else>
+              <v-card-title primary-title class="mx-2 pb-0" v-if="stepModel.createFiles">
+                <v-layout wrap> 
+                  <v-flex xs12 id="labelTPKQ">
+                    File đính kèm:
                   </v-flex>
                 </v-layout>
-              </v-card>
+              </v-card-title>
+              <v-expansion-panel class="my-0 expansion__list_style">
+                <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
+                  <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
+                  <div slot="header" class="text-right">
+                    <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="singleFileUpload(item)">
+                      <v-icon>file_upload</v-icon>
+                    </v-btn>
+                    <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native.prevent="viewDossierFileResult(item, i)" :id="'btn-count-partno'+item.partNo">
+                      {{item.counter}}
+                    </v-btn>
+
+                    <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="deleteDossierFileVersion(item)">
+                      <v-icon>delete</v-icon>
+                    </v-btn>
+                  </div>
+                  <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="onUploadSingleFile($event, item, i)"/>
+                  <div class="alert alert--outline success--text mx-4 hidden" :id="'message_success_'+item.referenceUid" >
+                    <i aria-hidden="true" class="material-icons icon alert__icon">check_circle</i>
+                    <div>
+                      Ghi lại {{item.partName}} Thành công!.
+                    </div>
+                  </div>
+                  <div class="alert alert--outline error--text mx-4 hidden" :id="'message_error_'+item.referenceUid" >
+                    <i aria-hidden="true" class="material-icons icon alert__icon">warning</i>
+                    <div>
+                      Ghi lại {{item.partName}} Thất bại!.
+                    </div>
+                  </div>
+                  <div class="text-right pr-4" v-if="item.eform">
+                    <v-btn color="primary" :id="'btn-save-formalpaca'+item.partNo"
+                    :referenceUid="item.referenceUid"
+                    :dossierId="detailModel.dossierId"
+                    class="saveForm"
+                    :loading="loadingAlpacajsForm"
+                    :disabled="loadingAlpacajsForm"
+                    v-on:click.native.prevent.stop="submitAlpacajsForm(item)"> Ghi lại </v-btn>
+                  </div>
+                  <div :id="'formAlpaca' + item.partNo" class="expansion-panel__header"></div>
+                  <input type="hidden" :id="'dossierFileId' + item.partNo" :value="item.dossierFileId" />
+                </v-expansion-panel-content>
+              </v-expansion-panel>
+              <v-card-title primary-title class="mx-2 py-0">
+                <v-layout wrap> 
+                  <v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
+                  </v-flex>
+                  <v-flex xs12>
+                    Nhập ý kiến {{stepModel.actionName}}:
+                    <v-text-field
+                    name="processActionNote"
+                    id="processActionNote"
+                    multi-line
+                    ></v-text-field>
+                  </v-flex>
+                </v-layout>
+              </v-card-title>
+
+              <v-card-actions>
+                <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
+                @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
+              </v-card-actions>
             </div>
-            </v-expansion-panel-content>
-          </v-expansion-panel>
-        </v-tab-item>
-        <v-tab-item key="2" style="background: #ffff;">
-          <!-- <v-layout row wrap>
-            <v-flex xs12 sm12>
-              <v-select
-              :items="filterDossierActionItems"
-              v-model="filterDossierAction"
-              label="Phân loại"
-              item-text="text"
-              item-value="value"
-              @change="loadDossierActions"
-              ></v-select>
-            </v-flex>
-          </v-layout> -->
+          </v-card>
+        </v-tab-item> -->
+        <v-tab-item key="3" style="background: #ffff;">
           <div>
             <v-data-table :headers="headers" :items="dossierActions" class="table-landing table-bordered"
             hide-actions no-data-text="Không có dữ liệu"
@@ -323,95 +404,88 @@
               </v-tooltip>
             </template>
             <template slot="items" slot-scope="props">
-              <td class="text-xs-center">{{props.item.groupName}}</td>
-              <td class="text-xs-center">{{props.item.fromStepName}}</td>
+              <td class="text-xs-center">{{props.item.sequenceRole}}</td>
+              <td class="text-xs-center">{{props.item.sequenceName}}</td>
+              <td class="text-xs-center">{{props.item.durationCount}} ngày</td>
+              <td class="text-xs-center">{{props.item.startDate}}</td>
               <td class="text-xs-center">
-                <div v-for="item in props.item.actions" :key="item.stepName">
-                  {{item.createDate}} - {{item.actionUser}} <br>
-                  <span>{{item.stepName}}</span>
+                <div v-for="itemUser in props.item.assignUsers" :key="itemUser.userId">
+                  {{itemUser.userName}} <br>
                 </div>
               </td>
               <td>
-                <span v-if="getMaxDueDate(props.item.actions) > 0" style="color: red">Quá hạn {{props.item.actions|getMaxDueDate}} ngày</span>
-                <span v-else style="color: blue">Đang thực hiện</span>
+                <div v-for="(itemAction, index) in props.item.actions" :key="index">
+                  {{itemAction.actionName}} : ({{itemAction.createDate}})
+                  <div v-if="index === props.item.actions.length - 1">
+                    <span v-if="itemAction.actionOverdue > 0" style="color: red">Quá hạn {{itemAction.actionOverdue}} ngày</span>
+                    <span v-else-if="itemAction.state === 0" style="color: blue">Đang chờ thực hiện</span>
+                    <span v-else-if="itemAction.state === 1" style="color: blue">Đã thực hiện</span>
+                    <span v-else style="color: blue">Quay lại bước trước</span>
+                  </div>
+                </div>
+               <!--  <span v-if="getMaxDueDate(props.item.actions) > 0" style="color: red">Quá hạn {{props.item.actions|getMaxDueDate}} ngày</span>
+                <span v-else style="color: blue">Đang thực hiện</span> -->
               </td>
             </template>
           </v-data-table>
         </div>
-        </v-tab-item>
-        <v-tab-item key="3" style="background: #ffff;">
-          <div v-for="(item, index) in listHistoryProcessing" v-bind:key="item.dossierLogId" class="list_history_style">
-            <td class="px-2 pt-2" :class="index % 2 !== 0 ? 'col-tien-trinh-1' : 'col-tien-trinh-2'">{{ index + 1 }}</td>
-            <td class="text-xs-left px-2 py-2">
-              <p class="mb-2"> Ông/bà <b>{{ item.author }}</b> 
-                <span style="color: #0b72ba">( {{ item.payload.stepName }} )</span>
-                <br/>
-                <span style="color: #939393">{{ item.createDate | dateTimeView }}</span>
-              </p>
-              Ý kiến: <span v-html="item.content"></span> <br>
-              <p
-                class="history__download__link hover-pointer-download"
-                title="Tải file"
-                v-for="file in item.payload.files"
-                :key="file.dossierFileId"
-                @click.prevent.stop="downloadFileLogs(file.dossierFileId)"
-              >
-                <v-icon>file_download</v-icon> 
-                <span>{{file.fileName}}</span>
-              </p>
-            </td>
-          </div>
-        </v-tab-item>
-        <v-tab-item key="4" style="background: #ffff;">
-          <comment :classPK="dossierId" :className="className"></comment>
-        </v-tab-item>
-        <v-tab-item key="5" style="background: #ffff;">
-          <!-- <div class="text-xs-right">
-            <v-select
-              :items="filterDossierSyncItems"
-              v-model="filterDossierSync"
-              label="Phân loại"
-              item-text="text"
-              item-value="value"
-              @change="loadDossierSyncs"
-            ></v-select>
-          </div> -->
-          <div v-for="(item, index) in dossierSyncs">
-            <div :class="{ 'text-xs-left': props.item.syncType === 1, 'text-xs-right': props.item.syncType === 2 }">
-              {{item.actionUser}} ({{item.createDate}}): <br>
-              {{item.actionNote}}
-            </div>
-          </div>
-          <v-text-field
-            v-model="messageChat"
-            @change="postChat"
-          ></v-text-field>
-          <!-- <v-data-table :headers="headerSyncs" :items="dossierSyncs" class="table-landing table-bordered"
-            hide-actions no-data-text="Không có dữ liệu"
+      </v-tab-item>
+      <v-tab-item key="4" style="background: #ffff;">
+        <div v-for="(item, index) in listHistoryProcessing" v-bind:key="item.dossierLogId" class="list_history_style">
+          <td class="px-2 pt-2" :class="index % 2 !== 0 ? 'col-tien-trinh-1' : 'col-tien-trinh-2'">{{ index + 1 }}</td>
+          <td class="text-xs-left px-2 py-2">
+            <p class="mb-2"> Ông/bà <b>{{ item.author }}</b> 
+              <span style="color: #0b72ba">( {{ item.payload.stepName }} )</span>
+              <br/>
+              <span style="color: #939393">{{ item.createDate | dateTimeView }}</span>
+            </p>
+            Ý kiến: <span v-html="item.content"></span> <br>
+            <p
+            class="history__download__link hover-pointer-download"
+            title="Tải file"
+            v-for="file in item.payload.files"
+            :key="file.dossierFileId"
+            @click.prevent.stop="downloadFileLogs(file.dossierFileId)"
             >
-            <template slot="headerCell" slot-scope="props">
-              <v-tooltip bottom>
-                <span slot="activator">
-                  {{ props.header.text }}
-                </span>
-                <span>
-                  {{ props.header.text }}
-                </span>
-              </v-tooltip>
-            </template>
-            <template slot="items" slot-scope="props">
-              <td >
-                <div>
-                  {{props.item.actionUser}} ({{props.item.createDate}}): <br>
-                  {{props.item.actionNote}}
+            <v-icon>file_download</v-icon> 
+            <span>{{file.fileName}}</span>
+          </p>
+        </td>
+      </div>
+    </v-tab-item>
+    <v-tab-item key="5" style="background: #ffff;">
+      <comment :classPK="dossierId" :className="className"></comment>
+    </v-tab-item>
+    <v-tab-item key="6" style="background: #ffff;">
+      <v-layout row wrap>
+        <v-flex xs12 sm3>
+        </v-flex>
+        <v-flex xs12 sm6>
+          <v-card>
+            <div style="height: 400px; overflow: auto; margin-bottom: 10px;">
+              <div v-for="(item, index) in dossierSyncs">
+                <div :class="{ 'text-xs-left': item.syncType === 1, 'text-xs-right': item.syncType === 2 }">
+                  <v-chip label :color="getColorChat(item.syncType)" text-color="white">
+                    {{item.actionUser}}: {{item.actionNote}}
+                  </v-chip>
                 </div>
-              </td>
-            </template>
-          </v-data-table> -->
-        </v-tab-item>
-      </v-tabs>
-    </div>
-    
+              </div>
+            </div>
+            <v-text-field
+            v-model="messageChat"
+            solo
+            label="Nhập trao đổi"
+            append-icon="send"
+            @change="postChat"
+            ></v-text-field>
+          </v-card>
+        </v-flex>
+        <v-flex xs12 sm3>
+        </v-flex>
+      </v-layout>
+    </v-tab-item>
+  </v-tabs>
+</div>
   </div>
 </template>
 
@@ -435,21 +509,35 @@ export default {
     dossierTemplatesKQ: [],
     thongTinChiTietHoSo: {
     },
+    nextActions: [],
     processSteps: [],
     documents: [],
     payments: [],
     dossierActions: [],
+    itemselect: '',
     dossierSyncs: [],
+    stepModel: {},
+    actionsSubmitLoading: false,
     headers: [{
-      text: 'Bộ phận',
+      text: 'Vai trò',
       align: 'center',
       sortable: false,
-      class: 'bophan_column'
+      class: 'vaitro_column'
     }, {
       text: 'Công việc',
       align: 'center',
       sortable: false,
       class: 'congviec_column'
+    }, {
+      text: 'Thời hạn quy định',
+      align: 'center',
+      sortable: false,
+      class: 'thoihanquydinh_column'
+    }, {
+      text: 'Ngày bắt đầu',
+      align: 'center',
+      sortable: false,
+      class: 'ngaybatdau_column'
     }, {
       text: 'Người thực hiện',
       align: 'center',
@@ -490,7 +578,8 @@ export default {
       text: 'Thông tin trao đổi',
       value: '2'
     }],
-    filterDossierSync: null
+    filterDossierSync: null,
+    messageChat: ''
   }),
   computed: {
     loading () {
@@ -590,9 +679,10 @@ export default {
       if (vm.thongTinChiTietHoSo.dossierId) {
         let dataParams = {
           dossierId: vm.thongTinChiTietHoSo.dossierId,
-          info: data
+          info: '1,2'
         }
         vm.$store.dispatch('loadDossierSyncs', dataParams).then(resultSyncs => {
+          console.log('resultSyncs++++++++++++++++', resultSyncs)
           vm.dossierSyncs = resultSyncs
         })
       }
@@ -609,17 +699,59 @@ export default {
         vm.listHistoryProcessing = result
       })
     },
-    postChat (data) {
+    postChat () {
       var vm = this
       let params = {
         dossierId: vm.thongTinChiTietHoSo.dossierId,
         actionCode: 8200,
-        actionNote: data,
+        actionNote: vm.messageChat,
         actionUser: ''
       }
       vm.$store.dispatch('postAction', params).then(result => {
         vm.loadDossierSyncs()
       })
+      vm.messageChat = ''
+    },
+    getNextAction (item) {
+      var vm = this
+      let filter = {
+        dossierId: vm.thongTinChiTietHoSo.dossierId,
+        actionId: item.actionId
+      }
+      vm.$store.dispatch('getNextAction', filter).then(resultAction => {
+        vm.stepModel = resultAction
+      })
+    },
+    getNextActions () {
+      var vm = this
+      vm.$store.dispatch('')
+    },
+    showAlpacaJSFORM (item) {
+      // var vm = this
+    },
+    onUploadSingleFile (e, data, i) {
+      var vm = this
+      e.dataItem = data
+      e['dossierId'] = vm.thongTinChiTietHoSo.dossierId
+      e['dossierTemplateNo'] = vm.thongTinChiTietHoSo.dossierTemplateNo
+      vm.$store.dispatch('uploadSingleFile', e).then(function (result) {
+      }).catch(function (xhr) {
+      })
+    },
+    submitAlpacajsForm (item) {
+      // var vm = this
+      // let value = {
+      //   dossierId: vm.thongTinChiTietHoSo.dossierId,
+      //   dossierPartNo: partNo
+      // }
+      // vm.$store.dispatch('putAlpacaForm', value)
+    },
+    getColorChat (syncType) {
+      if (syncType === 1) {
+        return 'pink'
+      } else {
+        return 'cyan lighten-1'
+      }
     }
   },
   filters: {

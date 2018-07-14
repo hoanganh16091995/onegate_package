@@ -4,12 +4,12 @@
     <div>
       <v-expansion-panel class="expansion-pl-transparent">
         <v-expansion-panel-content hide-actions :value="true">
-          <div slot="header">
+          <!-- <div slot="header">
             <div class="background-triangle-small"> 
               <v-icon size="18" color="white">star_rate</v-icon> 
             </div>
             TRAO ĐỔI THÔNG TIN
-          </div>
+          </div> -->
           
           <v-card class="comments__container" >
             <v-card-text>

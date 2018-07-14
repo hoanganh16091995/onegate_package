@@ -208,8 +208,11 @@
           let dataPostAction = {
             dossierId: vm.thongTinChiTietHoSo.dossierId,
             actionCode: 7100,
-            actionUser: '',
-            actionNote: ''
+            payload: '',
+            security: '',
+            assignUsers: [],
+            payment: {},
+            createDossiers: []
           }
           vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
           })

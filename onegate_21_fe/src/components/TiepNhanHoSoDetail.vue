@@ -195,7 +195,12 @@ export default {
       console.log('tempData------------', tempData)
       let dataPostAction = {
         dossierId: vm.dossierId,
-        actionCode: 1100
+        actionCode: 1100,
+        payload: '',
+        security: '',
+        assignUsers: {},
+        payment: {},
+        createDossiers: {}
       }
       vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
       })
@@ -241,7 +246,12 @@ export default {
           vm.$store.dispatch('putDossier', tempData).then(function (result) {
             let dataPostAction = {
               dossierId: vm.dossierId,
-              actionCode: 20000
+              actionCode: 7100,
+              payload: '',
+              security: '',
+              assignUsers: {},
+              payment: {},
+              createDossiers: {}
             }
             vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
             })

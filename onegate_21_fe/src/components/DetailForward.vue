@@ -1,9 +1,9 @@
 <template>
   <div>
-    <tiep-nhan-ho-so-detail 
+    <!-- <tiep-nhan-ho-so-detail 
       v-if="formCode === 'NEW' || formCode === 'UPDATE'" 
       ref="tiepnhanhosodetail"
-    ></tiep-nhan-ho-so-detail>
+    ></tiep-nhan-ho-so-detail> -->
     <xem-chi-tiet-ho-so-detail 
       v-if="formCode === 'VIEW_01'" 
       ref="xemchitiethosodetail"></xem-chi-tiet-ho-so-detail>
@@ -17,7 +17,7 @@
     <fee-detail 
       v-if="formCode === 'ACTION_03' && step === '600'"
       ref="feedetail"></fee-detail>
-   <!--  <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo> -->
+    <xem-chi-tiet-ho-so-detail-can-bo ref="xemchitiethosodetailcanbo"></xem-chi-tiet-ho-so-detail-can-bo>
     <!-- <chuyen-phat-ket-qua-detail ref="chuyenphatketquadetail"></chuyen-phat-ket-qua-detail> -->
     <!-- <chi-tiet-tinh-trang-lien-thong v-if="formCode === 'NEW'"  ref="xemchitiethosotinhtrangxulylienthong"></chi-tiet-tinh-trang-lien-thong> -->
     <!-- <chi-tiet-ho-so-lien-thong v-if="formCode === 'NEW'"  ref="xemchitiethosolienthong"></chi-tiet-ho-so-lien-thong> -->

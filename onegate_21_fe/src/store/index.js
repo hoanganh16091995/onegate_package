@@ -775,6 +775,11 @@ export const store = new Vuex.Store({
         dataPostActionDossier.append('actionCode', data.actionCode)
         dataPostActionDossier.append('actionNote', data.actionNote)
         dataPostActionDossier.append('actionUser', data.actionUser)
+        dataPostActionDossier.append('payload', data.payload)
+        dataPostActionDossier.append('security', data.security)
+        dataPostActionDossier.append('assignUsers', data.assignUsers)
+        dataPostActionDossier.append('payment', data.payment)
+        dataPostActionDossier.append('createDossiers', data.createDossiers)
         let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
         axios.post(url, dataPostActionDossier, options).then(function (response) {
           resolve(response.data)
@@ -950,7 +955,7 @@ export const store = new Vuex.Store({
             params: {}
           }
           var listHistoryProcessing = []
-          axios.get(state.initData.dossierlogsApi + '/' + data.dossierId + '/logs', param).then(function (response) {
+          axios.get(state.initData.dossierApi + '/dossierlogs/' + data.dossierId + '/logs', param).then(function (response) {
             var serializable = response.data
             for (var key in serializable.data) {
               if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
@@ -991,8 +996,8 @@ export const store = new Vuex.Store({
           params: {}
         }
         axios.get('http://127.0.0.1:8081/api/onegate/token', param).then(function (response) {
-          // resolve(response.data)
-          resolve('asa1wsasaaddsdsdscsfsfs1212121212')
+          resolve(response.data)
+          // resolve('asa1wsasaaddsdsdscsfsfs1212121212')
         })
         .catch(function (error) {
           reject(error)
@@ -1181,8 +1186,8 @@ export const store = new Vuex.Store({
         }
       }
       var vm = this
-      var url = '/o/rest/v2/dossiers/' + data.dossierId + '/nextactions'
-      var urlPlugin = '/o/rest/v2/dossiers/' + data.dossierId + '/plugins'
+      var url = state.initdata.dossierApi + '/' + data.dossierId + '/nextactions'
+      var urlPlugin = state.initdata.dossierApi + '/' + data.dossierId + '/plugins'
       return new Promise((resolve, reject) => {
         axios.all([
           axios.get(url, config),
@@ -1344,6 +1349,25 @@ export const store = new Vuex.Store({
             axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
               let serializable = response.data
               resolve(serializable.data)
+            }).catch(function (error) {
+              console.log(error)
+              resolve([])
+              reject(error)
+            })
+          })
+        })
+      },
+      getNextAction ({commit, state}, data) {
+        return new Promise((resolve, reject) => {
+          store.dispatch('loadInitResource').then(function (result) {
+            let param = {
+              headers: {
+                groupId: state.initData.groupId
+              }
+            }
+            axios.get(state.initData.dossierApi + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
+              let serializable = response.data
+              resolve(serializable)
             }).catch(function (error) {
               console.log(error)
               resolve([])
