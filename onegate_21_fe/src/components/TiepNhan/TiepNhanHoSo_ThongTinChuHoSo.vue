@@ -403,7 +403,9 @@ export default {
           delegateTelNo: value.contactTelNo,
           delegateIdNo: value.applicantIdNo
         }
-        vm.thongTinNguoiNopHoSo = tempData
+        if (vm.thongTinNguoiNopHoSo.sameUser) {
+          vm.thongTinNguoiNopHoSo = Object.assign(vm.thongTinNguoiNopHoSo, tempData)
+        }
       },
       deep: true
     },
@@ -422,7 +424,7 @@ export default {
             delegateTelNo: dataChuHoSo.contactTelNo,
             delegateIdNo: dataChuHoSo.applicantIdNo
           }
-          vm.thongTinNguoiNopHoSo = dataNguoiNop
+          vm.thongTinNguoiNopHoSo = Object.assign(vm.thongTinNguoiNopHoSo, dataNguoiNop)
         } else {
           this.$store.dispatch('resetThongTinNguoiNopHoSo')
         }
@@ -431,10 +433,6 @@ export default {
     }
   },
   methods: {
-    showValid () {
-      var vm = this
-      return vm.$refs.formChuHoSo.validate()
-    },
     initData (data) {
       var vm = this
       let tempData = {
