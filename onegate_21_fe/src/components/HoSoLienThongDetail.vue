@@ -30,25 +30,35 @@
       </v-expansion-panel-content>
     </v-expansion-panel>
     <!--  -->
-    <v-expansion-panel class="expansion-pl">
+    <v-expansion-panel class="expansion-pl" style="position:relative">
       <v-expansion-panel-content :value="true" >
         <div slot="header">
           <div class="background-triangle-small"> II.</div>
-          KẾT QUẢ LIÊN THÔNG&nbsp;&nbsp;&nbsp;&nbsp; 
-         <!--  <i><span style="color: red">(*)</span> Những thành phần bắt buộc</i> -->
-          <div class="absolute-lable">
-            <span class="text-bold">Bản chính |</span>
-            <span class="text-bold">Bản chụp |</span>
-            <span class="text-bold">Công chứng</span>
-          </div>
+          KẾT QUẢ LIÊN THÔNG
         </div>
         <!--  -->
-        <v-card>
-          <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
-        </v-card>
+        <thanh-phan-ho-so ref="thanhphanhoso"></thanh-phan-ho-so>
         <!--  -->
       </v-expansion-panel-content>
     </v-expansion-panel>
+    <!--  -->
+    <v-card-actions class="mt-2" style="float: right">
+      <v-btn color="primary" @click="goBack"
+        :loading="loadingAction"
+        :disabled="loadingAction"
+      >
+        Đã nhận kết quả
+        <span slot="loader">Loading...</span>
+      </v-btn>
+      <v-btn color="primary" @click="postDossierLienThong" style="height:30px"
+        :loading="loadingAction"
+        :disabled="loadingAction"
+      >
+        <v-icon>undo</v-icon> &nbsp;
+        Quay lại
+        <span slot="loader">Loading...</span>
+      </v-btn>
+    </v-card-actions>
   </div>
 </template>
 
@@ -64,7 +74,8 @@ export default {
   data: () => ({
     thongTinLienThong: {},
     govAgencyItems: [],
-    govAgency: ''
+    govAgency: '',
+    loadingAction: false
   }),
   computed: {
     loading () {
@@ -92,6 +103,10 @@ export default {
       }).catch(reject => {
         console.log(reject)
       })
+    },
+    postDossierLienThong () {
+      var vm = this
+      console.log('đã nhận kết quả')
     },
     goBack () {
       var vm = this

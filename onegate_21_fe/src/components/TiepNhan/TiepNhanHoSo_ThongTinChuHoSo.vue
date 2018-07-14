@@ -433,9 +433,12 @@ export default {
     }
   },
   methods: {
+    showValid () {
+      var vm = this
+      return vm.$refs.formChuHoSo.validate()
+    },
     initData (data) {
       var vm = this
-      console.log('data-------------', data)
       let tempData = {
         delegateName: data.delegateName,
         delegateCityCode: data.delegateCityCode,
@@ -467,6 +470,8 @@ export default {
       }
       let thongTinChuHoSoTemp = Object.assign(vm.thongTinChuHoSo, tempDataChuHs)
       vm.thongTinChuHoSo = thongTinChuHoSoTemp
+      console.log('thongtinchuhoso', vm.thongTinChuHoSo)
+      console.log('thongtinnguoinophoso', vm.thongTinNguoiNopHoSo)
       vm.$nextTick(function () {
         var filter = {
           collectionCode: 'ADMINISTRATIVE_REGION',
