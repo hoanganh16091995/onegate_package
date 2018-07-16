@@ -30,10 +30,10 @@
           </v-list-tile>
           <v-list-tile v-for="subItem in item.items" :key="subItem.stepCode"
             v-on:click.native="filterSteps(subItem)"
-            :class="{'list__tile--active': currentStep === subItem.stepCode}"
+            :class="{'list__tile--active': String(currentStep) === String(subItem.stepCode)}"
             >
             <v-list-tile-action>
-              <v-icon color="primary" v-if="currentStep === subItem.stepCode">play_arrow</v-icon>
+              <v-icon color="primary" v-if="String(currentStep) === String(subItem.stepCode)">play_arrow</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title>{{ subItem.menuStepName }}</v-list-tile-title>

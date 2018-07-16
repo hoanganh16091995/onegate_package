@@ -1494,6 +1494,25 @@ export const store = new Vuex.Store({
         })
       })
     },
+    doPrint01 ({commit, state}, filter) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/documents/preview/' + filter.document, param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable)
+          }).catch(function (error) {
+            console.log(error)
+            toastr.error('Yêu cầu của bạn được thực hiện thất bại.')
+            reject(error)
+          })
+        })
+      })
+    },
     doPrint02 ({commit, state}, filter) {
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
