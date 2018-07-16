@@ -415,7 +415,7 @@ export const store = new Vuex.Store({
         console.log('data -delete-----', data)
         console.log('data-- dossier file-------', state.dossierFiles)
         var dataPut = new URLSearchParams()
-        if (data.hasForm) {
+        if (data.hasForm || data.eform) {
           axios.put(state.initData.dossierApi + '/' + data.dossierId + '/files/' + data.referenceUid + '/resetformdata', dataPut, param).then(function (response) {
             console.log('success')
             resolve(response)
@@ -919,6 +919,85 @@ export const store = new Vuex.Store({
         }
       })
     },
+    loadPlugin ({commit, state}, item) {
+      return new Promise((resolve, reject) => {
+        item.plugin = true
+        var urlPluginFormData = state.initData.dossierApi + '/' + item.dossierId + '/plugins/' + item.actionId + '/formdata'
+        var urlPluginFormScript = state.initData.dossierApi + '/' + item.dossierId + '/plugins/' + item.actionId + '/formscript'
+        var config_plugins = {
+          headers: {
+            'groupId': state.initData.groupId
+          },
+          dataType: 'text'
+        }
+        axios.all([
+          axios.get(urlPluginFormScript, config_plugins),
+          axios.get(urlPluginFormData, config_plugins)
+          ]).then( axios.spread(function (urlResponesFormScript, urlResponesFormData) {
+            var responseScript = urlResponesFormScript.data
+            var responseData = urlResponesFormData.data
+            console.log('responseScript==============', responseScript)
+            item.plugin = true
+            if(responseScript.indexOf('#preview@pdf') !== -1){
+              console.log('view pdf')
+              var url = state.initData.dossierApi + '/' + item.dossierId + '/plugins/' + item.processActionId + '/preview' 
+              var config_blob =  {
+                headers: {
+                  'groupId': state.initData.groupId
+                },
+                responseType: 'blob'
+              }
+              axios.get(url, config_blob).then(function (response) {
+                var urlblob = window.URL.createObjectURL(response.data)
+                item.pdf = true
+                item.url = urlblob
+                item.no_pdf = ''
+                resolve(item)
+              }).catch(function (error) {
+                console.log(error)
+                item.pdf = true
+                item.url = ''
+                item.no_pdf = 'Tài liệu đính kèm không tồn tại!'
+                resolve(item)
+              })
+            }
+            if(responseScript.indexOf('#preview@html') !== -1){
+              console.log('view html')
+              var config_view = {
+                headers: {
+                  'groupId': state.initData.groupId
+                },
+                dataType: 'json'
+              }
+              item.html = true
+              item.no_html = ''
+              var url = state.initData.dossierApi + '/' + item.dossierId + '/plugins/' + item.processActionId + '/previewhtml'
+              axios.get(url, config_view).then(function (response) {
+                item.no_html = ''
+                vm.stepModel = item
+                var serializable = response.data 
+                var partNo = serializable.partNo
+                var dossierFileId = serializable.dossierFileId
+                var formReport = eval('(' + serializable.formReport + ')')
+                var formData = eval('(' + serializable.formData + ')')
+                console.log('formReport======', formReport)
+                console.log('formData======', formData)
+                formReport.data = formData
+                console.log('formReport_____FINAL=======', formReport)
+                $('#alpacajs_form_plugin').alpaca(formReport)
+              }).catch(function (error) {
+                console.log(error)
+                item.html = true
+                item.no_html = 'Tài liệu đính kèm không tồn tại!'
+                resolve(item)
+              })
+            }
+          })).catch(function (xhr) {
+            console.log(xhr)
+            reject(xhr)
+          })
+        })
+    },
     setDefaultCityCode ({commit, state}, data) {
       state.thongTinChuHoSo.cityCode = data
     },
@@ -974,7 +1053,7 @@ export const store = new Vuex.Store({
         },
         responseType: 'blob'
       }
-      axios.get(state.initData.dossierApi + '/' + data.dossierId + "/files/" + data.fileAttachId, param).then(function (response) {
+      axios.get(state.initData.dossierApi + '/' + data.dossierId + '/files/' + data.fileAttachId, param).then(function (response) {
         var url = window.URL.createObjectURL(response.data)
         window.open(url)
       })
@@ -1013,7 +1092,7 @@ export const store = new Vuex.Store({
             userMapping: true
           }
         }
-        axios.get(state.initData.dossierApi + '/' + id + "/contacts", param).then(function (response) {
+        axios.get(state.initData.dossierApi + '/' + id + '/contacts', param).then(function (response) {
           if(response != null && response.hasOwnProperty('data')){
             let contacts = response.data
             $.each(contacts, function(index, item){
@@ -1080,7 +1159,7 @@ export const store = new Vuex.Store({
           resolve(resPostCmt)
         })
         .catch(function (error) {
-          // onError();
+          // onError()
           console.log(error)
         })
       })
@@ -1093,7 +1172,7 @@ export const store = new Vuex.Store({
             'groupId': state.initData.groupId
           }
         }
-        var strPings = data.pings.join();
+        var strPings = data.pings.join()
         var params = new URLSearchParams()
         // params.append('className', data.className)
         // params.append('classPK', data.classPK)
@@ -1111,7 +1190,7 @@ export const store = new Vuex.Store({
           resolve(resPutCmt)
         })
         .catch(function (error) {
-          // onError();
+          // onError()
           console.log(error)
         })
       })
@@ -1176,53 +1255,61 @@ export const store = new Vuex.Store({
       })
     },
     loadProcessStep ({commit, state}, data) {
-      let config = {
-        headers: {
-          'groupId': state.initData.groupId
-        }
-      }
-      var vm = this
-      var url = state.initdata.dossierApi + '/' + data.dossierId + '/nextactions'
-      var urlPlugin = state.initdata.dossierApi + '/' + data.dossierId + '/plugins'
       return new Promise((resolve, reject) => {
-        axios.all([
-          axios.get(url, config),
-          axios.get(urlPlugin, config)
-          ]).then( axios.spread(function (urlRespones, urlPluginsRespones) {
-            var serializable = urlRespones.data.data
-            var serializablePlugins = urlPluginsRespones.data.data
-            var serializablePluginsConvert = []
-            var serializableNextActionConvert = []
-            if(serializable){
-              for (var i = 0; i < serializable.length; i++) {
-                serializable[i].type = 1
-                if(!serializable[i].autoEvent){
-                  if(serializable[i].configNote){
-                    var configNote = JSON.parse(serializable[i].configNote)
-                    serializable[i].configNote = configNote
+        store.dispatch('loadInitResource').then(function (result) {
+          let config = {
+            headers: {
+              'groupId': state.initData.groupId
+            }
+          }
+          var vm = this
+          var url = state.initData.dossierApi + '/' + data.dossierId + '/nextactions'
+          var urlPlugin = state.initData.dossierApi + '/' + data.dossierId + '/plugins'
+          axios.all([
+            axios.get(url, config),
+            axios.get(urlPlugin, config)
+            ]).then( axios.spread(function (urlRespones, urlPluginsRespones) {
+              var serializable = urlRespones.data.data
+              var serializablePlugins = urlPluginsRespones.data.data
+              var serializablePluginsConvert = []
+              var serializableNextActionConvert = []
+              if(serializable){
+                for (var i = 0; i < serializable.length; i++) {
+                  serializable[i].type = 1
+                  if(!serializable[i].autoEvent){
+                    if(serializable[i].configNote){
+                      var configNote = JSON.parse(serializable[i].configNote)
+                      serializable[i].configNote = configNote
+                    }
+                    serializableNextActionConvert.push(serializable[i])
                   }
-                  serializableNextActionConvert.push(serializable[i])
+                }
+              }else {
+                serializable = []
+                serializableNextActionConvert = []
+              }
+              if (serializablePlugins) {
+                for (var i = 0; i < serializablePlugins.length; i++) {
+                  var plugin = {
+                    type: 2,
+                    processActionId: serializablePlugins[i].processPluginId,
+                    actionName: serializablePlugins[i].pluginName
+                  }
+                  serializablePluginsConvert.push(plugin)
                 }
               }
-            }else {
-              serializable = []
-              serializableNextActionConvert = []
-            }
-            if (serializablePlugins) {
-              for (var i = 0; i < serializablePlugins.length; i++) {
-                var plugin = {
-                  type: 2,
-                  processActionId: serializablePlugins[i].processPluginId,
-                  actionName: serializablePlugins[i].pluginName
-                }
-                serializablePluginsConvert.push(plugin)
-              }
-            }
-            var nextactions = serializableNextActionConvert
-            var plugins = serializablePluginsConvert
-            resolve($.merge(nextactions, plugins ))
-          }))
-          .catch(function (error) {})
+              var nextactions = serializableNextActionConvert
+              var plugins = serializablePluginsConvert
+              console.log('nextactions++++++++++++', nextactions)
+              console.log('plugins++++++++++++', plugins)
+              nextactions.push(...plugins);
+              console.log('nextactions2++++++++++++', nextactions)
+              resolve(nextactions)
+            }))
+            .catch(function (xhr) {
+              reject(xhr)
+            })
+          })
         })
       },
       pullNextactions ({commit, state}, filter) {
@@ -1376,7 +1463,7 @@ export const store = new Vuex.Store({
           })
         })
       },
-      getNextAction ({commit, state}, data) {
+      getNextAction ({commit, state}, filter) {
         return new Promise((resolve, reject) => {
           store.dispatch('loadInitResource').then(function (result) {
             let param = {
@@ -1407,6 +1494,52 @@ export const store = new Vuex.Store({
             resolve(response.data)
           }).catch(function (xhr) {
             reject(xhr)
+          })
+        })
+      },
+      loadFormScript ({state, commit}, data) {
+        return new Promise((resolve, reject) => {
+          store.dispatch('loadInitResource').then(function (result) {
+            $.ajax({
+              url: state.initData.dossierTemplatesApi + '/' + data.templateFileNo + '/parts/' + data.partNo + '/formscript',
+              type: 'GET',
+              headers: {
+                groupId: state.initData.groupId
+              },
+              dataType: 'text',
+              success: function (result) {
+                let serializable = result
+                resolve(serializable)
+              },
+              error: function (xhr) {
+                console.log(xhr)
+                resolve(xhr)
+                reject(xhr)
+              }
+            })
+          })
+        })
+      },
+      loadFormData ({state, commit}, data) {
+        return new Promise((resolve, reject) => {
+          store.dispatch('loadInitResource').then(function (result) {
+            $.ajax({
+              url: state.initData.dossierTemplatesApi + '/' + data.templateFileNo + '/parts/' + data.partNo + '/formdata',
+              type: 'GET',
+              headers: {
+                groupId: state.initData.groupId
+              },
+              dataType: 'text',
+              success: function (result) {
+                let serializable = result
+                resolve(serializable)
+              },
+              error: function (xhr) {
+                console.log(xhr)
+                resolve(xhr)
+                reject(xhr)
+              }
+            })
           })
         })
       }
