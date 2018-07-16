@@ -1497,11 +1497,13 @@ export const store = new Vuex.Store({
           let param = {
             headers: {
               groupId: state.initData.groupId
-            }
+            },
+            responseType: 'blob'
           }
           axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/documents/preview/' + filter.document, param).then(function (response) {
             let serializable = response.data
-            resolve(serializable)
+            let file = window.URL.createObjectURL(serializable)
+            resolve(file)
           }).catch(function (error) {
             console.log(error)
             toastr.error('Yêu cầu của bạn được thực hiện thất bại.')
