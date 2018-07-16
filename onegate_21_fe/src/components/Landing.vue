@@ -693,6 +693,11 @@ export default {
           path: '/danh-sach-ho-so/' + vm.index + '/ho-so/' + dossierItem.dossierId + '/' + vm.itemAction.form,
           query: vm.$router.history.current.query
         })
+      } else if (String(item.form) === 'ADD') {
+        router.push({
+          path: '/danh-sach-ho-so/' + vm.index + '/bo-sung-ho-so/' + dossierItem.dossierId,
+          query: vm.$router.history.current.query
+        })
       } else if (String(item.form) === 'PRINT_01') {
         // Xem trước phiếu của một hồ sơ
         vm.doPrint01(dossierItem, item, index, isGroup)
@@ -708,10 +713,37 @@ export default {
         vm.doActions(dossierItem, item, index, isGroup)
       } else if (String(item.form) === 'DELETE') {
         vm.doDeleteDossier(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'ROLLBACK_01') {
+        let result = {
+          actionCode: 9000
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'ROLLBACK_02') {
+        let result = {
+          actionCode: 9000
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'OVERDUE') {
+        let result = {
+          actionCode: 8500
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'BETIMES') {
+        let result = {
+          actionCode: 8400
+        }
+        vm.processAction(dossierItem, item, result, index, true)
       }
     },
     doPrint01 (dossierItem, item, index, isGroup) {
-      console.log('doPrint01')
+      let vm = this
+      let filter = {
+        dossierId: dossierItem.dossierId,
+        document: item.document
+      }
+      vm.$store.dispatch('doPrint01', filter).then(function (result) {
+        console.log(result)
+      })
     },
     doPrint02 (dossierItem, item, index, isGroup) {
       let vm = this
