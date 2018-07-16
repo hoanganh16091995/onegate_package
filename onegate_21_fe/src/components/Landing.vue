@@ -428,7 +428,6 @@ export default {
   updated () {
     var vm = this
     vm.$nextTick(function () {
-      console.log('update error')
       let currentParams = vm.$router.history.current.params
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
@@ -438,6 +437,7 @@ export default {
           vm.$store.commit('setLoadingDynamicBtn', true)
           setTimeout(() => {
             vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
+              vm.btnDynamics = []
               vm.trangThaiHoSoList = result
               vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
               if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
@@ -490,6 +490,7 @@ export default {
       let vm = this
       let currentQuery = newRoute.query
       if (currentQuery.hasOwnProperty('q')) {
+        vm.btnDynamics = []
         vm.$store.commit('setLoadingDynamicBtn', true)
         vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
         if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
