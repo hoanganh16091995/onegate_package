@@ -12,7 +12,6 @@
       ref="hoanthienbosunghosodetail"></hoan-thien-bo-sung-ho-so-detail> -->
     <!-- <tiep-nhan-ho-so-truc-tuyen-detail ref="tiepnhanhosotructuyendetail"></tiep-nhan-ho-so-truc-tuyen-detail> -->
     <tra-ket-qua-detail 
-      v-if="formCode === 'ACTION_03' && (step === '300' || step === '301')"
       ref="traketquadetail"></tra-ket-qua-detail>
     <!-- <fee-detail 
       v-if="formCode === 'ACTION_03' && step === '600'"

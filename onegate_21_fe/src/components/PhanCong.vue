@@ -17,7 +17,7 @@
           <v-flex class="pt-1">{{item.userName}}</v-flex> &nbsp; &nbsp;
           <v-flex>
             <v-select
-              :items="assignedtype_items"
+              :items="assignedtype_items[type]"
               :value="item.assigned"
               item-text="text"
               item-value="value"
@@ -53,12 +53,19 @@ export default {
   },
   data: () => ({
     data_phancong: [],
-    assignedtype_items: [
-      {text: 'Không có phân công', value: 0},
-      {text: 'Thực hiện chính', value: 1},
-      {text: 'Thực hiện phối hợp', value: 2},
-      {text: 'Theo dõi', value: 3}
-    ]
+    assignedtype_items: {
+      '2': [
+        {text: 'Không có phân công', value: 0},
+        {text: 'Thực hiện chính', value: 1},
+        {text: 'Thực hiện phối hợp', value: 2}
+      ],
+      '3': [
+        {text: 'Không có phân công', value: 0},
+        {text: 'Thực hiện chính', value: 1},
+        {text: 'Thực hiện phối hợp', value: 2},
+        {text: 'Theo dõi', value: 3}
+      ]
+    }
   }),
   mounted () {
     this.data_phancong = this.assign_items

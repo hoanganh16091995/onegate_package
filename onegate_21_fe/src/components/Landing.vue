@@ -200,7 +200,8 @@
               <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
-              showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
+              <!-- showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/> -->
+              <phan-cong v-if="showPhanCongNguoiThucHien" v-model="assign_items" :type="type" ></phan-cong>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
               showKyPheDuyetTaiLieu: {{showKyPheDuyetTaiLieu}} <br/>
               showTraKetQua: {{showTraKetQua}} <br/>
@@ -276,16 +277,7 @@
     <!-- <v-btn color="primary" @click.native="dialog_statusAction = true">
       TEST StatusAction &nbsp;
       <v-icon>save</v-icon>
-    </v-btn>
-
-    <phan-cong v-model="assign_items" :type="type" ></phan-cong>
-    
-    <v-btn color="primary" @click.native="expDataPC">
-      TEST PhanCong &nbsp;
-      <v-icon>save</v-icon>
     </v-btn> -->
-    
-    <!--  -->
   </div>
 </template>
 
@@ -304,32 +296,25 @@ export default {
   data: () => ({
     //
     data_pc: [],
-    type: 1,
+    type_assign: 1,
     assign_items: [
       {
         userId: 101,
         userName: 'Trịnh Công Trình',
+        moderator: 0,
         assigned: 1
       },
       {
         userId: 102,
         userName: 'Nguyễn Văn Nam',
+        moderator: 0,
         assigned: 0
       },
       {
         userId: 103,
         userName: 'Trần Minh Quang',
-        assigned: 0
-      },
-      {
-        userId: 104,
-        userName: 'Vũ Tiến Dũng',
+        moderator: 0,
         assigned: 1
-      },
-      {
-        userId: 105,
-        userName: 'Phạm Huy Hoàng',
-        assigned: 0
       }
     ],
     //
@@ -611,14 +596,15 @@ export default {
       let currentQuery = router.history.current.query
       console.log('currentQuery', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
-        let filter = {
+        /* let filter = {
           queryParams: currentQuery.q,
           page: vm.hosoDatasPage,
           agency: vm.govAgencyCode,
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        /*
+        */
+        //  test Local
         let filter = {
           queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
           page: vm.hosoDatasPage,
@@ -626,7 +612,6 @@ export default {
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        */
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -814,6 +799,8 @@ export default {
         if (result.allowAssignUser !== 0) {
           isPopup = true
           vm.showPhanCongNguoiThucHien = true
+          vm.assign_items = result.toUsers
+          vm.type_assign = result.allowAssignUser
         }
         if (result.createFiles !== null && result.createFiles !== undefined && result.createFiles !== 'undefined' && result.createFiles.length > 0) {
           isPopup = true
