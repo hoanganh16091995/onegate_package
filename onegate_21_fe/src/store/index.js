@@ -1014,7 +1014,7 @@ export const store = new Vuex.Store({
             params: {}
           }
           var listHistoryProcessing = []
-          axios.get(state.initData.dossierApi + '/dossierlogs/' + data.dossierId + '/logs', param).then(function (response) {
+          axios.get(state.initData.dossierApi + '/' + data.dossierId + '/logs', param).then(function (response) {
             var serializable = response.data
             for (var key in serializable.data) {
               if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
@@ -1554,7 +1554,7 @@ export const store = new Vuex.Store({
         })
       })
     },
-    getNextAction ({commit, state}, data) {
+    getNextAction ({commit, state}, filter) {
       return new Promise((resolve, reject) => {
         store.dispatch('loadInitResource').then(function (result) {
           let param = {
