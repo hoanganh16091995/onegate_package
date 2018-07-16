@@ -37,19 +37,17 @@
     </v-layout>
     <div v-if="!loadingDynamicBtn" class="btn_wrap_actions">
       <v-btn color="primary" v-for="(item, index) in btnDynamics" v-bind:key="index" 
-        v-on:click.native="btnActionEvent(item, index)" 
+        v-on:click.native="btnActionEvent(null, item, index, true)" 
         v-if="String(item.form).indexOf('VIEW') < 0"
         :loading="loadingAction && index === indexAction"
         :disabled="loadingAction && index === indexAction"
       >
-        {{item.title}}
+        {{item.title}}{{item.tiltle}}
         <span slot="loader">Loading...</span>
       </v-btn>
     </div>
-    <content-placeholders v-if="loadingTable">
-      <content-placeholders-text :lines="22" />
-    </content-placeholders>
-    <v-data-table v-else
+    
+    <v-data-table
         :headers="headers"
         :items="hosoDatas"
         :total-items="hosoDatasTotal"
@@ -78,33 +76,47 @@
             color="primary"
           ></v-checkbox>
         </td>
-        <td>{{ hosoDatasPage * 15 - 15 + props.index + 1 }}</td>
+        <td>
+          <content-placeholders v-if="loadingTable">
+            <content-placeholders-text :lines="1" />
+          </content-placeholders>
+          <span v-else>
+            {{ hosoDatasPage * 15 - 15 + props.index + 1 }}
+          </span>
+        </td>
 
         <td v-for="(itemHeader, indexHeader) in headers" v-bind:key="indexHeader"
           :class="itemHeader['class_column']"
           v-if="itemHeader.hasOwnProperty('value')"
         >
-          {{ props.item[itemHeader.value] }}
+          <content-placeholders v-if="loadingTable">
+            <content-placeholders-text :lines="1" />
+          </content-placeholders>
+          <span v-else>
+            {{ props.item[itemHeader.value] }}
+          </span>
         </td>
-        <td class="text-xs-center px-0 py-0">
+        <td class="text-xs-center px-0 py-0" v-if="!hideAction">
+          <content-placeholders v-if="loadingTable">
+            <content-placeholders-text :lines="1" />
+          </content-placeholders>
           <v-menu bottom left :nudge-left="50" :nudge-top="15" 
-            v-if="(btnDynamics !== null || btnDynamics !== undefined || btnDynamics !== 'undefined') || 
-              (btnDossierDynamics !== null || btnDossierDynamics !== undefined || btnDossierDynamics !== 'undefined')">
-            <v-btn slot="activator" icon @click="processPullBtnDynamics(props.item)">
+            v-if="!loadingTable && ((btnDynamics !== null || btnDynamics !== undefined || btnDynamics !== 'undefined') || 
+              (btnDossierDynamics !== null || btnDossierDynamics !== undefined || btnDossierDynamics !== 'undefined'))">
+            <v-btn class="mx-0 my-0" slot="activator" icon @click="processPullBtnDynamics(props.item)">
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
-              <v-list-tile v-for="(item, i) in btnDynamics" :key="i" v-if="String(item.form) !== 'NEW'">
-                <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile v-for="(item, i) in btnDossierDynamics" :key="i" @click="processPullBtnDetail(props.item, item)">
+              <v-list-tile v-for="(item, i) in btnDossierDynamics" :key="i" @click="processPullBtnDetail(props.item, item, props.index)">
                 <v-list-tile-title>{{ item.actionName }}</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile v-for="(item, i) in btnStepsDynamics" :key="i" v-if="String(item.form) !== 'NEW'"
+                @click="btnActionEvent(props.item, item, index, false)"
+              >
+                <v-list-tile-title>{{ item.title }}{{ item.tiltle }}</v-list-tile-title>
               </v-list-tile>
             </v-list>
           </v-menu>
-          <v-btn flat class="mx-0 px-0 my-0 py-0" block v-else>
-            Chi tiết
-          </v-btn>
         </td>
       </template>
     </v-data-table>
@@ -117,7 +129,7 @@
     <v-dialog v-model="dialogAction" max-width="400" transition="fade-transition" persistent>
       <v-card>
         <v-form ref="form" v-model="valid" lazy-validation>
-          <v-card-title class="headline">{{itemAction.title}}</v-card-title>
+          <v-card-title class="headline">{{itemAction.title}}{{itemAction.tiltle}}</v-card-title>
           <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogAction = false">
             <v-icon>clear</v-icon>
           </v-btn>
@@ -185,10 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
-              <div v-if="showThongTinCoBanHoSo">
-                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
-              </div>
+              <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
@@ -367,6 +376,7 @@ export default {
     btnStepsDynamics: [],
     loading: true,
     headers: [],
+    hideAction: false,
     hosoDatas: [],
     hosoDatasTotal: 0,
     hosoDatasPage: 1,
@@ -428,16 +438,39 @@ export default {
             vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
               vm.trangThaiHoSoList = result
               vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
-              vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']
+              if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
+                vm.hideAction = vm.trangThaiHoSoList[vm.index]['tableConfig']['hideAction']
+              }
+              if (vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== null && vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['buttonConfig'].hasOwnProperty('buttons')) {
+                vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']['buttons']
+              }
+              let btnDynamicsOnlySteps = []
+              let btnDynamicsView = []
+              for (let key in vm.btnDynamics) {
+                if (vm.btnDynamics[key].hasOwnProperty('onlySteps')) {
+                  btnDynamicsOnlySteps.push(vm.btnDynamics[key])
+                } else {
+                  btnDynamicsView.push(vm.btnDynamics[key])
+                }
+              }
+              vm.btnDynamics = []
+              vm.btnDynamics = btnDynamicsView
               if (currentQuery.hasOwnProperty('step')) {
                 for (let key in vm.trangThaiHoSoList[vm.index]['items']) {
                   let currentStep = vm.trangThaiHoSoList[vm.index]['items'][key]
                   if (String(currentStep.stepCode) === String(currentQuery.step)) {
                     let buttonConfig = currentStep.buttonConfig
                     if (buttonConfig !== '' && buttonConfig !== undefined && buttonConfig !== 'undefined' && String(buttonConfig).indexOf('{') !== -1 && String(buttonConfig).indexOf('}') !== -1) {
-                      vm.btnDynamics = JSON.parse(buttonConfig)
+                      vm.btnStepsDynamics = JSON.parse(buttonConfig)['buttons']
+                      for (let key in btnDynamicsOnlySteps) {
+                        for (var i = 0; i < btnDynamicsOnlySteps[key].onlySteps.length; i++) {
+                          if (String(btnDynamicsOnlySteps[key].onlySteps[i]) === String(currentStep.stepCode)) {
+                            vm.btnDynamics.push(btnDynamicsOnlySteps[key])
+                          }
+                        }
+                      }
                     } else {
-                      vm.btnDynamics = []
+                      vm.btnStepsDynamics = []
                     }
                     break
                   }
@@ -457,16 +490,39 @@ export default {
       if (currentQuery.hasOwnProperty('q')) {
         vm.$store.commit('setLoadingDynamicBtn', true)
         vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
-        vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']
+        if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
+          vm.hideAction = vm.trangThaiHoSoList[vm.index]['tableConfig']['hideAction']
+        }
+        if (vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== null && vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['buttonConfig'].hasOwnProperty('buttons')) {
+          vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']['buttons']
+        }
+        let btnDynamicsOnlySteps = []
+        let btnDynamicsView = []
+        for (let key in vm.btnDynamics) {
+          if (vm.btnDynamics[key].hasOwnProperty('onlySteps')) {
+            btnDynamicsOnlySteps.push(vm.btnDynamics[key])
+          } else {
+            btnDynamicsView.push(vm.btnDynamics[key])
+          }
+        }
+        vm.btnDynamics = []
+        vm.btnDynamics = btnDynamicsView
         if (currentQuery.hasOwnProperty('step')) {
           for (let key in vm.trangThaiHoSoList[vm.index]['items']) {
             let currentStep = vm.trangThaiHoSoList[vm.index]['items'][key]
             if (String(currentStep.stepCode) === String(currentQuery.step)) {
               let buttonConfig = currentStep.buttonConfig
               if (buttonConfig !== '' && buttonConfig !== undefined && buttonConfig !== 'undefined' && String(buttonConfig).indexOf('{') !== -1 && String(buttonConfig).indexOf('}') !== -1) {
-                vm.btnDynamics = JSON.parse(buttonConfig)
+                vm.btnStepsDynamics = JSON.parse(buttonConfig)['buttons']
+                for (let key in btnDynamicsOnlySteps) {
+                  for (var i = 0; i < btnDynamicsOnlySteps[key].onlySteps.length; i++) {
+                    if (String(btnDynamicsOnlySteps[key].onlySteps[i]) === String(currentStep.stepCode)) {
+                      vm.btnDynamics.push(btnDynamicsOnlySteps[key])
+                    }
+                  }
+                }
               } else {
-                vm.btnDynamics = []
+                vm.btnStepsDynamics = []
               }
               break
             }
@@ -610,7 +666,7 @@ export default {
         path: current.path + queryString
       })
     },
-    btnActionEvent (item, index) {
+    btnActionEvent (dossierItem, item, index, isGroup) {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
@@ -625,6 +681,68 @@ export default {
         } else {
           vm.doCreateDossier()
         }
+      } else if (String(item.form) === 'UPDATE') {
+        router.push({
+          path: '/danh-sach-ho-so/' + vm.index + '/ho-so/' + dossierItem.dossierId + '/' + vm.itemAction.form,
+          query: vm.$router.history.current.query
+        })
+      } else if (String(item.form) === 'PRINT_01') {
+        // Xem trước phiếu của một hồ sơ
+        vm.doPrint01(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'PRINT_02') {
+        // Xem trước phiếu gộp của nhiều hồ sơ
+        vm.doPrint02(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'PRINT_03') {
+        // In văn bản mới nhất đã phê duyệt
+        vm.doPrint03(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'GUIDE') {
+        vm.doGuiding(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'ACTIONS') {
+        vm.doActions(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'DELETE') {
+        vm.doDeleteDossier(dossierItem, item, index, isGroup)
+      }
+    },
+    doPrint01 (dossierItem, item, index, isGroup) {
+      console.log('doPrint01')
+    },
+    doPrint02 (dossierItem, item, index, isGroup) {
+      let vm = this
+      if (vm.thuTucHanhChinhSelected === null || vm.thuTucHanhChinhSelected === undefined || vm.thuTucHanhChinhSelected === 'undefined') {
+        alert('Loại thủ tục bắt buộc phải chọn')
+      } else {
+        console.log('vm.thuTucHanhChinhSelected', vm.thuTucHanhChinhSelected)
+        let filter = {
+          document: item.document,
+          'serviceCode': vm.thuTucHanhChinhSelected.serviceCode,
+          'govAgencyCode': vm.thuTucHanhChinhSelected.govAgencyCode,
+          dossiers: JSON.stringify(vm.selected)
+        }
+        vm.$store.dispatch('doPrint02', filter).then(function (result) {
+          console.log(result)
+        })
+      }
+    },
+    doPrint03 (dossierItem, item, index, isGroup) {
+      console.log('doPrint03')
+    },
+    doGuiding (dossierItem, item, index, isGroup) {
+      console.log('GUIDING')
+    },
+    doActions (dossierItem, item, index, isGroup) {
+      console.log('doActions', item.action)
+    },
+    doDeleteDossier (dossierItem, item, index, isGroup) {
+      let vm = this
+      let filter = {
+        dossierId: dossierItem.dossierId
+      }
+      if (isGroup) {
+        console.log(vm.selected)
+      } else {
+        vm.$store.dispatch('deleteDossier', filter).then(function (result) {
+          vm.hosoDatas.splice(index, 1)
+        })
       }
     },
     doCreateDossier () {
@@ -661,14 +779,25 @@ export default {
         vm.btnDossierDynamics = result
       })
     },
-    processAction (dossierItem, item, result) {
-      console.log('processAction no confirm')
-    },
-    processPullBtnDetailRouter (dossierItem, item, result) {
+    processAction (dossierItem, item, result, index) {
       let vm = this
-      console.log('processPullBtnDetail', result)
+      let filter = {
+        dossierId: dossierItem.dossierId,
+        actionCode: result.actionCode
+      }
+      let x = confirm('Bạn có muốn thực hiện hành động này?')
+      if (x) {
+        vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
+          vm.hosoDatas.splice(index, 1)
+        })
+      } else {
+        return false
+      }
+    },
+    processPullBtnDetailRouter (dossierItem, item, result, index) {
+      let vm = this
       let isPopup = false
-      if (result.ActionCode === 6200 || result.ActionCode === '6200') {
+      if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
       } else {
@@ -705,10 +834,10 @@ export default {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
       } else {
-        vm.processAction(dossierItem, item, result)
+        vm.processAction(dossierItem, item, result, index)
       }
     },
-    processPullBtnDetail (dossierItem, item) {
+    processPullBtnDetail (dossierItem, item, index) {
       let vm = this
       vm.itemAction = item
       let filter = {
@@ -716,60 +845,8 @@ export default {
         actionId: item.processActionId
       }
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
-        result = {
-          'processActionId': 0,
-          'actionCode': '',
-          'actionName': '',
-          'preStepCode': '',
-          'postStepCode': '',
-          'autoEvent': '',
-          'preCondition': '',
-          'allowAssignUser': false,
-          'assignUserId': 0,
-          'eSignature': false,
-          'signatureType': '',
-          'extraForm': false,
-          'payok': false,
-          'userNote': 1,
-          'toUsers': [
-            {
-              'userId': 0,
-              'userName': '',
-              'moderator': false,
-              'assigned': 0
-            }
-          ],
-          'createFiles': [
-            {
-              'dossierPartId': 0,
-              'partNo': '',
-              'partName': '',
-              'partTip': '',
-              'multiple': false,
-              'eform': false,
-              'templateFileNo': ''
-            }
-          ],
-          'returnFiles': [
-            {
-              'createDate': '2018-07-03T04:10:27.304Z',
-              'modifiedDate': '2018-07-03T04:10:27.305Z',
-              'referenceUid': 0,
-              'dossierTemplateNo': '',
-              'dossierPartNo': '',
-              'dossierPartType': 0,
-              'fileTemplateNo': '',
-              'displayName': '',
-              'fileType': '',
-              'fileSize': 0,
-              'version': 0,
-              'signCheck': 0,
-              'signInfo': '',
-              'deliverableCode': ''
-            }
-          ]
-        }
-        vm.processPullBtnDetailRouter(dossierItem, item, result)
+        console.log('resultresult', result)
+        vm.processPullBtnDetailRouter(dossierItem, item, result, index)
       })
     },
     goBack () {
