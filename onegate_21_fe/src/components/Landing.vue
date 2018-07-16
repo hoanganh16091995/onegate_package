@@ -80,7 +80,7 @@
           <content-placeholders v-if="loadingTable">
             <content-placeholders-text :lines="1" />
           </content-placeholders>
-          <span v-else>
+          <span v-else @click="viewDetail(props.item, props.index)" style="cursor: pointer;">
             {{ hosoDatasPage * 15 - 15 + props.index + 1 }}
           </span>
         </td>
@@ -92,7 +92,7 @@
           <content-placeholders v-if="loadingTable">
             <content-placeholders-text :lines="1" />
           </content-placeholders>
-          <span v-else>
+          <span v-else @click="viewDetail(props.item, props.index)" style="cursor: pointer;">
             {{ props.item[itemHeader.value] }}
           </span>
         </td>
@@ -195,21 +195,28 @@
             <v-icon>clear</v-icon>
           </v-btn>
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
-          <v-card-text class="pb-0 pt-4">
+          <v-card-text class="pb-0 pt-2 px-0">
             <v-layout wrap>
-              
+              <thong-tin-co-ban-ho-so v-if="dialogActionProcess" ref="thong-tin-co-ban-ho-so" :id="dossierId"></thong-tin-co-ban-ho-so>
               <!-- showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/> -->
-              <phan-cong v-if="showPhanCongNguoiThucHien" v-model="assign_items" :type="type_assign" ></phan-cong>
+              <phan-cong v-if="dialogActionProcess && showPhanCongNguoiThucHien" v-model="assign_items" :type="type_assign" ></phan-cong>
               <!-- showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/> -->
               <!-- showKyPheDuyetTaiLieu: {{showKyPheDuyetTaiLieu}} <br/> -->
-              <tra-ket-qua v-if="showTraKetQua" :resultFiles="returnFiles"></tra-ket-qua>
-              <xac-nhan-thu-phi v-if="showXacNhanThuPhi" :payments="payments" :payment_type="payment_type"></xac-nhan-thu-phi>
+              <tra-ket-qua v-if="dialogActionProcess && showTraKetQua" :resultFiles="returnFiles"></tra-ket-qua>
+              <xac-nhan-thu-phi v-if="dialogActionProcess && showXacNhanThuPhi" :payments="payments" :payment_type="payment_type"></xac-nhan-thu-phi>
               <!-- showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/> -->
-              <!-- showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/> -->
+              <y-kien-can-bo v-if="dialogActionProcess && showYkienCanBoThucHien" :user_note="userNote"></y-kien-can-bo>
             </v-layout>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn color="primary" flat="flat" @click.native="processAction(dossierItemDialogPick, itemDialogPick, resultDialogPick, indexDialogPick, true)"
+              :loading="loadingActionProcess"
+              :disabled="loadingActionProcess"
+            >
+            Xác nhận
+            <span slot="loader">Loading...</span>
+            </v-btn>
             <v-btn color="red darken-3" flat="flat" @click.native="dialogActionProcess = false"
               :loading="loadingActionProcess"
               :disabled="loadingActionProcess"
@@ -219,6 +226,17 @@
             </v-btn>
           </v-card-actions>
         </v-form>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="dialogPDF" max-width="900" transition="fade-transition">
+      <v-card>
+        <v-card-title class="headline">{{itemAction.title}}{{itemAction.tiltle}}</v-card-title>
+        <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogPDF = false">
+          <v-icon>clear</v-icon>
+        </v-btn>
+        <video v-if="dialogPDFLoading" id="editor-video-preloader" width="350" height="350" poster="https://editorassets.parastorage.com/image/editor-video-preloader-poster-white-2x2.gif" loop="" autoplay="" muted="true" src="https://editorassets.parastorage.com/video-preloader/editor-video-preloader-2-@2x.mp4"></video>
+        <iframe v-else id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
+        </iframe>
       </v-card>
     </v-dialog>
     <v-dialog v-model="dialog_statusAction" scrollable persistent max-width="700px">
@@ -287,6 +305,7 @@ import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
 import PhanCong from './form_xu_ly/PhanCongNguoiThucHien.vue'
 import TraKetQua from './form_xu_ly/TraKetQua.vue'
 import XacNhanThuPhi from './form_xu_ly/XacNhanThuPhi.vue'
+import YkienCanBoThucHien from './form_xu_ly/YkienCanBoThucHien.vue'
 export default {
   props: ['index'],
   components: {
@@ -294,7 +313,8 @@ export default {
     'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
     'phan-cong': PhanCong,
     'tra-ket-qua': TraKetQua,
-    'xac-nhan-thu-phi': XacNhanThuPhi
+    'xac-nhan-thu-phi': XacNhanThuPhi,
+    'y-kien-can-bo': YkienCanBoThucHien
   },
   data: () => ({
     /* data PhanCongThucHien */
@@ -396,7 +416,14 @@ export default {
     showKyPheDuyetTaiLieu: false,
     showTraKetQua: false,
     showXacNhanThuPhi: false,
-    showThucHienThanhToanDienTu: false
+    showThucHienThanhToanDienTu: false,
+    dossierItemDialogPick: null,
+    itemDialogPick: null,
+    resultDialogPick: null,
+    indexDialogPick: 0,
+    userNote: 0,
+    dialogPDF: false,
+    dialogPDFLoading: true
   }),
   computed: {
     loadingDynamicBtn () {
@@ -680,6 +707,11 @@ export default {
           path: '/danh-sach-ho-so/' + vm.index + '/ho-so/' + dossierItem.dossierId + '/' + vm.itemAction.form,
           query: vm.$router.history.current.query
         })
+      } else if (String(item.form) === 'ADD') {
+        router.push({
+          path: '/danh-sach-ho-so/' + vm.index + '/bo-sung-ho-so/' + dossierItem.dossierId,
+          query: vm.$router.history.current.query
+        })
       } else if (String(item.form) === 'PRINT_01') {
         // Xem trước phiếu của một hồ sơ
         vm.doPrint01(dossierItem, item, index, isGroup)
@@ -695,10 +727,41 @@ export default {
         vm.doActions(dossierItem, item, index, isGroup)
       } else if (String(item.form) === 'DELETE') {
         vm.doDeleteDossier(dossierItem, item, index, isGroup)
+      } else if (String(item.form) === 'ROLLBACK_01') {
+        let result = {
+          actionCode: 9000
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'ROLLBACK_02') {
+        let result = {
+          actionCode: 9000
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'OVERDUE') {
+        let result = {
+          actionCode: 8500
+        }
+        vm.processAction(dossierItem, item, result, index, true)
+      } else if (String(item.form) === 'BETIMES') {
+        let result = {
+          actionCode: 8400
+        }
+        vm.processAction(dossierItem, item, result, index, true)
       }
     },
     doPrint01 (dossierItem, item, index, isGroup) {
-      console.log('doPrint01')
+      let vm = this
+      vm.dialogPDFLoading = true
+      vm.dialogPDF = true
+      let filter = {
+        dossierId: dossierItem.dossierId,
+        document: item.document
+      }
+      document.getElementById('dialogPDFPreview').src = ''
+      vm.$store.dispatch('doPrint01', filter).then(function (result) {
+        vm.dialogPDFLoading = false
+        document.getElementById('dialogPDFPreview').src = result
+      })
     },
     doPrint02 (dossierItem, item, index, isGroup) {
       let vm = this
@@ -774,20 +837,27 @@ export default {
         vm.btnDossierDynamics = result
       })
     },
-    processAction (dossierItem, item, result, index) {
+    processAction (dossierItem, item, result, index, isConfirm) {
       let vm = this
       let filter = {
         dossierId: dossierItem.dossierId,
         actionCode: result.actionCode
       }
       vm.dossierId = dossierItem.dossierId
-      let x = confirm('Bạn có muốn thực hiện hành động này?')
-      if (x) {
+      if (isConfirm) {
+        let x = confirm('Bạn có muốn thực hiện hành động này?')
+        if (x) {
+          vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
+            vm.hosoDatas.splice(index, 1)
+            vm.dialogActionProcess = false
+          })
+        } else {
+          return false
+        }
+      } else {
         vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
           vm.hosoDatas.splice(index, 1)
         })
-      } else {
-        return false
       }
     },
     processPullBtnDetailRouter (dossierItem, item, result, index) {
@@ -795,6 +865,19 @@ export default {
       let vm = this
       let isPopup = false
       vm.dossierId = dossierItem.dossierId
+      vm.showYkienCanBoThucHien = false
+      vm.showFormBoSungThongTinNgan = false
+      vm.showPhanCongNguoiThucHien = false
+      vm.showTaoTaiLieuKetQua = false
+      vm.showKyPheDuyetTaiLieu = false
+      vm.showTraKetQua = false
+      vm.showXacNhanThuPhi = false
+      vm.showThucHienThanhToanDienTu = false
+      vm.dossierItemDialogPick = dossierItem
+      vm.itemDialogPick = item
+      vm.resultDialogPick = result
+      vm.indexDialogPick = index
+      vm.userNote = 0
       if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
@@ -802,6 +885,7 @@ export default {
         if (result.userNote === 1 || result.userNote === '1' || result.userNote === 2 || result.userNote === '2') {
           isPopup = true
           vm.showYkienCanBoThucHien = true
+          vm.userNote = result.userNote
         }
         if (result.extraForm) {
           isPopup = true
@@ -835,9 +919,9 @@ export default {
       }
       if (isPopup) {
         vm.dialogActionProcess = true
-        vm.loadingActionProcess = true
+        vm.loadingActionProcess = false
       } else {
-        vm.processAction(dossierItem, item, result, index)
+        vm.processAction(dossierItem, item, result, index, true)
       }
     },
     processPullBtnDetail (dossierItem, item, index) {
@@ -848,6 +932,7 @@ export default {
         actionId: item.processActionId
       }
       vm.dossierId = dossierItem.dossierId
+      vm.loadingActionProcess = true
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)
       })
@@ -857,6 +942,9 @@ export default {
     },
     resend () {
       alert('Thử lại')
+    },
+    viewDetail (item, indexItem) {
+      router.push('/danh-sach-ho-so/' + this.index + '/chi-tiet-ho-so/' + item['dossierId'])
     }
   }
 }

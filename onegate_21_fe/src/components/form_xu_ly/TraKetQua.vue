@@ -1,31 +1,44 @@
 <template>
   <div class="traketqua">
-    <div class="my-2 text-bold">Giấy tờ kết quả:</div>
-    <v-data-table
-      :headers="headers"
-      :items="resultFiles|filterFileResult"
-      item-key="no"
-      class="table-bordered"
-      hide-actions
-      :no-data-text="'Không có giấy tờ kết quả'"
-    >
-      <template slot="headerCell" slot-scope="props">
-        <v-tooltip bottom>
-          <span slot="activator">
-            {{ props.header.text }}
-          </span>
-          <span>
-            {{ props.header.text }}
-          </span>
-        </v-tooltip>
-      </template>
-      <template slot="items" slot-scope="props">
-        <td class="text-xs-center" style="width:5%"> {{ props.index + 1 }} </td>
-        <td class="text-xs-left" style="width:10%"> {{ props.item.deliverableCode }} </td>
-        <td class="text-xs-left" style="width:10%"> {{ props.item.createDate|dateTimeView }} </td>
-        <td class="text-xs-left" style="width:75%"> {{props.item.displayName}} </td>
-      </template>
-    </v-data-table>
+    <v-expansion-panel class="expansion-pl">
+      <v-expansion-panel-content hide-actions value="1">
+        <div slot="header">
+          <div class="background-triangle-small"> 
+            <v-icon size="18" color="white">star_rate</v-icon> 
+          </div>GIẤY TỜ KẾT QUẢ
+        </div>
+        <v-card>
+          <v-card-text>
+            <v-data-table
+              :headers="headers"
+              :items="resultFiles|filterFileResult"
+              item-key="no"
+              class="table-bordered"
+              hide-actions
+              :no-data-text="'Không có giấy tờ kết quả'"
+            >
+              <template slot="headerCell" slot-scope="props">
+                <v-tooltip bottom>
+                  <span slot="activator">
+                    {{ props.header.text }}
+                  </span>
+                  <span>
+                    {{ props.header.text }}
+                  </span>
+                </v-tooltip>
+              </template>
+              <template slot="items" slot-scope="props">
+                <td class="text-xs-center" style="width:5%"> {{ props.index + 1 }} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.deliverableCode }} </td>
+                <td class="text-xs-left" style="width:10%"> {{ props.item.createDate|dateTimeView }} </td>
+                <td class="text-xs-left" style="width:75%"> {{props.item.displayName}} </td>
+              </template>
+            </v-data-table>
+          </v-card-text>
+        </v-card>
+        
+      </v-expansion-panel-content>
+    </v-expansion-panel>
   </div>
   <!-- <v-dialog v-model="dialog_add_dined" persistent max-width="500px">
     <v-card>

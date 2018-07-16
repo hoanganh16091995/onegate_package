@@ -1,11 +1,22 @@
 <template>
-  <v-flex xs12 v-if="payment_type === 5">
-    <div class="mt-2 text-bold">Xác nhận thu phí:</div>
-    <div class="pl-3 fee-info">
-      <v-checkbox :label="`Phí phải nộp: ${currency(payments.feeAmount)} VNĐ`" v-model="checkPaid"></v-checkbox>
-      <span class="red--text">* </span> Đánh dấu để xác định người làm thủ tục đã hoàn thành nộp phí.
-    </div>
-  </v-flex>
+  <v-expansion-panel class="expansion-pl">
+    <v-expansion-panel-content hide-actions value="1">
+      <div slot="header">
+        <div class="background-triangle-small"> 
+          <v-icon size="18" color="white">star_rate</v-icon> 
+        </div>XÁC NHẬN THU PHÍ
+      </div>
+      <v-card>
+        <v-card-text>
+          <div class="pl-3 fee-info" v-if="payment_type === 5">
+            <v-checkbox :label="`Phí phải nộp: ${currency(payments.feeAmount)} VNĐ`" v-model="checkPaid"></v-checkbox>
+            <span class="red--text">* </span> Đánh dấu để xác định người làm thủ tục đã hoàn thành nộp phí.
+          </div>
+        </v-card-text>
+      </v-card>
+    </v-expansion-panel-content>
+  </v-expansion-panel>
+
 </template>
 
 <script>
