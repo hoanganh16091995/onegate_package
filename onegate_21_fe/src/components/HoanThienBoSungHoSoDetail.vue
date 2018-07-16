@@ -200,7 +200,6 @@
 <script>
   import ThanhPhanHoSo from './TiepNhan/TiepNhanHoSo_ThanhPhanHoSo.vue'
   export default {
-    props: ['index', 'id'],
     data: () => ({
       dialog_addTHPHS: false,
       loadingAction: false,
@@ -230,45 +229,6 @@
       },
       daBoSung () {
         console.log('Đã bổ sung')
-        var vm = this
-        let thanhphanhoso = this.$refs.thanhphanhoso.dossierTemplateItems
-        let dossierFiles = vm.$refs.thanhphanhoso.dossierFilesItems
-        let dossierTemplates = thanhphanhoso
-        let listAction = []
-        let listDossierMark = []
-        if (dossierTemplates) {
-          dossierTemplates.forEach(function (val, index) {
-            if (val.partType === 1) {
-              val['dossierId'] = vm.thongTinChiTietHoSo.dossierId
-              listDossierMark.push(vm.$store.dispatch('postDossierMark', val))
-            }
-          })
-          dossierFiles.forEach(function (value, index) {
-            if (value.eForm) {
-              value['dossierId'] = vm.thongTinChiTietHoSo.dossierId
-              listAction.push(vm.$store.dispatch('putAlpacaForm', value))
-            }
-          })
-        }
-        Promise.all(listDossierMark).then(values => {
-        }).catch(function (xhr) {
-        })
-        Promise.all(listAction).then(values => {
-          console.log(values)
-          let dataPostAction = {
-            dossierId: vm.thongTinChiTietHoSo.dossierId,
-            actionCode: 7100,
-            payload: '',
-            security: '',
-            assignUsers: [],
-            payment: {},
-            createDossiers: []
-          }
-          vm.$store.dispatch('postAction', dataPostAction).then(function (result) {
-          })
-        }).catch(reject => {
-          console.log('reject=============', reject)
-        })
       }
     }
   }
