@@ -80,6 +80,7 @@ export default {
       }
       vm.$store.dispatch('loadDossierPayments', params).then(resultPayment => {
         vm.lePhi = resultPayment
+        vm.lePhi['dossierId'] = data.dossierId
       })
     }
   },

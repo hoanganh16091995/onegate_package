@@ -176,9 +176,9 @@
         <v-tab key="1" class="mr-2">
           THÀNH PHẦN HỒ SƠ
         </v-tab>
-        <!-- <v-tab key="2" class="mr-2" @click="getNextActions()">
+        <v-tab key="2" class="mr-2" @click="getNextActions()">
           THỤ LÝ HỒ SƠ
-        </v-tab> -->
+        </v-tab>
         <v-tab key="3" class="mr-2" @click="loadDossierActions()">
           TIẾN TRÌNH THỤ LÝ
         </v-tab>
@@ -298,7 +298,7 @@
             </v-expansion-panel-content>
           </v-expansion-panel> -->
         </v-tab-item>
-        <!-- <v-tab-item key="2" style="background: #ffff;">
+        <v-tab-item key="2" style="background: #ffff;">
           <v-btn color="primary" v-for="(item, index) in nextActions" @click="getNextAction(item)" :key="item.processActionId">{{item.actionName}}</v-btn>
           <v-card v-if="stepModel != null">
             <div v-if="stepModel.plugin">
@@ -320,43 +320,30 @@
             <div v-else>
               <v-card-title primary-title class="mx-2 pb-0" v-if="stepModel.createFiles">
                 <v-layout wrap> 
-                  <v-flex xs12 id="labelTPKQ">
+                  <v-flex xs12 id="labelTPKQ" class="text-bold">
                     File đính kèm:
                   </v-flex>
                 </v-layout>
               </v-card-title>
               <v-expansion-panel class="my-0 expansion__list_style">
-                <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId">
-                  <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( Form trực tuyến )</small> </div>
+                <v-expansion-panel-content v-for="(item,i) in stepModel.createFiles" v-if="item" :key="item.dossierPartId" class="pl-3 pr-3">
+                  <div slot="header" @click.prevent="showAlpacaJSFORM(item)">{{i + 1}}. {{item.partName}} <small v-if="item.eform">( <i style="color: blue;">Form trực tuyến</i> )</small> </div>
                   <div slot="header" class="text-right">
-                    <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="singleFileUpload(item)">
+                    <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="pickFile(item)">
                       <v-icon>file_upload</v-icon>
                     </v-btn>
                     <v-btn color="primary" fab small dark class="small-btn-x mx-0 my-0" v-on:click.native.prevent="viewDossierFileResult(item, i)" :id="'btn-count-partno'+item.partNo">
-                      {{item.counter}}
+                      <!-- {{item.counter}} --> 0
                     </v-btn>
-
                     <v-btn flat icon light class="small-btn-x mx-0 my-0" v-on:click.native.prevent="deleteDossierFileVersion(item)">
                       <v-icon>delete</v-icon>
                     </v-btn>
                   </div>
-                  <input type="file" :id="'inputfile_'+item.dossierPartId" style="display:none" v-on:change="onUploadSingleFile($event, item, i)"/>
-                  <div class="alert alert--outline success--text mx-4 hidden" :id="'message_success_'+item.referenceUid" >
-                    <i aria-hidden="true" class="material-icons icon alert__icon">check_circle</i>
-                    <div>
-                      Ghi lại {{item.partName}} Thành công!.
-                    </div>
-                  </div>
-                  <div class="alert alert--outline error--text mx-4 hidden" :id="'message_error_'+item.referenceUid" >
-                    <i aria-hidden="true" class="material-icons icon alert__icon">warning</i>
-                    <div>
-                      Ghi lại {{item.partName}} Thất bại!.
-                    </div>
-                  </div>
+                  <input type="file" :id="'file' + item.partNo" style="display:none" v-on:change="onUploadSingleFile($event, item, i)"/>
                   <div class="text-right pr-4" v-if="item.eform">
                     <v-btn color="primary" :id="'btn-save-formalpaca'+item.partNo"
                     :referenceUid="item.referenceUid"
-                    :dossierId="detailModel.dossierId"
+                    :dossierId="thongTinChiTietHoSo.dossierId"
                     class="saveForm"
                     :loading="loadingAlpacajsForm"
                     :disabled="loadingAlpacajsForm"
@@ -368,7 +355,11 @@
               </v-expansion-panel>
               <v-card-title primary-title class="mx-2 py-0">
                 <v-layout wrap> 
-                  <v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser">
+                  <v-flex xs12 v-if="stepModel.allowAssignUser > 0" class="mt-2 text-bold">
+                    Phân công:
+                  </v-flex>
+                  <v-flex xs12 class="mb-3" v-if="stepModel.allowAssignUser > 0">
+                    <phancong v-model="stepModel.toUsers" type="1"></phancong> 
                   </v-flex>
                   <v-flex xs12>
                     Nhập ý kiến {{stepModel.actionName}}:
@@ -380,14 +371,13 @@
                   </v-flex>
                 </v-layout>
               </v-card-title>
-
               <v-card-actions>
                 <v-btn flat color="primary" class="px-0" :loading="actionsSubmitLoading" :disabled="actionsSubmitLoading"
                 @click.prevent.stop="postNextActions(stepModel)">Xác nhận</v-btn>
               </v-card-actions>
             </div>
           </v-card>
-        </v-tab-item> -->
+        </v-tab-item>
         <v-tab-item key="3" style="background: #ffff;">
           <div>
             <v-data-table :headers="headers" :items="dossierActions" class="table-landing table-bordered"
@@ -490,13 +480,15 @@
 </template>
 
 <script>
-// import $ from 'jquery'
+import $ from 'jquery'
 import '../store/jquery_comment'
 import Comment from './Comment.vue'
+import Phancong from './PhanCong.vue'
 export default {
   // props: ['index', 'id'],
   components: {
-    'comment': Comment
+    'comment': Comment,
+    'phancong': Phancong
   },
   data: () => ({
     dossierId: '',
@@ -509,6 +501,7 @@ export default {
     dossierTemplatesKQ: [],
     thongTinChiTietHoSo: {
     },
+    loadingAlpacajsForm: false,
     nextActions: [],
     processSteps: [],
     documents: [],
@@ -695,6 +688,15 @@ export default {
         vm.listHistoryProcessing = result
       })
     },
+    deleteDossierFileVersion (item) {
+      var vm = this
+      item['dossierId'] = vm.thongTinChiTietHoSo.dossierId
+      vm.$store.dispatch('deleteAttackFiles', item).then(res => {
+      })
+    },
+    pickFile (item) {
+      document.getElementById('file' + item.partNo).click()
+    },
     postChat () {
       var vm = this
       let params = {
@@ -710,20 +712,62 @@ export default {
     },
     getNextAction (item) {
       var vm = this
-      let filter = {
-        dossierId: vm.thongTinChiTietHoSo.dossierId,
-        actionId: item.actionId
+      if (item.type === 1) {
+        let filter = {
+          dossierId: vm.thongTinChiTietHoSo.dossierId,
+          actionId: item.processActionId
+        }
+        vm.$store.dispatch('getNextAction', filter).then(resultAction => {
+          vm.stepModel = resultAction
+        }).catch(reject => {
+          vm.stepModel = null
+        })
+      } else {
+        let filter = {
+          dossierId: vm.thongTinChiTietHoSo.dossierId,
+          actionId: item.processActionId
+        }
+        vm.$store.dispatch('loadPlugin', filter).then(resultPlugin => {
+          console.log('resultPlugin+++++++++', resultPlugin)
+          vm.stepModel = resultPlugin
+        }).catch(reject => {
+          vm.stepModel = null
+        })
       }
-      vm.$store.dispatch('getNextAction', filter).then(resultAction => {
-        vm.stepModel = resultAction
-      })
     },
     getNextActions () {
       var vm = this
-      vm.$store.dispatch('')
+      let params = {
+        dossierId: vm.thongTinChiTietHoSo.dossierId
+      }
+      vm.$store.dispatch('loadProcessStep', params).then(resultNextActions => {
+        console.log('resultNextActions++++++++++++', resultNextActions)
+        vm.nextActions = resultNextActions
+      })
     },
     showAlpacaJSFORM (item) {
-      // var vm = this
+      var vm = this
+      if (item.eform) {
+        vm.$store.dispatch('loadFormScript', item).then(resScript => {
+          vm.$store.dispatch('loadFormData', item).then(resData => {
+            var formScript, formData
+            /* eslint-disable */
+            if (resScript) {
+              formScript = eval('(' + resScript + ')')
+            } else {
+              formScript = {}
+            }
+            if (resData) {
+              formData = eval('(' + resData + ')')
+            } else {
+              formData = {}
+            }
+            /* eslint-disable */
+            formScript.data = formData
+            $('#formAlpaca' + item.partNo).alpaca(formScript)
+          })
+        })
+      }
     },
     onUploadSingleFile (e, data, i) {
       var vm = this
@@ -735,12 +779,12 @@ export default {
       })
     },
     submitAlpacajsForm (item) {
-      // var vm = this
-      // let value = {
-      //   dossierId: vm.thongTinChiTietHoSo.dossierId,
-      //   dossierPartNo: partNo
-      // }
-      // vm.$store.dispatch('putAlpacaForm', value)
+      var vm = this
+      let value = {
+        dossierId: vm.thongTinChiTietHoSo.dossierId,
+        dossierPartNo: item.partNo
+      }
+      vm.$store.dispatch('putAlpacaForm', value)
     },
     getColorChat (syncType) {
       if (syncType === 1) {
@@ -748,6 +792,9 @@ export default {
       } else {
         return 'cyan lighten-1'
       }
+    },
+    postNextActions (stepModel) {
+
     }
   },
   filters: {

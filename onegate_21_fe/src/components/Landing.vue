@@ -197,7 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
+              <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="dossierId"></thong-tin-co-ban-ho-so>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
@@ -366,6 +366,7 @@ export default {
         statusAction: false
       }
     ],
+    dossierId: 0,
     valid: true,
     isCallBack: true,
     trangThaiHoSoList: null,
@@ -395,7 +396,7 @@ export default {
     itemAction: {
       title: ''
     },
-    showThongTinCoBanHoSo: true,
+    showThongTinCoBanHoSo: false,
     showYkienCanBoThucHien: false,
     showFormBoSungThongTinNgan: false,
     showPhanCongNguoiThucHien: false,
@@ -618,15 +619,6 @@ export default {
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        /*
-        let filter = {
-          queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
-          page: vm.hosoDatasPage,
-          agency: vm.govAgencyCode,
-          service: vm.serviceCode,
-          template: vm.templateNo
-        }
-        */
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -777,6 +769,7 @@ export default {
       let filter = {
         dossierId: item.dossierId
       }
+      vm.dossierId = item.dossierId
       vm.$store.dispatch('pullNextactions', filter).then(function (result) {
         vm.btnDossierDynamics = result
       })
@@ -787,6 +780,7 @@ export default {
         dossierId: dossierItem.dossierId,
         actionCode: result.actionCode
       }
+      vm.dossierId = dossierItem.dossierId
       let x = confirm('Bạn có muốn thực hiện hành động này?')
       if (x) {
         vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
@@ -799,6 +793,7 @@ export default {
     processPullBtnDetailRouter (dossierItem, item, result, index) {
       let vm = this
       let isPopup = false
+      vm.dossierId = dossierItem.dossierId
       if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
@@ -846,6 +841,7 @@ export default {
         dossierId: dossierItem.dossierId,
         actionId: item.processActionId
       }
+      vm.dossierId = dossierItem.dossierId
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
         console.log('resultresult', result)
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)

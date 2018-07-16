@@ -86,7 +86,7 @@
             <content-placeholders class="mt-1" v-if="loading">
               <content-placeholders-text :lines="1" />
             </content-placeholders>
-            <v-subheader v-else style="float:left"><i>{{thongTinChungHoSo.receiveDate|dateTimeView}}</i></v-subheader>
+            <v-subheader v-else style="float:left"><i>{{thongTinChungHoSo.receiveDate}}</i></v-subheader>
           </v-flex>
           <v-flex xs12 sm2>
             <content-placeholders class="mt-1" v-if="loading">
@@ -113,7 +113,7 @@
                 required
                 ></datetime> -->
                 <!-- <v-icon>event</v-icon> -->
-                {{thongTinChungHoSo.dueDate|dateTimeView}}
+                {{thongTinChungHoSo.dueDate}}
             </v-subheader>
           </v-flex>
         </v-layout>
