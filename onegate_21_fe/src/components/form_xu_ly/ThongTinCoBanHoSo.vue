@@ -9,14 +9,14 @@
         <div class="flex xs8 sm10 pl-3 text-ellipsis text-bold" :title="thongTinChiTietHoSo.serviceName">
           {{thongTinChiTietHoSo.serviceName}}
         </div>
-        <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
+        <!-- <div class="flex xs4 sm2 text-right" style="margin-left: auto;">
           <v-btn flat class="my-0 mx-0 btn-border-left" @click="goBack" active-class="temp_active">
             Quay lại &nbsp;
             <v-icon size="16">undo</v-icon>
           </v-btn>
-        </div>
-      </div>  -->
-    </div>
+        </div> 
+      </div> -->
+    </div> 
     <v-expansion-panel class="expansion-pl">
       <v-expansion-panel-content hide-actions value="1">
         <div slot="header"><div class="background-triangle-small"> <v-icon size="18" color="white">star_rate</v-icon> </div>THÔNG TIN CHUNG HỒ SƠ</div>
