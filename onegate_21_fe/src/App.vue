@@ -96,11 +96,11 @@
         if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
           vm.isCallBack = false
           vm.$store.commit('setIndex', currentParams.index)
-        }
-        if (currentParams.hasOwnProperty('id')) {
-          vm.detailState = 1
-        } else {
-          vm.detailState = 0
+          if (currentParams.hasOwnProperty('id')) {
+            vm.detailState = 1
+          } else {
+            vm.detailState = 0
+          }
         }
       })
     },
@@ -167,15 +167,15 @@
               for (let keyChild in vm.trangThaiHoSoList[key].items) {
                 vm.trangThaiHoSoList[key].items[keyChild]['counter'] = 0
                 for (let countKey in vm.counterData) {
-                  if (vm.counterData[countKey].dossierStatus === vm.trangThaiHoSoList[key].items[keyChild].dossierStatus && vm.counterData[countKey].dossierSubStatus === vm.trangThaiHoSoList[key].items[keyChild].dossierSubStatus) {
+                  if (String(vm.counterData[countKey].stepCode) === String(vm.trangThaiHoSoList[key].items[keyChild].stepCode)) {
                     let countCurrent = vm.counterData[countKey].totalCount
                     vm.trangThaiHoSoList[key].items[keyChild]['counter'] = countCurrent
                     parentCount = parentCount + countCurrent
                     break
                   }
                 }
-                vm.trangThaiHoSoList[key]['counter'] = parentCount
               }
+              vm.trangThaiHoSoList[key]['counter'] = parentCount
             }
           }
           vm.loading = false

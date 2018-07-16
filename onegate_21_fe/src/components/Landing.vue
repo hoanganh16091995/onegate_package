@@ -197,8 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
-              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
+              
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               <!-- showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/> -->
               <phan-cong v-if="showPhanCongNguoiThucHien" v-model="assign_items" :type="type" ></phan-cong>
@@ -207,6 +206,7 @@
               showTraKetQua: {{showTraKetQua}} <br/>
               showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
               showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
+              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
             </v-layout>
           </v-card-text>
           <v-card-actions>
@@ -351,6 +351,7 @@ export default {
         statusAction: false
       }
     ],
+    dossierId: 0,
     valid: true,
     isCallBack: true,
     trangThaiHoSoList: null,
@@ -380,7 +381,7 @@ export default {
     itemAction: {
       title: ''
     },
-    showThongTinCoBanHoSo: true,
+    showThongTinCoBanHoSo: false,
     showYkienCanBoThucHien: false,
     showFormBoSungThongTinNgan: false,
     showPhanCongNguoiThucHien: false,
@@ -412,7 +413,6 @@ export default {
   updated () {
     var vm = this
     vm.$nextTick(function () {
-      vm.btnDynamics = []
       let currentParams = vm.$router.history.current.params
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
@@ -422,6 +422,7 @@ export default {
           vm.$store.commit('setLoadingDynamicBtn', true)
           setTimeout(() => {
             vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
+              vm.btnDynamics = []
               vm.trangThaiHoSoList = result
               vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
               if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
@@ -430,6 +431,7 @@ export default {
               if (vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== null && vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['buttonConfig'].hasOwnProperty('buttons')) {
                 vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']['buttons']
               }
+              console.log('trangThaiHoSoList', vm.trangThaiHoSoList)
               let btnDynamicsOnlySteps = []
               let btnDynamicsView = []
               for (let key in vm.btnDynamics) {
@@ -462,6 +464,7 @@ export default {
                   }
                 }
               }
+              console.log('btnDynamics', vm.btnDynamics)
               vm.$store.commit('setLoadingDynamicBtn', false)
             })
           }, 200)
@@ -472,10 +475,10 @@ export default {
   watch: {
     '$route': function (newRoute, oldRoute) {
       let vm = this
-      vm.btnDynamics = []
       let currentQuery = newRoute.query
       console.log('currentQuery watch router', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
+        vm.btnDynamics = []
         vm.$store.commit('setLoadingDynamicBtn', true)
         vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
         if (vm.trangThaiHoSoList[vm.index]['tableConfig'] !== null && vm.trangThaiHoSoList[vm.index]['tableConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['tableConfig'].hasOwnProperty('hideAction')) {
@@ -763,6 +766,7 @@ export default {
       let filter = {
         dossierId: item.dossierId
       }
+      vm.dossierId = item.dossierId
       vm.$store.dispatch('pullNextactions', filter).then(function (result) {
         vm.btnDossierDynamics = result
       })
@@ -773,6 +777,7 @@ export default {
         dossierId: dossierItem.dossierId,
         actionCode: result.actionCode
       }
+      vm.dossierId = dossierItem.dossierId
       let x = confirm('Bạn có muốn thực hiện hành động này?')
       if (x) {
         vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
@@ -785,6 +790,7 @@ export default {
     processPullBtnDetailRouter (dossierItem, item, result, index) {
       let vm = this
       let isPopup = false
+      vm.dossierId = dossierItem.dossierId
       if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
@@ -820,8 +826,6 @@ export default {
           vm.showXacNhanThuPhi = true
         }
       }
-      vm.showThongTinCoBanHoSo = true
-      isPopup = true
       if (isPopup) {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
@@ -836,6 +840,7 @@ export default {
         dossierId: dossierItem.dossierId,
         actionId: item.processActionId
       }
+      vm.dossierId = dossierItem.dossierId
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
         console.log('resultresult', result)
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)
