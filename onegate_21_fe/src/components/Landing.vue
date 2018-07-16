@@ -197,7 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="dossierId"></thong-tin-co-ban-ho-so>
+              <!-- <thong-tin-co-ban-ho-so ref="thongTinCoBanHoSo"></thong-tin-co-ban-ho-so> -->
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
@@ -833,6 +833,7 @@ export default {
       } else {
         vm.processAction(dossierItem, item, result, index)
       }
+      vm.$refs.thongTinCoBanHoSo.initData(dossierItem.dossierId)
     },
     processPullBtnDetail (dossierItem, item, index) {
       let vm = this
