@@ -122,6 +122,7 @@
         router.push({
           path: '/danh-sach-ho-so/' + index,
           query: {
+            renew: Math.floor(Math.random() * (100 - 1 + 1)) + 1,
             q: item.queryParams
           }
         })
@@ -130,8 +131,7 @@
         let currentQuery = this.$router.history.current.query
         let currentParams = this.$router.history.current.params
         let queryString = this.trangThaiHoSoList[currentParams.index].queryParams
-        if (currentQuery.hasOwnProperty('q')) {
-          queryString = currentQuery.q
+        if (currentQuery !== null && currentQuery !== undefined && currentQuery.hasOwnProperty('q')) {
           let coma = queryString.lastIndexOf('=')
           if (coma > 0) {
             queryString = queryString.substr(0, coma + 1)
@@ -141,6 +141,7 @@
         router.push({
           path: '/danh-sach-ho-so/' + currentParams.index,
           query: {
+            renew: Math.floor(Math.random() * (100 - 1 + 1)) + 1,
             q: queryString + item.stepCode,
             step: item.stepCode
           }
