@@ -94,11 +94,11 @@
         if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
           vm.isCallBack = false
           vm.$store.commit('setIndex', currentParams.index)
-        }
-        if (currentParams.hasOwnProperty('id')) {
-          vm.detailState = 1
-        } else {
-          vm.detailState = 0
+          if (currentParams.hasOwnProperty('id')) {
+            vm.detailState = 1
+          } else {
+            vm.detailState = 0
+          }
         }
       })
     },
@@ -154,21 +154,13 @@
         let vm = this
         vm.$store.dispatch('loadingCounterHoSo').then(function (result) {
           vm.counterData = result.data
-          console.log('vm.counterData+++++++++++', vm.counterData)
-          console.log('trangThaiHoSoList+++++++++++++', vm.trangThaiHoSoList)
           for (let key in vm.trangThaiHoSoList) {
             vm.trangThaiHoSoList[key]['counter'] = 0
-            console.log(vm.trangThaiHoSoList[key].hasOwnProperty('items'))
             if (vm.trangThaiHoSoList[key].hasOwnProperty('items')) {
               let parentCount = 0
-              console.log(vm.trangThaiHoSoList[key].hasOwnProperty('items'))
               for (let keyChild in vm.trangThaiHoSoList[key].items) {
                 vm.trangThaiHoSoList[key].items[keyChild]['counter'] = 0
                 for (let countKey in vm.counterData) {
-                  console.log('vm.counterData[countKey].dossierStatus ++++++++++', vm.counterData[countKey].dossierStatus)
-                  console.log('vm.trangThaiHoSoList[key].items[keyChild].dossierStatus ++++++++++', vm.trangThaiHoSoList[key].items[keyChild].dossierStatus)
-                  console.log('vm.counterData[countKey].dossierSubStatus ++++++++++', vm.counterData[countKey].dossierSubStatus)
-                  console.log('vm.trangThaiHoSoList[key].items[keyChild].dossierSubStatus ++++++++++', vm.trangThaiHoSoList[key].items[keyChild].dossierSubStatus)
                   if (String(vm.counterData[countKey].stepCode) === String(vm.trangThaiHoSoList[key].items[keyChild].stepCode)) {
                     let countCurrent = vm.counterData[countKey].totalCount
                     vm.trangThaiHoSoList[key].items[keyChild]['counter'] = countCurrent
@@ -176,8 +168,8 @@
                     break
                   }
                 }
-                vm.trangThaiHoSoList[key]['counter'] = parentCount
               }
+              vm.trangThaiHoSoList[key]['counter'] = parentCount
             }
           }
           vm.loading = false

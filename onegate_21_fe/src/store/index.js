@@ -148,6 +148,7 @@ export const store = new Vuex.Store({
                   'id': current['menuGroup'],
                   'action': 'description',
                   'action_active': 'play_arrow',
+                  'counter': -1,
                   'queryParams': current['queryParams']
                 }
                 index = index + 1

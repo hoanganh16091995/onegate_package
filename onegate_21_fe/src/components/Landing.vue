@@ -197,7 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="dossierId"></thong-tin-co-ban-ho-so>
+              
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
@@ -428,7 +428,7 @@ export default {
   updated () {
     var vm = this
     vm.$nextTick(function () {
-      vm.btnDynamics = []
+      console.log('update error')
       let currentParams = vm.$router.history.current.params
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
@@ -488,7 +488,6 @@ export default {
   watch: {
     '$route': function (newRoute, oldRoute) {
       let vm = this
-      vm.btnDynamics = []
       let currentQuery = newRoute.query
       if (currentQuery.hasOwnProperty('q')) {
         vm.$store.commit('setLoadingDynamicBtn', true)
