@@ -36,7 +36,7 @@
               <v-icon color="primary" v-if="String(currentStep) === String(subItem.stepCode)">play_arrow</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>{{ subItem.menuStepName }}</v-list-tile-title>
+              <v-list-tile-title>{{ subItem.menuStepName }} {{String(currentStep)}} {{String(subItem.stepCode)}}</v-list-tile-title>
               <span v-if="subItem.hasOwnProperty('counter') && subItem['counter'] > -1" class="status__counter">
                 {{subItem.counter}}
               </span>
@@ -62,7 +62,7 @@
       isCallBack: true,
       trangThaiHoSoList: [],
       loading: true,
-      currentStep: 0,
+      currentStep: '0',
       counterData: [],
       detailState: 0
     }),
@@ -108,9 +108,9 @@
         let currentParams = newRoute.params
         let currentQuery = newRoute.query
         if (currentQuery.hasOwnProperty('step')) {
-          vm.currentStep = parseInt(currentQuery.step)
+          vm.currentStep = String(currentQuery.step)
         } else {
-          vm.currentStep = 0
+          vm.currentStep = '0'
         }
         if (currentParams.hasOwnProperty('id')) {
           vm.detailState = 1
@@ -140,7 +140,7 @@
             queryString = queryString.substr(0, coma + 1)
           }
         }
-        this.currentStep = item.stepCode
+        this.currentStep = String(item.stepCode)
         router.push({
           path: '/danh-sach-ho-so/' + currentParams.index,
           query: {
