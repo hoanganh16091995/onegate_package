@@ -756,8 +756,7 @@ export default {
       }
       document.getElementById('dialogPDFPreview').src = ''
       vm.$store.dispatch('doPrint01', filter).then(function (result) {
-        let file = window.URL.createObjectURL(result)
-        document.getElementById('dialogPDFPreview').src = file
+        document.getElementById('dialogPDFPreview').src = result
       })
     },
     doPrint02 (dossierItem, item, index, isGroup) {
