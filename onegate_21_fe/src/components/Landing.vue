@@ -235,7 +235,7 @@
           <v-icon>clear</v-icon>
         </v-btn>
         <video v-if="dialogPDFLoading" id="editor-video-preloader" width="350" height="350" poster="https://editorassets.parastorage.com/image/editor-video-preloader-poster-white-2x2.gif" loop="" autoplay="" muted="true" src="https://editorassets.parastorage.com/video-preloader/editor-video-preloader-2-@2x.mp4"></video>
-        <iframe v-else id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
+        <iframe v-if="!dialogPDFLoading" id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
         </iframe>
       </v-card>
     </v-dialog>
@@ -757,7 +757,6 @@ export default {
         dossierId: dossierItem.dossierId,
         document: item.document
       }
-      document.getElementById('dialogPDFPreview').src = ''
       vm.$store.dispatch('doPrint01', filter).then(function (result) {
         vm.dialogPDFLoading = false
         document.getElementById('dialogPDFPreview').src = result
@@ -910,7 +909,7 @@ export default {
           vm.showTraKetQua = true
           vm.returnFiles = result.returnFiles
         }
-        if (result.payment.requestPayment === 5) {
+        if (result.payment !== null && result.payment !== undefined && result.payment !== 'undefined' && result.payment.requestPayment === 5) {
           isPopup = true
           vm.showXacNhanThuPhi = true
           vm.payments = result.payment
