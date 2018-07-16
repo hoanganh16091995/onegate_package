@@ -106,14 +106,13 @@ export const store = new Vuex.Store({
         return new Promise((resolve, reject) => {
           let param = {}
           let orginURL = window.location.href
-          // let coma = window.location.href.lastIndexOf('#/')
-          // if (coma > 0) {
-          //   orginURL = window.location.href.substr(0, coma)
-          // }
-          // test local
+          let coma = window.location.href.lastIndexOf('#/')
+          if (coma > 0) {
+            orginURL = window.location.href.substr(0, coma)
+          }
+          /* test local */
           orginURL = 'http://127.0.0.1:8081/api/initdata'
-          console.log('orginURL', orginURL)
-          console.log('url', orginURL + support.renderURLInit)
+          /** */
           axios.get(orginURL + support.renderURLInit, param).then(function (response) {
             let serializable = response.data
             commit('setInitData', serializable)

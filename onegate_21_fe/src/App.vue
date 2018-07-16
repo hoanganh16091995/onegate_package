@@ -77,11 +77,13 @@
         vm.loading = true
         vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
           vm.trangThaiHoSoList = result
+          /*
           let currentParams = vm.$router.history.current.params
           vm.trangThaiHoSoList[currentParams.index]['active'] = true
-          /*
-          vm.trangThaiHoSoList[0]['active'] = true
           */
+          // test local
+          vm.trangThaiHoSoList[0]['active'] = true
+          //
           vm.loadingCounter()
           vm.loading = false
         })
@@ -133,7 +135,11 @@
       filterSteps (item) {
         let currentQuery = this.$router.history.current.query
         let currentParams = this.$router.history.current.params
+        console.log('currentParams', currentParams)
+        console.log('currentQuery', currentQuery)
         let queryString = this.trangThaiHoSoList[currentParams.index].queryParams
+        /* test Local */
+        /* let queryString = this.trangThaiHoSoList[0].queryParams */
         if (currentQuery !== null && currentQuery !== undefined && currentQuery.hasOwnProperty('q')) {
           let coma = queryString.lastIndexOf('=')
           if (coma > 0) {

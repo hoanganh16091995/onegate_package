@@ -474,6 +474,7 @@ export default {
       let vm = this
       vm.btnDynamics = []
       let currentQuery = newRoute.query
+      console.log('currentQuery watch router', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
         vm.$store.commit('setLoadingDynamicBtn', true)
         vm.headers = vm.trangThaiHoSoList[vm.index]['tableConfig']['headers']
