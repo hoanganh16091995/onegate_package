@@ -831,9 +831,9 @@ export default {
           isPopup = true
           vm.showXacNhanThuPhi = true
         }
-        vm.showThongTinCoBanHoSo = true
-        isPopup = true
       }
+      vm.showThongTinCoBanHoSo = true
+      isPopup = true
       if (isPopup) {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
