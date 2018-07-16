@@ -552,7 +552,11 @@ export const store = new Vuex.Store({
         }
         axios.get(state.initData.dossierApi + '/' + data + '/files', param).then(function (response) {
           commit('setDossierFiles', response.data.data)
-          resolve(response.data.data)
+          if (response.data.data) {
+            resolve(response.data.data)
+          } else {
+            resolve([])
+          }
         }).catch(function (xhr) {
           console.log(xhr)
           reject(xhr)
@@ -725,11 +729,10 @@ export const store = new Vuex.Store({
         let url = state.initData.dossierApi + '/' + data.dossierId + '/marks/' + data.partNo
         axios.post(url, dataPostdossierMark, options).then(function (response) {
           resolve(response.data)
-          toastr.success('Yêu cầu của bạn được thực hiện thành công.')
           commit('setLoading', false)
         }).catch(function (xhr) {
           reject(xhr)
-          toastr.error('Yêu cầu của bạn được thực hiện thất bại.')
+          // toastr.error('Yêu cầu của bạn được thực hiện thất bại.')
           commit('setLoading', false)
         })
       })
@@ -1609,6 +1612,27 @@ export const store = new Vuex.Store({
           resolve(response.data)
         }).catch(function (xhr) {
           reject(xhr)
+        })
+      })
+    },
+    reassignDossier ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          let formData = new URLSearchParams()
+          formData.append('toUsers', JSON.stringify(data.toUsers))
+          axios.put(state.initData.dossierApi + '/' + data.dossierId + '/reassign' ,formData , param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable)
+          }).catch(function (error) {
+            console.log(error)
+            toastr.error('Yêu cầu của bạn được thực hiện thất bại.')
+            reject(error)
+          })
         })
       })
     }
