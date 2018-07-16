@@ -36,7 +36,7 @@
               <v-icon color="primary" v-if="String(currentStep) === String(subItem.stepCode)">play_arrow</v-icon>
             </v-list-tile-action>
             <v-list-tile-content>
-              <v-list-tile-title>{{ subItem.menuStepName }} {{String(currentStep)}} {{String(subItem.stepCode)}}</v-list-tile-title>
+              <v-list-tile-title>{{ subItem.menuStepName }}</v-list-tile-title>
               <span v-if="subItem.hasOwnProperty('counter') && subItem['counter'] > -1" class="status__counter">
                 {{subItem.counter}}
               </span>

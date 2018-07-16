@@ -8,11 +8,19 @@
         :rows="2"
         :rules="[v => !!v || 'lý do bắt buộc phải nhập']"
         ></v-text-field>
+        ////
+        {{user_note}}
     </v-form>
   </div>
 </template>
 <script>
   export default {
+    props: {
+      user_note: {
+        type: Number,
+        required: true
+      }
+    },
     data: () => ({
       ykien: '',
       valid: false

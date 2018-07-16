@@ -205,7 +205,7 @@
               showTraKetQua: {{showTraKetQua}} <br/>
               showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
               showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
-              <y-kien-can-bo v-if="dialogActionProcess && showYkienCanBoThucHien"></y-kien-can-bo>
+              <y-kien-can-bo v-if="dialogActionProcess && showYkienCanBoThucHien" :user_note="userNote"></y-kien-can-bo>
             </v-layout>
           </v-card-text>
           <v-card-actions>
@@ -417,7 +417,8 @@ export default {
     dossierItemDialogPick: null,
     itemDialogPick: null,
     resultDialogPick: null,
-    indexDialogPick: 0
+    indexDialogPick: 0,
+    userNote: 0
   }),
   computed: {
     loadingDynamicBtn () {
@@ -858,6 +859,7 @@ export default {
       vm.itemDialogPick = item
       vm.resultDialogPick = result
       vm.indexDialogPick = index
+      vm.userNote = 0
       if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
@@ -865,6 +867,7 @@ export default {
         if (result.userNote === 1 || result.userNote === '1' || result.userNote === 2 || result.userNote === '2') {
           isPopup = true
           vm.showYkienCanBoThucHien = true
+          vm.userNote = result.userNote
         }
         if (result.extraForm) {
           isPopup = true
