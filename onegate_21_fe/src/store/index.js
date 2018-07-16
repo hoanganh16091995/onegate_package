@@ -111,9 +111,9 @@ export const store = new Vuex.Store({
             orginURL = window.location.href.substr(0, coma)
           }
           // test locale
-          orginURL = 'http://127.0.0.1:8081/api/initdata'
-          console.log('orginURL', orginURL)
-          console.log('url', orginURL + support.renderURLInit)
+          // orginURL = 'http://127.0.0.1:8081/api/initdata'
+          // console.log('orginURL', orginURL)
+          // console.log('url', orginURL + support.renderURLInit)
           //
           axios.get(orginURL + support.renderURLInit, param).then(function (response) {
             let serializable = response.data
@@ -654,8 +654,6 @@ export const store = new Vuex.Store({
         dataPutdossier.append('delegateDistrictCode', data.delegateDistrictCode)
         dataPutdossier.append('delegateWardCode', data.delegateWardCode)
         dataPutdossier.append('applicantNote', data.applicantNote)
-        dataPutdossier.append('paymentFee', data.fee)
-        dataPutdossier.append('paymentFeeNote', data.feeNote)
         if (data.viaPostal) {
           dataPutdossier.append('viaPostal', data.viaPostal ? 1 : 0)
           dataPutdossier.append('postalServiceCode', data.postalServiceCode)
@@ -1535,7 +1533,7 @@ export const store = new Vuex.Store({
           }
           axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
             let serializable = response.data
-            resolve(serializable.data)
+            resolve(serializable)
           }).catch(function (error) {
             console.log(error)
             reject(error)
@@ -1607,23 +1605,22 @@ export const store = new Vuex.Store({
           })
         })
       })
-    })
-},
-loadDossierCounting ({state, commit}, data) {
-  let config = {
-    headers: {
-      groupId: state.initData.groupId
+    },
+    loadDossierCounting ({state, commit}, data) {
+      let config = {
+        headers: {
+          groupId: state.initData.groupId
+        }
+      }
+      let url = '/o/rest/v2/statistics/dossiers/counting'
+      return new Promise((resolve, reject) => {
+        axios.get(url, config).then(function (response) {
+          resolve(response.data)
+        }).catch(function (xhr) {
+          reject(xhr)
+        })
+      })
     }
-  }
-  let url = '/o/rest/v2/statistics/dossiers/counting'
-  return new Promise((resolve, reject) => {
-    axios.get(url, config).then(function (response) {
-      resolve(response.data)
-    }).catch(function (xhr) {
-      reject(xhr)
-    })
-  })
-}
     // ----End---------
   },
   mutations: {
