@@ -80,7 +80,7 @@
           <content-placeholders v-if="loadingTable">
             <content-placeholders-text :lines="1" />
           </content-placeholders>
-          <span v-else>
+          <span v-else @click="viewDetail(props.item, props.index)" style="cursor: pointer;">
             {{ hosoDatasPage * 15 - 15 + props.index + 1 }}
           </span>
         </td>
@@ -92,7 +92,7 @@
           <content-placeholders v-if="loadingTable">
             <content-placeholders-text :lines="1" />
           </content-placeholders>
-          <span v-else>
+          <span v-else @click="viewDetail(props.item, props.index)" style="cursor: pointer;">
             {{ props.item[itemHeader.value] }}
           </span>
         </td>
@@ -195,9 +195,9 @@
             <v-icon>clear</v-icon>
           </v-btn>
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
-          <v-card-text class="pb-0 pt-4">
+          <v-card-text class="pb-0 pt-2 px-0">
             <v-layout wrap>
-              
+              <thong-tin-co-ban-ho-so v-if="dialogActionProcess" ref="thong-tin-co-ban-ho-so" :id="dossierId"></thong-tin-co-ban-ho-so>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
@@ -205,11 +205,18 @@
               showTraKetQua: {{showTraKetQua}} <br/>
               showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
               showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
-              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
+              <y-kien-can-bo v-if="dialogActionProcess && showYkienCanBoThucHien"></y-kien-can-bo>
             </v-layout>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
+            <v-btn color="primary" flat="flat" @click.native="processAction(dossierItemDialogPick, itemDialogPick, resultDialogPick, indexDialogPick, true)"
+              :loading="loadingActionProcess"
+              :disabled="loadingActionProcess"
+            >
+            Xác nhận
+            <span slot="loader">Loading...</span>
+            </v-btn>
             <v-btn color="red darken-3" flat="flat" @click.native="dialogActionProcess = false"
               :loading="loadingActionProcess"
               :disabled="loadingActionProcess"
@@ -292,6 +299,7 @@
 <script>
 import TinyPagination from './pagging/hanghai_pagination.vue'
 import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
+import YkienCanBoThucHien from './form_xu_ly/YkienCanBoThucHien.vue'
 import PhanCong from './PhanCong.vue'
 import router from '@/router'
 export default {
@@ -299,7 +307,8 @@ export default {
   components: {
     'tiny-pagination': TinyPagination,
     'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
-    'phan-cong': PhanCong
+    'phan-cong': PhanCong,
+    'y-kien-can-bo': YkienCanBoThucHien
   },
   data: () => ({
     //
@@ -404,7 +413,11 @@ export default {
     showKyPheDuyetTaiLieu: false,
     showTraKetQua: false,
     showXacNhanThuPhi: false,
-    showThucHienThanhToanDienTu: false
+    showThucHienThanhToanDienTu: false,
+    dossierItemDialogPick: null,
+    itemDialogPick: null,
+    resultDialogPick: null,
+    indexDialogPick: 0
   }),
   computed: {
     loadingDynamicBtn () {
@@ -774,26 +787,45 @@ export default {
         vm.btnDossierDynamics = result
       })
     },
-    processAction (dossierItem, item, result, index) {
+    processAction (dossierItem, item, result, index, isConfirm) {
       let vm = this
       let filter = {
         dossierId: dossierItem.dossierId,
         actionCode: result.actionCode
       }
       vm.dossierId = dossierItem.dossierId
-      let x = confirm('Bạn có muốn thực hiện hành động này?')
-      if (x) {
+      if (isConfirm) {
+        let x = confirm('Bạn có muốn thực hiện hành động này?')
+        if (x) {
+          vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
+            vm.hosoDatas.splice(index, 1)
+            vm.dialogActionProcess = false
+          })
+        } else {
+          return false
+        }
+      } else {
         vm.$store.dispatch('processDossierRouter', filter).then(function (result) {
           vm.hosoDatas.splice(index, 1)
         })
-      } else {
-        return false
       }
     },
     processPullBtnDetailRouter (dossierItem, item, result, index) {
       let vm = this
       let isPopup = false
       vm.dossierId = dossierItem.dossierId
+      vm.showYkienCanBoThucHien = false
+      vm.showFormBoSungThongTinNgan = false
+      vm.showPhanCongNguoiThucHien = false
+      vm.showTaoTaiLieuKetQua = false
+      vm.showKyPheDuyetTaiLieu = false
+      vm.showTraKetQua = false
+      vm.showXacNhanThuPhi = false
+      vm.showThucHienThanhToanDienTu = false
+      vm.dossierItemDialogPick = dossierItem
+      vm.itemDialogPick = item
+      vm.resultDialogPick = result
+      vm.indexDialogPick = index
       if (result.actionCode === 6200 || result.actionCode === '6200') {
         isPopup = false
         vm.showThucHienThanhToanDienTu = true
@@ -829,9 +861,9 @@ export default {
       }
       if (isPopup) {
         vm.dialogActionProcess = true
-        vm.loadingActionProcess = true
+        vm.loadingActionProcess = false
       } else {
-        vm.processAction(dossierItem, item, result, index)
+        vm.processAction(dossierItem, item, result, index, true)
       }
     },
     processPullBtnDetail (dossierItem, item, index) {
@@ -842,6 +874,7 @@ export default {
         actionId: item.processActionId
       }
       vm.dossierId = dossierItem.dossierId
+      vm.loadingActionProcess = true
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
         console.log('resultresult', result)
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)
@@ -852,6 +885,9 @@ export default {
     },
     resend () {
       alert('Thử lại')
+    },
+    viewDetail (item, indexItem) {
+      router.push('/danh-sach-ho-so/' + this.index + '/chi-tiet-ho-so/' + item['dossierId'])
     }
   }
 }

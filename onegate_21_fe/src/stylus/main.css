@@ -2391,3 +2391,7 @@ body .input-group--selection-controls__ripple {
 body .expansion-panel .expansion-panel__body div > .card {
     border-top: 1px solid #dddddd;
 }
+.theme--light .input-group.input-group--textarea .input-group__input {
+    border: 1px solid rgba(0,0,0,0.54) !important;
+    padding: 10px 15px !important;
+}
