@@ -198,15 +198,14 @@
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
               
-              showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
-              <!-- showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/> -->
-              <phan-cong v-if="showPhanCongNguoiThucHien" v-model="assign_items" :type="type" ></phan-cong>
-              showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
-              showKyPheDuyetTaiLieu: {{showKyPheDuyetTaiLieu}} <br/>
-              showTraKetQua: {{showTraKetQua}} <br/>
-              showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
-              showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
-              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
+              <!-- showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/> -->
+              <phan-cong v-if="showPhanCongNguoiThucHien" v-model="assign_items" :type="type_assign" ></phan-cong>
+              <!-- showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/> -->
+              <!-- showKyPheDuyetTaiLieu: {{showKyPheDuyetTaiLieu}} <br/> -->
+              <tra-ket-qua v-if="showTraKetQua" :resultFiles="returnFiles"></tra-ket-qua>
+              <xac-nhan-thu-phi v-if="showXacNhanThuPhi" :payments="payments" :payment_type="payment_type"></xac-nhan-thu-phi>
+              <!-- showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/> -->
+              <!-- showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/> -->
             </v-layout>
           </v-card-text>
           <v-card-actions>
@@ -282,21 +281,24 @@
 </template>
 
 <script>
+import router from '@/router'
 import TinyPagination from './pagging/hanghai_pagination.vue'
 import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
-import PhanCong from './PhanCong.vue'
-import router from '@/router'
+import PhanCong from './form_xu_ly/PhanCongNguoiThucHien.vue'
+import TraKetQua from './form_xu_ly/TraKetQua.vue'
+import XacNhanThuPhi from './form_xu_ly/XacNhanThuPhi.vue'
 export default {
   props: ['index'],
   components: {
     'tiny-pagination': TinyPagination,
     'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
-    'phan-cong': PhanCong
+    'phan-cong': PhanCong,
+    'tra-ket-qua': TraKetQua,
+    'xac-nhan-thu-phi': XacNhanThuPhi
   },
   data: () => ({
-    //
-    data_pc: [],
-    type_assign: 1,
+    /* data PhanCongThucHien */
+    type_assign: '',
     assign_items: [
       {
         userId: 101,
@@ -317,7 +319,12 @@ export default {
         assigned: 1
       }
     ],
-    //
+    /* data TraKetQua */
+    returnFiles: [],
+    /* data XacNhanThuPhi */
+    payments: {},
+    payment_type: '',
+    /* */
     dialog_statusAction: false,
     dossierSelected: [
       {
@@ -431,7 +438,6 @@ export default {
               if (vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== null && vm.trangThaiHoSoList[vm.index]['buttonConfig'] !== undefined && vm.trangThaiHoSoList[vm.index]['buttonConfig'].hasOwnProperty('buttons')) {
                 vm.btnDynamics = vm.trangThaiHoSoList[vm.index]['buttonConfig']['buttons']
               }
-              console.log('trangThaiHoSoList', vm.trangThaiHoSoList)
               let btnDynamicsOnlySteps = []
               let btnDynamicsView = []
               for (let key in vm.btnDynamics) {
@@ -464,7 +470,6 @@ export default {
                   }
                 }
               }
-              console.log('btnDynamics', vm.btnDynamics)
               vm.$store.commit('setLoadingDynamicBtn', false)
             })
           }, 200)
@@ -600,22 +605,21 @@ export default {
       let currentQuery = router.history.current.query
       console.log('currentQuery', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
-        /* let filter = {
+        let filter = {
           queryParams: currentQuery.q,
           page: vm.hosoDatasPage,
           agency: vm.govAgencyCode,
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        */
-        //  test Local
-        let filter = {
+        /*  test Local */
+        /* let filter = {
           queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
           page: vm.hosoDatasPage,
           agency: vm.govAgencyCode,
           service: vm.serviceCode,
           template: vm.templateNo
-        }
+        } */
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -661,7 +665,6 @@ export default {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
-      console.log('item action---------------------', item)
       if (String(item.form) === 'NEW') {
         let isOpenDialog = true
         if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
@@ -788,6 +791,7 @@ export default {
       }
     },
     processPullBtnDetailRouter (dossierItem, item, result, index) {
+      console.log('result Nextaction', result)
       let vm = this
       let isPopup = false
       vm.dossierId = dossierItem.dossierId
@@ -804,10 +808,10 @@ export default {
           vm.showFormBoSungThongTinNgan = true
         }
         if (result.allowAssignUser !== 0) {
-          isPopup = true
-          vm.showPhanCongNguoiThucHien = true
           vm.assign_items = result.toUsers
           vm.type_assign = result.allowAssignUser
+          isPopup = true
+          vm.showPhanCongNguoiThucHien = true
         }
         if (result.createFiles !== null && result.createFiles !== undefined && result.createFiles !== 'undefined' && result.createFiles.length > 0) {
           isPopup = true
@@ -820,10 +824,13 @@ export default {
         if (result.returnFiles !== null && result.returnFiles !== undefined && result.returnFiles !== 'undefined' && result.returnFiles.length > 0) {
           isPopup = true
           vm.showTraKetQua = true
+          vm.returnFiles = result.returnFiles
         }
-        if (result.payok === 1) {
+        if (result.payment.requestPayment === 5) {
           isPopup = true
           vm.showXacNhanThuPhi = true
+          vm.payments = result.payment
+          vm.payment_type = result.payment.requestPayment
         }
       }
       if (isPopup) {
@@ -842,7 +849,6 @@ export default {
       }
       vm.dossierId = dossierItem.dossierId
       vm.$store.dispatch('processPullBtnDetail', filter).then(function (result) {
-        console.log('resultresult', result)
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)
       })
     },
