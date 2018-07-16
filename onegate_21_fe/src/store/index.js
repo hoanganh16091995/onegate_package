@@ -1014,7 +1014,7 @@ export const store = new Vuex.Store({
             params: {}
           }
           var listHistoryProcessing = []
-          axios.get(state.initData.dossierApi + '/' + data.dossierId + '/logs', param).then(function (response) {
+          axios.get(state.initData.dossierlogsApi + '/' + data.dossierId + '/logs', param).then(function (response) {
             var serializable = response.data
             for (var key in serializable.data) {
               if (serializable.data[key].notificationType === 'PROCESS_TYPE') {
@@ -1279,13 +1279,11 @@ export const store = new Vuex.Store({
               if(serializable){
                 for (var i = 0; i < serializable.length; i++) {
                   serializable[i].type = 1
-                  if(!serializable[i].autoEvent){
-                    if(serializable[i].configNote){
-                      var configNote = JSON.parse(serializable[i].configNote)
-                      serializable[i].configNote = configNote
-                    }
-                    serializableNextActionConvert.push(serializable[i])
+                  if(serializable[i].configNote){
+                    var configNote = JSON.parse(serializable[i].configNote)
+                    serializable[i].configNote = configNote
                   }
+                  serializableNextActionConvert.push(serializable[i])
                 }
               }else {
                 serializable = []
@@ -1397,7 +1395,7 @@ export const store = new Vuex.Store({
             stepType: data.stepType
           }
         }
-        let url = state.initData.dossierApi + '/' + data.dossierId + '/actions'
+        let url = state.initData.dossierApi + '/' + data.dossierId + '/sequences'
         return new Promise((resolve, reject) => {
           axios.get(url, config).then(function (response) {
             resolve(response.data)
