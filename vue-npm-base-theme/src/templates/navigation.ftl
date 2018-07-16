@@ -38,7 +38,7 @@
 										nav_child_attr_selected = ""
 										nav_child_css_class = ""
 									/>
-
+									
 									<#if nav_item.isSelected()>
 										<#assign
 											nav_child_attr_selected = "aria-selected='true'"

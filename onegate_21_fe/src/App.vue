@@ -48,7 +48,6 @@
         </v-list-group>
       </v-list>
     </v-navigation-drawer>
-    
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -78,9 +77,13 @@
         vm.loading = true
         vm.$store.dispatch('loadMenuConfigToDo').then(function (result) {
           vm.trangThaiHoSoList = result
-          let currentParams = vm.$router.history.current.params
-          vm.trangThaiHoSoList[currentParams.index]['active'] = true
+          // let currentParams = vm.$router.history.current.params
+          // vm.trangThaiHoSoList[currentParams.index]['active'] = true
+          // test locale
+          vm.trangThaiHoSoList[0]['active'] = true
+          //
           vm.loadingCounter()
+          vm.loading = false
         })
       })
     },

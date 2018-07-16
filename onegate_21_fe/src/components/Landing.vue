@@ -173,15 +173,15 @@
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Quay lại
-            <span slot="loader">Loading...</span>
+              Quay lại
+              <span slot="loader">Loading...</span>
             </v-btn>
             <v-btn color="primary" flat="flat" @click.native="doSubmitDialogAction(itemAction)"
               :loading="loadingAction"
               :disabled="loadingAction"
             >
-            Đồng ý
-            <span slot="loader">Loading...</span>
+              Đồng ý
+              <span slot="loader">Loading...</span>
             </v-btn>
           </v-card-actions>
         </v-form>
@@ -197,7 +197,10 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/>
+              <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
+              <div v-if="showThongTinCoBanHoSo">
+                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
+              </div>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
@@ -226,6 +229,9 @@
         <v-card-title class="headline">
           Trạng thái xử lý
         </v-card-title>
+        <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialog_statusAction = false">
+            <v-icon>clear</v-icon>
+          </v-btn>
         <v-card-text style="max-height: 350px">
           <div v-for="(item, index) in dossierSelected" v-bind:key="item.dossierIdCTN">
             <v-layout wrap class="py-1 align-center row-list-style" style="border-bottom: 1px solid #ddd;position:relative"> 
@@ -269,18 +275,67 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+
+    <!-- <v-btn color="primary" @click.native="dialog_statusAction = true">
+      TEST StatusAction &nbsp;
+      <v-icon>save</v-icon>
+    </v-btn>
+
+    <phan-cong v-model="assign_items" :type="type" ></phan-cong>
+    
+    <v-btn color="primary" @click.native="expDataPC">
+      TEST PhanCong &nbsp;
+      <v-icon>save</v-icon>
+    </v-btn> -->
+    
+    <!--  -->
   </div>
 </template>
 
 <script>
 import TinyPagination from './pagging/hanghai_pagination.vue'
+import ThongTinCoBanHoSo from './form_xu_ly/ThongTinCoBanHoSo.vue'
+import PhanCong from './PhanCong.vue'
 import router from '@/router'
 export default {
   props: ['index'],
   components: {
-    'tiny-pagination': TinyPagination
+    'tiny-pagination': TinyPagination,
+    'thong-tin-co-ban-ho-so': ThongTinCoBanHoSo,
+    'phan-cong': PhanCong
   },
   data: () => ({
+    //
+    data_pc: [],
+    type: 1,
+    assign_items: [
+      {
+        userId: 101,
+        userName: 'Trịnh Công Trình',
+        assigned: 1
+      },
+      {
+        userId: 102,
+        userName: 'Nguyễn Văn Nam',
+        assigned: 0
+      },
+      {
+        userId: 103,
+        userName: 'Trần Minh Quang',
+        assigned: 0
+      },
+      {
+        userId: 104,
+        userName: 'Vũ Tiến Dũng',
+        assigned: 1
+      },
+      {
+        userId: 105,
+        userName: 'Phạm Huy Hoàng',
+        assigned: 0
+      }
+    ],
+    //
     dialog_statusAction: false,
     dossierSelected: [
       {
@@ -492,6 +547,10 @@ export default {
     }
   },
   methods: {
+    expDataPC () {
+      // this.data_pc = data
+      console.log('dataPKKKK', this.assign_items)
+    },
     processListTTHC (currentQuery) {
       let vm = this
       vm.$store.dispatch('loadListThuTucHanhChinh').then(function (result) {
@@ -551,14 +610,24 @@ export default {
     doLoadingDataHoSo () {
       let vm = this
       let currentQuery = router.history.current.query
+      console.log('currentQuery', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
+        // let filter = {
+        //   queryParams: currentQuery.q,
+        //   page: vm.hosoDatasPage,
+        //   agency: vm.govAgencyCode,
+        //   service: vm.serviceCode,
+        //   template: vm.templateNo
+        // }
+        // test locale
         let filter = {
-          queryParams: currentQuery.q,
+          queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
           page: vm.hosoDatasPage,
           agency: vm.govAgencyCode,
           service: vm.serviceCode,
           template: vm.templateNo
         }
+        //
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -604,6 +673,7 @@ export default {
       let vm = this
       vm.itemAction = item
       vm.indexAction = index
+      console.log('item action---------------------', item)
       if (String(item.form) === 'NEW') {
         let isOpenDialog = true
         if (vm.dichVuSelected !== null && vm.dichVuSelected !== undefined && vm.dichVuSelected !== 'undefined' && vm.listDichVu !== null && vm.listDichVu !== undefined && vm.listDichVu.length === 1) {
@@ -683,7 +753,8 @@ export default {
       let data = {
         serviceCode: vm.serviceCode,
         govAgencyCode: vm.govAgencyCode,
-        templateNo: vm.templateNo
+        templateNo: vm.templateNo,
+        originality: 3
       }
       vm.loadingAction = true
       vm.$store.dispatch('postDossier', data).then(function (result) {
@@ -698,6 +769,7 @@ export default {
     doSubmitDialogAction (item) {
       let vm = this
       if (vm.$refs.form.validate()) {
+        console.log('yes-----')
         vm.doCreateDossier()
       }
     },
@@ -779,6 +851,9 @@ export default {
         console.log('resultresult', result)
         vm.processPullBtnDetailRouter(dossierItem, item, result, index)
       })
+    },
+    goBack () {
+      window.history.back()
     },
     resend () {
       alert('Thử lại')

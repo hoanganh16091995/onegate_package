@@ -4,13 +4,8 @@
       <v-expansion-panel-content hide-actions value="1">
         <div slot="header">
           <div class="background-triangle-small"> IV.</div>
-          THÀNH PHẦN HỒ SƠ &nbsp;&nbsp;&nbsp;&nbsp; 
+          KẾT QUẢ LIÊN THÔNG &nbsp;&nbsp;&nbsp;&nbsp; 
          <!--  <i><span style="color: red">(*)</span> Những thành phần bắt buộc</i> -->
-          <div class="absolute-lable">
-            <span class="text-bold">Bản chính | </span>
-            <span class="text-bold">&nbsp;Bản chụp&nbsp; | </span>
-            <span class="text-bold">Công chứng</span>
-          </div>
         </div>
         <v-card>
           <div class="form_alpaca" style="position: relative;" v-for="(item, index) in dossierTemplates" v-if="item.partType === 1" v-bind:key="item.partNo">
@@ -39,14 +34,6 @@
                 <content-placeholders-text :lines="1" />
               </content-placeholders>
               <v-layout row wrap class="flex__checkbox" v-else>
-                <v-flex style="width: 270px;" class="layout wrap">
-                  <v-checkbox light color="secondary" class="flex" v-model="thanhPhanHoSo.dossierTemplates[index].fileCheck"></v-checkbox>
-                  <v-radio-group v-model="thanhPhanHoSo.dossierTemplates[index].fileType" row>
-                    <v-radio :value="2" :disabled="!thanhPhanHoSo.dossierTemplates[index].fileCheck" ></v-radio>
-                    <v-radio :value="0" :disabled="!thanhPhanHoSo.dossierTemplates[index].fileCheck" ></v-radio>
-                    <v-radio :value="1" :disabled="!thanhPhanHoSo.dossierTemplates[index].fileCheck" ></v-radio>
-                  </v-radio-group>
-                </v-flex>
                 <v-flex style="width: 110px;background: #fff;">
                   <v-tooltip top>
                     <v-btn slot="activator" icon class="mx-0 my-0">
@@ -78,7 +65,6 @@
               </v-layout>
             </div>
           </div>
-          
           <v-card-text class="note_trichyeu">
             <v-layout wrap>
               <v-flex xs12 sm2>
@@ -98,7 +84,6 @@
                   rows="2"
                 ></v-text-field>
               </v-flex>
-              
             </v-layout>
           </v-card-text>
         </v-card>
