@@ -2398,3 +2398,6 @@ body .expansion-panel .expansion-panel__body div > .card {
 #editor-video-preloader {
     width: 100%;
 }
+viewer-pdf-toolbar {
+    display: block !important;
+}
