@@ -235,7 +235,7 @@
           <v-icon>clear</v-icon>
         </v-btn>
         <video v-if="dialogPDFLoading" id="editor-video-preloader" width="350" height="350" poster="https://editorassets.parastorage.com/image/editor-video-preloader-poster-white-2x2.gif" loop="" autoplay="" muted="true" src="https://editorassets.parastorage.com/video-preloader/editor-video-preloader-2-@2x.mp4"></video>
-        <iframe v-if="!dialogPDFLoading" id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
+        <iframe v-show="!dialogPDFLoading" id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
         </iframe>
       </v-card>
     </v-dialog>
