@@ -198,7 +198,6 @@
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
               <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
-              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
               showTaoTaiLieuKetQua: {{showTaoTaiLieuKetQua}} <br/>
@@ -206,6 +205,7 @@
               showTraKetQua: {{showTraKetQua}} <br/>
               showXacNhanThuPhi: {{showXacNhanThuPhi}} <br/>
               showThucHienThanhToanDienTu: {{showThucHienThanhToanDienTu}} <br/>
+              showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
             </v-layout>
           </v-card-text>
           <v-card-actions>
@@ -832,8 +832,6 @@ export default {
           vm.showXacNhanThuPhi = true
         }
       }
-      vm.showThongTinCoBanHoSo = true
-      isPopup = true
       if (isPopup) {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
