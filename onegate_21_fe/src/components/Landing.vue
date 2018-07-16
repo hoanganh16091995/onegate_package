@@ -428,6 +428,7 @@ export default {
   updated () {
     var vm = this
     vm.$nextTick(function () {
+      vm.btnDynamics = []
       let currentParams = vm.$router.history.current.params
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
@@ -487,6 +488,7 @@ export default {
   watch: {
     '$route': function (newRoute, oldRoute) {
       let vm = this
+      vm.btnDynamics = []
       let currentQuery = newRoute.query
       if (currentQuery.hasOwnProperty('q')) {
         vm.$store.commit('setLoadingDynamicBtn', true)
@@ -617,15 +619,6 @@ export default {
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        // test locale
-        // let filter = {
-        //   queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
-        //   page: vm.hosoDatasPage,
-        //   agency: vm.govAgencyCode,
-        //   service: vm.serviceCode,
-        //   template: vm.templateNo
-        // }
-        //
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -834,6 +827,8 @@ export default {
           vm.showXacNhanThuPhi = true
         }
       }
+      vm.showThongTinCoBanHoSo = true
+      isPopup = true
       if (isPopup) {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
