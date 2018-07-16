@@ -110,11 +110,11 @@ export const store = new Vuex.Store({
           if (coma > 0) {
             orginURL = window.location.href.substr(0, coma)
           }
-          // test locale
+          /*
           orginURL = 'http://127.0.0.1:8081/api/initdata'
           console.log('orginURL', orginURL)
           console.log('url', orginURL + support.renderURLInit)
-          //
+          */
           axios.get(orginURL + support.renderURLInit, param).then(function (response) {
             let serializable = response.data
             commit('setInitData', serializable)
@@ -582,17 +582,12 @@ export const store = new Vuex.Store({
       return new Promise((resolve, reject) => {
         commit('setLoading', true)
         let options = {
-          // headers: {
-          //   'groupId': state.initData.groupId,
-          //   'Accept': 'application/json',
-          //   'Content-Type': 'application/x-www-form-urlencoded',
-          //   'cps_auth': state.initData.cps_auth
-          // }
-          // test locale
           headers: {
-            'groupId': state.initData.groupId
+            'groupId': state.initData.groupId,
+            'Accept': 'application/json',
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'cps_auth': state.initData.cps_auth
           }
-          //
         }
         var dataPostdossier = new URLSearchParams()
         dataPostdossier.append('serviceCode', data.serviceCode)
@@ -1330,25 +1325,26 @@ export const store = new Vuex.Store({
       },
       loadDossierLienThong ({commit, state}, classPK) {
         return new Promise((resolve, reject) => {
-        store.dispatch('loadInitResource').then(function (result) {
-          let param = {
-            headers: {
-              groupId: state.initData.groupId
-            },
-            params: {
-              origin: classPK
-            }
-          }
-          axios.get(state.initData.dossierApi, param).then(function (response) {
-            let serializable = response.data.data
-            if (serializable.length > 0) {
-              for (var key in serializable) {
-                serializable[key].dossierLog = []
+          store.dispatch('loadInitResource').then(function (result) {
+            let param = {
+              headers: {
+                groupId: state.initData.groupId
+              },
+              params: {
+                origin: classPK
               }
             }
-            resolve(serializable)
-          }).catch(function (error) {
-            reject(error)
+            axios.get(state.initData.dossierApi, param).then(function (response) {
+              let serializable = response.data.data
+              if (serializable.length > 0) {
+                for (var key in serializable) {
+                  serializable[key].dossierLog = []
+                }
+              }
+              resolve(serializable)
+            }).catch(function (error) {
+              reject(error)
+            })
           })
         })
       },
@@ -1367,17 +1363,6 @@ export const store = new Vuex.Store({
             resolve(response.data.data)
           }).catch(function (xhr) {
             reject(xhr)
-
-            
-            
-            
-          axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
-            let serializable = response.data
-            resolve(serializable)
-          }).catch(function (error) {
-            console.log(error)
-            reject(error)
-          })
         })
       })
     },
@@ -1447,60 +1432,60 @@ export const store = new Vuex.Store({
             reject(error)
           })
         })
-      },
-      processPullBtnDetail ({commit, state}, filter) {
-        return new Promise((resolve, reject) => {
-          store.dispatch('loadInitResource').then(function (result) {
-            let param = {
-              headers: {
-                groupId: state.initData.groupId
-              }
+      })
+    },
+    processPullBtnDetail ({commit, state}, filter) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
             }
-            axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
-              let serializable = response.data
-              resolve(serializable.data)
-            }).catch(function (error) {
-              console.log(error)
-              resolve([])
-              reject(error)
-            })
-          })
-        })
-      },
-      getNextAction ({commit, state}, data) {
-        return new Promise((resolve, reject) => {
-          store.dispatch('loadInitResource').then(function (result) {
-            let param = {
-              headers: {
-                groupId: state.initData.groupId
-              }
-            }
-            axios.get(state.initData.dossierApi + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
-              let serializable = response.data
-              resolve(serializable)
-            }).catch(function (error) {
-              console.log(error)
-              resolve([])
-              reject(error)
-            })
-          })
-        })
-      },
-      loadDossierCounting ({state, commit}, data) {
-        let config = {
-          headers: {
-            groupId: state.initData.groupId
           }
-        }
-        let url = '/o/rest/v2/statistics/dossiers/counting'
-        return new Promise((resolve, reject) => {
-          axios.get(url, config).then(function (response) {
-            resolve(response.data)
-          }).catch(function (xhr) {
-            reject(xhr)
+          axios.get(state.initData.getNextAction + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable.data)
+          }).catch(function (error) {
+            console.log(error)
+            reject(error)
           })
         })
+      })
+    },
+    getNextAction ({commit, state}, data) {
+      return new Promise((resolve, reject) => {
+        store.dispatch('loadInitResource').then(function (result) {
+          let param = {
+            headers: {
+              groupId: state.initData.groupId
+            }
+          }
+          axios.get(state.initData.dossierApi + '/' + filter.dossierId + '/nextactions/' + filter.actionId, param).then(function (response) {
+            let serializable = response.data
+            resolve(serializable)
+          }).catch(function (error) {
+            console.log(error)
+            resolve([])
+            reject(error)
+          })
+        })
+      })
+    },
+    loadDossierCounting ({state, commit}, data) {
+      let config = {
+        headers: {
+          groupId: state.initData.groupId
+        }
       }
+      let url = '/o/rest/v2/statistics/dossiers/counting'
+      return new Promise((resolve, reject) => {
+        axios.get(url, config).then(function (response) {
+          resolve(response.data)
+        }).catch(function (xhr) {
+          reject(xhr)
+        })
+      })
+    }
     // ----End---------
   },
   mutations: {

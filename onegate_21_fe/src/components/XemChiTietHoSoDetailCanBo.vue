@@ -463,7 +463,7 @@
         <v-flex xs12 sm6>
           <v-card>
             <div style="height: 400px; overflow: auto; margin-bottom: 10px;">
-              <div v-for="item in dossierSyncs" :key="item.dossierSyncsId">
+              <div v-for="(item, index) in dossierSyncs" v-bind:key="index">
                 <div :class="{ 'text-xs-left': item.syncType === 1, 'text-xs-right': item.syncType === 2 }">
                   <v-chip label :color="getColorChat(item.syncType)" text-color="white">
                     {{item.actionUser}}: {{item.actionNote}}

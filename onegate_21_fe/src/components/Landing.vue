@@ -197,10 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
-              <div v-if="showThongTinCoBanHoSo">
-                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
-              </div>
+              <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
@@ -430,6 +427,7 @@ export default {
   updated () {
     var vm = this
     vm.$nextTick(function () {
+      vm.btnDynamics = []
       let currentParams = vm.$router.history.current.params
       let currentQuery = vm.$router.history.current.query
       if (currentParams.hasOwnProperty('index') && vm.isCallBack) {
@@ -489,6 +487,7 @@ export default {
   watch: {
     '$route': function (newRoute, oldRoute) {
       let vm = this
+      vm.btnDynamics = []
       let currentQuery = newRoute.query
       if (currentQuery.hasOwnProperty('q')) {
         vm.$store.commit('setLoadingDynamicBtn', true)
@@ -612,14 +611,14 @@ export default {
       let currentQuery = router.history.current.query
       console.log('currentQuery', currentQuery)
       if (currentQuery.hasOwnProperty('q')) {
-        // let filter = {
-        //   queryParams: currentQuery.q,
-        //   page: vm.hosoDatasPage,
-        //   agency: vm.govAgencyCode,
-        //   service: vm.serviceCode,
-        //   template: vm.templateNo
-        // }
-        // test locale
+        let filter = {
+          queryParams: currentQuery.q,
+          page: vm.hosoDatasPage,
+          agency: vm.govAgencyCode,
+          service: vm.serviceCode,
+          template: vm.templateNo
+        }
+        /*
         let filter = {
           queryParams: 'http://127.0.0.1:8081' + currentQuery.q,
           page: vm.hosoDatasPage,
@@ -627,7 +626,7 @@ export default {
           service: vm.serviceCode,
           template: vm.templateNo
         }
-        //
+        */
         vm.$store.dispatch('loadingDataHoSo', filter).then(function (result) {
           vm.hosoDatas = result.data
           vm.hosoDatasTotal = result.total
@@ -833,6 +832,8 @@ export default {
           vm.showXacNhanThuPhi = true
         }
       }
+      vm.showThongTinCoBanHoSo = true
+      isPopup = true
       if (isPopup) {
         vm.dialogActionProcess = true
         vm.loadingActionProcess = true
