@@ -1913,6 +1913,13 @@ body .navigation-drawer .list__group__header__prepend-icon .icon{
 .btn_wrap_actions {
     text-align: right;
 }
+.btn_wrap_actions .btn__content{
+    padding: 0 8px;
+}
+.btn_wrap_actions button.btn{
+    margin: 6px 4px;
+    font-size: 13px;
+}
 .btn.accent, .btn.error, .btn.info, .btn.primary, .btn.secondary, .btn.success, .btn.warning {
     height: 30px;
     min-width: inherit;
