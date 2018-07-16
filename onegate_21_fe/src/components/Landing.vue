@@ -228,6 +228,16 @@
         </v-form>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="dialogPDF" max-width="900" transition="fade-transition">
+      <v-card>
+        <v-card-title class="headline">{{itemAction.title}}{{itemAction.tiltle}}</v-card-title>
+        <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogPDF = false">
+          <v-icon>clear</v-icon>
+        </v-btn>
+        <iframe id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;" frameborder="0">
+        </iframe>
+      </v-card>
+    </v-dialog>
     <v-dialog v-model="dialog_statusAction" scrollable persistent max-width="700px">
       <v-card>
         <v-card-title class="headline">
@@ -418,7 +428,8 @@ export default {
     itemDialogPick: null,
     resultDialogPick: null,
     indexDialogPick: 0,
-    userNote: 0
+    userNote: 0,
+    dialogPDF: false
   }),
   computed: {
     loadingDynamicBtn () {
@@ -738,12 +749,15 @@ export default {
     },
     doPrint01 (dossierItem, item, index, isGroup) {
       let vm = this
+      vm.dialogPDF = true
       let filter = {
         dossierId: dossierItem.dossierId,
         document: item.document
       }
+      document.getElementById('dialogPDFPreview').src = ''
       vm.$store.dispatch('doPrint01', filter).then(function (result) {
-        console.log(result)
+        let file = window.URL.createObjectURL(result)
+        document.getElementById('dialogPDFPreview').src = file
       })
     },
     doPrint02 (dossierItem, item, index, isGroup) {
