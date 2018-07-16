@@ -197,10 +197,7 @@
           <v-progress-linear v-if="loadingActionProcess" class="my-0" :indeterminate="true"></v-progress-linear>
           <v-card-text class="pb-0 pt-4">
             <v-layout wrap>
-              <!-- showThongTinCoBanHoSo: {{showThongTinCoBanHoSo}} <br/> -->
-              <div v-if="showThongTinCoBanHoSo">
-                <thong-tin-co-ban-ho-so ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
-              </div>
+              <thong-tin-co-ban-ho-so v-if="showThongTinCoBanHoSo" ref="thong-tin-co-ban-ho-so" :id="77602"></thong-tin-co-ban-ho-so>
               showYkienCanBoThucHien: {{showYkienCanBoThucHien}} <br/>
               showFormBoSungThongTinNgan: {{showFormBoSungThongTinNgan}} <br/>
               showPhanCongNguoiThucHien: {{showPhanCongNguoiThucHien}} <br/>
