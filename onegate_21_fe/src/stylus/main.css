@@ -2395,3 +2395,6 @@ body .expansion-panel .expansion-panel__body div > .card {
     border: 1px solid rgba(0,0,0,0.54) !important;
     padding: 10px 15px !important;
 }
+#editor-video-preloader {
+    width: 100%;
+}

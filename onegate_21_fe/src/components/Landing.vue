@@ -234,7 +234,8 @@
         <v-btn icon dark class="mx-0 my-0 absolute__btn_panel mr-2" @click.native="dialogPDF = false">
           <v-icon>clear</v-icon>
         </v-btn>
-        <iframe id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;" frameborder="0">
+        <video v-if="dialogPDFLoading" id="editor-video-preloader" width="350" height="350" poster="https://editorassets.parastorage.com/image/editor-video-preloader-poster-white-2x2.gif" loop="" autoplay="" muted="true" src="https://editorassets.parastorage.com/video-preloader/editor-video-preloader-2-@2x.mp4"></video>
+        <iframe v-else id="dialogPDFPreview" src="" type="application/pdf" width="100%" height="100%" style="overflow: auto;min-height: 400px;" frameborder="0">
         </iframe>
       </v-card>
     </v-dialog>
@@ -429,7 +430,8 @@ export default {
     resultDialogPick: null,
     indexDialogPick: 0,
     userNote: 0,
-    dialogPDF: false
+    dialogPDF: false,
+    dialogPDFLoading: true
   }),
   computed: {
     loadingDynamicBtn () {
@@ -749,6 +751,7 @@ export default {
     },
     doPrint01 (dossierItem, item, index, isGroup) {
       let vm = this
+      vm.dialogPDFLoading = true
       vm.dialogPDF = true
       let filter = {
         dossierId: dossierItem.dossierId,
@@ -756,6 +759,7 @@ export default {
       }
       document.getElementById('dialogPDFPreview').src = ''
       vm.$store.dispatch('doPrint01', filter).then(function (result) {
+        vm.dialogPDFLoading = false
         document.getElementById('dialogPDFPreview').src = result
       })
     },
